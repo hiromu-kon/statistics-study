@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>確率の和と積</title>
+    <link rel="stylesheet" href="../../assets/learning-page.css">
+  </head>
+  <body>
+    <main>
+      <h1>確率の和と積</h1>
+      <p class="lead">「または」は和、「かつ」は積。ただし、排反か独立かを確認する。</p>
+
+      <section class="card point">
+        <h2>このノートで学ぶこと</h2>
+        <pre><code>AまたはBが起こる → 確率の和
+Aが起きて、さらにBが起こる → 確率の積</code></pre>
+        <p>いつでも単純に足したり掛けたりできるわけではありません。</p>
+        <pre><code>和を使うときは、排反かどうか
+積を使うときは、独立かどうか</code></pre>
+      </section>
+
+      <section>
+        <h2>1. 確率の基本用語</h2>
+        <div class="grid">
+          <article class="card"><h3>試行</h3><p>確率的な実験のこと。</p><p>例: サイコロを投げる、コインを投げる、くじを引く。</p></article>
+          <article class="card"><h3>事象</h3><p>試行によって起こる出来事のこと。</p><p>例: サイコロを投げて1の目が出る。</p></article>
+          <article class="card"><h3>排反</h3><p>一方が起きたら、もう一方は同時に起きない関係。</p><p>例: サイコロ1回で1の目と2の目が同時に出ることはない。</p></article>
+          <article class="card"><h3>独立</h3><p>一方の結果が、もう一方の結果に影響しない関係。</p><p>例: コインの1回目の結果は、2回目の結果に影響しない。</p></article>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. 確率の性質</h2>
+        <p>確率は0から1の間の数で表します。</p>
+        <pre><code>全く起こらない確率 = 0
+必ず起こる確率 = 1</code></pre>
+      </section>
+
+      <section>
+        <h2>3. 確率の和</h2>
+        <p>確率の和は、「AまたはBが起こる」確率を考えるときに使います。</p>
+        <p>単純に足せるのは、AとBが排反のときです。</p>
+        <p class="formula">P(AまたはB) = P(A) + P(B)</p>
+        <div class="card">
+          <h3>例</h3>
+          <p>サイコロを1回投げるとき、「1の目が出る」と「2の目が出る」は同時に起こりません。</p>
+          <pre><code>1または2の目が出る確率
+= 1/6 + 1/6
+= 2/6
+= 1/3</code></pre>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. 確率の積</h2>
+        <p>確率の積は、「Aが起きて、さらにBが起こる」確率を考えるときに使います。</p>
+        <p>単純に掛けられるのは、AとBが独立のときです。</p>
+        <p class="formula">P(A∩B) = P(A) × P(B)</p>
+        <div class="card">
+          <h3>例</h3>
+          <p>コインを2回投げるとき、1回目の結果は2回目の結果に影響しません。</p>
+          <pre><code>1回目も表、2回目も表の確率
+= 1/2 × 1/2
+= 1/4</code></pre>
+        </div>
+      </section>
+
+      <section class="card answer">
+        <h2>見分け方</h2>
+        <pre><code>AまたはB → 和を考える → 排反か確認
+AかつB   → 積を考える → 独立か確認</code></pre>
+      </section>
+
+      <section>
+        <h2>よくある勘違い</h2>
+        <ul>
+          <li>「または」なら必ず足せるわけではない。排反でない場合は重なりを引く。</li>
+          <li>「かつ」なら必ず掛けられるわけではない。独立でない場合は条件付き確率を考える。</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

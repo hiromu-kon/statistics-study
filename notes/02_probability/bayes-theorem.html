@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ベイズの定理</title>
+    <link rel="stylesheet" href="../../assets/learning-page.css">
+  </head>
+  <body>
+    <main>
+      <h1>ベイズの定理</h1>
+      <p class="lead">結果がわかったあとで、原因の確率を考え直すための公式。</p>
+
+      <section class="card point">
+        <h2>一言でいうと</h2>
+        <p>ベイズの定理は、条件付き確率の向きを入れ替えるために使います。</p>
+        <pre><code>病気の人が陽性になる確率
+陽性だった人が病気である確率</code></pre>
+        <p>この2つは似ていますが、意味は違います。</p>
+      </section>
+
+      <section>
+        <h2>条件付き確率の確認</h2>
+        <p class="formula">P(A|B)</p>
+        <p>これは「Bが起きたという条件のもとで、Aが起きる確率」です。</p>
+        <p><code>|</code> は「という条件のもとで」と読みます。</p>
+        <p>たとえば <code>P(A|B)</code> は、「BのもとでAが起きる確率」や「Bだとわかっているとき、Aである確率」と読みます。</p>
+      </section>
+
+      <section>
+        <h2>公式</h2>
+        <p class="formula">P(A|B) = P(B|A) × P(A) / P(B)</p>
+        <p>これはベイズの定理の公式です。</p>
+        <table>
+          <thead><tr><th>記号</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td>P(A|B)</td><td>Bが起きたとき、Aである確率。</td></tr>
+            <tr><td>P(B|A)</td><td>Aであるとき、Bが起きる確率。</td></tr>
+            <tr><td>P(A)</td><td>もともとAが起きる確率。</td></tr>
+            <tr><td>P(B)</td><td>Bが起きる全体の確率。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>医療検査の例</h2>
+        <p>次のように置きます。</p>
+        <ul class="steps">
+          <li><strong>A:</strong> 病気である</li>
+          <li><strong>B:</strong> 検査で陽性になる</li>
+        </ul>
+        <p><code>P(B|A)</code> は「病気である人が、検査で陽性になる確率」です。</p>
+        <p><code>P(A|B)</code> は「検査で陽性だった人が、本当に病気である確率」です。</p>
+      </section>
+
+      <section>
+        <h2>1000人で考える</h2>
+        <p>病気の人が1%、病気の人は90%で陽性、病気でない人も10%で陽性になるとします。</p>
+        <table>
+          <thead><tr><th>分類</th><th>計算</th><th>人数</th></tr></thead>
+          <tbody>
+            <tr><td>病気の人</td><td>1000人 × 1%</td><td>10人</td></tr>
+            <tr><td>病気でない人</td><td>1000人 - 10人</td><td>990人</td></tr>
+            <tr><td>病気で陽性</td><td>10人 × 90%</td><td>9人</td></tr>
+            <tr><td>病気でないのに陽性</td><td>990人 × 10%</td><td>99人</td></tr>
+          </tbody>
+        </table>
+        <p>陽性の人は全部で <code>9人 + 99人 = 108人</code> です。</p>
+        <p>このうち本当に病気の人は9人なので、</p>
+        <p class="formula">P(病気|陽性) = 9 / 108 = 1 / 12</p>
+      </section>
+
+      <section>
+        <h2>なぜ直感とずれるのか</h2>
+        <p>「病気の人は90%で陽性」と聞くと、陽性なら病気の可能性が高そうに感じます。</p>
+        <p>しかし、そもそも病気の人が少ない場合、病気でないのに陽性になる人も多くなります。</p>
+        <p>ベイズの定理では、「もともとどれくらい起こりやすいか」がとても大事です。</p>
+      </section>
+
+      <section class="card answer">
+        <h2>覚えておくポイント</h2>
+        <pre><code>知りたいものを左側に置く
+条件としてわかったことを | の右側に置く
+P(A|B) と P(B|A) は違う</code></pre>
+      </section>
+    </main>
+  </body>
+</html>

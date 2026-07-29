@@ -35,7 +35,8 @@ statistics-learning-log/
     2026/
       2026-07.md
 
-  notes/                    # 理解できた内容を整理するノート
+  notes/                    # 理解できた内容を整理するHTMLノート
+    README.md               # ディレクトリの案内
     00_math-basics/         # 中学数学・高校数学の復習
     01_descriptive-statistics/
     02_probability/
@@ -64,7 +65,8 @@ statistics-learning-log/
     grade2/
     grade1/
 
-  exercises/                # 自作問題・演習メモ
+  exercises/                # 自作問題・演習解説のHTMLページ
+    README.md               # ディレクトリの案内
     pre2/
     grade2/
     grade1/
@@ -77,6 +79,9 @@ statistics-learning-log/
     terms.md
     easy-explanations.md
 
+  assets/                   # HTMLページ用の共通CSS
+    learning-page.css
+
   templates/                # 記録用テンプレート
 
   references/               # 教材・書籍・Webサイト・論文など
@@ -84,9 +89,9 @@ statistics-learning-log/
 
 ## 最初の進め方
 
-最初は `notes/00_math-basics/` を中心に進めます。統計そのものに急ぎすぎず、割合・比・文字式・方程式・グラフの読み方を思い出しながら、統計の用語に少しずつ慣れます。
+最初は `notes/00_math-basics/README.md` を入口に進めます。統計そのものに急ぎすぎず、割合・比・文字式・方程式・グラフの読み方を思い出しながら、統計の用語に少しずつ慣れます。
 
-毎回の学習では、まず `learning-log/2026/2026-07.md` に雑に記録します。理解できた内容だけをあとで `notes/` に移し、未解決の疑問は `questions/unresolved.md` に残します。
+毎回の学習では、まず `learning-log/2026/2026-07.md` に雑に記録します。理解できた内容だけをあとで `notes/` のHTMLページに移し、未解決の疑問は `questions/unresolved.md` に残します。
 
 ## AIとの使い方
 

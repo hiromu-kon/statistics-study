@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ベイズの定理の基本問題</title>
+    <link rel="stylesheet" href="../../assets/learning-page.css">
+  </head>
+  <body>
+    <main>
+      <h1>ベイズの定理の基本問題</h1>
+      <p class="lead">「陽性だった」という結果から、「本当に病気である」確率を考え直す練習。</p>
+
+      <section class="card"><h2>問題</h2><p>ある病気にかかっている人は、全体の1%である。</p><p>この病気にかかっている人が検査を受けると、90%の確率で陽性になる。</p><p>病気にかかっていない人が検査を受けても、10%の確率で陽性になる。</p><p>ある人が検査で陽性だった。</p><p><strong>この人が本当に病気である確率を求める。</strong></p></section>
+      <section class="card answer"><h2>答え</h2><p class="formula">1 / 12</p><p>約8.3%。</p></section>
+
+      <section><h2>まず、何を求めるのか</h2><p>知りたいのは次の確率です。</p><p class="formula">P(病気 | 陽性)</p><p>これは「陽性だった人の中で、本当に病気の人はどれくらいか」という意味です。</p></section>
+
+      <section><h2>1000人で考える</h2><p>割合のままだと見えにくいので、全体を1000人として考えます。</p><table><thead><tr><th>分類</th><th>計算</th><th>人数</th></tr></thead><tbody><tr><td>病気の人</td><td>1000人 × 1%</td><td>10人</td></tr><tr><td>病気でない人</td><td>1000人 - 10人</td><td>990人</td></tr></tbody></table></section>
+
+      <section><h2>陽性になる人を数える</h2><table><thead><tr><th>分類</th><th>陽性になる確率</th><th>陽性になる人数</th></tr></thead><tbody><tr><td>病気の人</td><td>90%</td><td>10人 × 90% = 9人</td></tr><tr><td>病気でない人</td><td>10%</td><td>990人 × 10% = 99人</td></tr></tbody></table><p>陽性になる人は、全部で次の人数です。</p><p class="formula">9人 + 99人 = 108人</p></section>
+
+      <section><h2>陽性だった人の中を見る</h2><p>陽性だった人は108人です。そのうち、本当に病気の人は9人です。</p><p class="formula">P(病気 | 陽性) = 9 / 108 = 1 / 12</p></section>
+
+      <section class="card point"><h2>なぜ90%ではないのか</h2><div class="grid"><div><h3>90%が表していること</h3><p class="formula">P(陽性 | 病気)</p><p>病気である人が、陽性になる確率。</p></div><div><h3>知りたいこと</h3><p class="formula">P(病気 | 陽性)</p><p>陽性だった人が、本当に病気である確率。</p></div></div><p>この2つは向きが違います。</p></section>
+
+      <section><h2>覚えておくポイント</h2><ul class="steps"><li>ベイズの定理は、結果から原因を考え直すための公式。</li><li><code>P(陽性 | 病気)</code> と <code>P(病気 | 陽性)</code> は違う。</li><li>迷ったら、割合ではなく1000人などの人数に直す。</li><li>「どの集団の中を見ているか」を意識する。</li></ul></section>
+    </main>
+  </body>
+</html>

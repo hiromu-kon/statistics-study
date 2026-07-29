@@ -1,0 +1,68 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f4ee;
+  --paper: #fffdf8;
+  --ink: #242628;
+  --muted: #62676d;
+  --line: #ddd7ca;
+  --accent: #0f766e;
+  --accent-soft: #d9f1ed;
+  --blue: #1d4ed8;
+  --blue-soft: #dbeafe;
+  --warn: #9a3412;
+  --warn-soft: #ffedd5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  line-height: 1.85;
+}
+main {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 64px;
+}
+h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 42px); line-height: 1.25; }
+h2 { margin: 40px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--line); font-size: 24px; }
+h3 { margin: 24px 0 8px; font-size: 19px; }
+p { margin: 0 0 14px; }
+ul, ol { padding-left: 1.4em; }
+li { margin: 6px 0; }
+.lead { color: var(--muted); font-size: 18px; }
+.card { margin: 18px 0; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.answer { border-color: #9dd8d1; background: var(--accent-soft); }
+.point { border-color: #fdba74; background: var(--warn-soft); }
+.formula, code {
+  display: inline-block;
+  margin: 5px 0;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95em;
+}
+pre {
+  overflow-x: auto;
+  margin: 14px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+pre code { display: block; margin: 0; padding: 0; border: 0; background: transparent; }
+table { width: 100%; margin: 18px 0; border-collapse: collapse; background: var(--paper); }
+th, td { padding: 12px 14px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--blue-soft); color: #1e3a8a; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.steps { display: grid; gap: 12px; margin: 16px 0; padding: 0; list-style: none; }
+.steps li { margin: 0; padding: 14px 16px; border-left: 5px solid var(--accent); background: var(--paper); }
+.nav { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); }
+a { color: var(--blue); }
+@media (max-width: 720px) {
+  main { width: min(100% - 24px, 920px); padding-top: 24px; }
+  .grid { grid-template-columns: 1fr; }
+}
