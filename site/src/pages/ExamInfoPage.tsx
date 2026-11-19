@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { chapters } from '../content/chapters'
-import { lessonsByChapter } from '../content/registry'
+import { lessonById, lessonsByChapter } from '../content/registry'
 
 // 試験形式は公式サイト（2026-11-19 参照）の記載のみを書く。
 const FORMAT = [
@@ -41,8 +41,48 @@ const PLAN = [
   {
     phase: '5. 仕上げ',
     weeks: '14週目〜',
-    body: '模擬試験で時間を計って解き、間違えた問題を復習リストで潰す。公式の過去問題集にも取り組む。',
+    body: '模擬試験で時間を計って解き、間違えた問題を復習リストで潰す。公式の問題集（紙の試験の過去問と解説を収録）にも取り組む。CBT の過去問は公開されていない。',
     chapters: [],
+  },
+]
+
+// 受験記や解説サイトの記述をまとめたもの。公式の発表ではないので、出典つきで「傾向」として扱う。
+const TRENDS = [
+  {
+    point: '仮説検定・回帰分析・推定の出題が多い',
+    detail: '回帰分析は試験の後半に2〜4問ほど、Excel などの出力表を読んで答える形が多いとされる。',
+    lessons: ['testing-idea', 'linear-models-software-output', 'estimation-ci-mean'],
+    sources: [
+      { label: 'data-viz-lab', url: 'https://data-viz-lab.com/toukeikentei2' },
+      { label: 'Qiita の整理記事', url: 'https://qiita.com/kakl_kakler_kaklest/items/cba5a5fef534dfe1f40a' },
+    ],
+  },
+  {
+    point: 'CBT では小問の誘導がなく、1問ずつ独立して出る',
+    detail: '紙の試験のように前の小問で手順を誘導してくれないので、いきなり核心を問われても解けるようにしておく。',
+    lessons: [],
+    sources: [
+      { label: '受験記（note）', url: 'https://note.com/bbk108/n/n85173c018a7f' },
+      { label: '受験記（ブログ）', url: 'https://minarai-engi.com/toukei2-retry/' },
+    ],
+  },
+  {
+    point: '推定・検定では「正しい式を選ぶ」問題が多い',
+    detail: '計算結果ではなく、求める過程の式が選択肢に並ぶ形。どの場面でどの式・どの分布を使うかを判定できるようにする。',
+    lessons: ['estimation-ci-mean', 'testing-mean'],
+    sources: [{ label: '受験記（note）', url: 'https://note.com/bbk108/n/n85173c018a7f' }],
+  },
+  {
+    point: '結果を正しく解釈できるかを問う問題が増えている',
+    detail: '区間推定・仮説検定の結果や、統計ソフトの出力の意味を正しく言えるか。図表を読み取る問題も多い。',
+    lessons: ['estimation-ci-mean', 'testing-idea', 'descriptive-quartile-boxplot'],
+    sources: [{ label: '傾向の分析記事', url: 'https://starpentagon.net/analytics/stat_certificate_2nd_grade_trend/' }],
+  },
+  {
+    point: 'ベイズの定理・カイ二乗検定・F検定も油断しない',
+    detail: 'F検定を飛ばして不合格になった、という受験記がある。どの分野もまんべんなく出るので、苦手な単元を残さない。',
+    lessons: ['probability-bayes', 'testing-chi2', 'testing-two-samples'],
+    sources: [{ label: '受験記（ブログ）', url: 'https://minarai-engi.com/toukei2-retry/' }],
   },
 ]
 
@@ -56,6 +96,11 @@ const LINKS = [
     title: '統計検定2級 出題範囲表（PDF）',
     url: 'https://www.toukei-kentei.jp/hubfs/files/grade_range/grade2_hani_20181214.pdf',
     note: 'このサイトの章立てはこの表に合わせています。',
+  },
+  {
+    title: '過去問題・公式問題集の案内（公式サイト）',
+    url: 'https://www.toukei-kentei.jp/preparation/kakomon/',
+    note: '2級の過去問は公式問題集に収録。CBT 方式の過去問は掲載されていない。',
   },
   {
     title: '統計WEB「統計学の時間」',
@@ -131,6 +176,36 @@ export function ExamInfoPage() {
           各レッスンは「一言でいうと → 具体例 → 式 → 直感的な理解 → よくある勘違い → 統計検定での出方」の順に書いています。
           式がわからなくても、まずは図と具体例で「何を知りたいのか」をつかめば十分です。
         </p>
+      </section>
+
+      <section className="lesson-section">
+        <h2>よく出ると言われていること（非公式）</h2>
+        <p className="muted small">受験記や解説サイトの記述をまとめたものです。公式の発表ではありません（2026-11-19 参照）。</p>
+        <div className="plan">
+          {TRENDS.map((t) => (
+            <div key={t.point} className="plan-step">
+              <strong>{t.point}</strong>
+              <p>{t.detail}</p>
+              <div className="plan-links">
+                {t.lessons.map((id) => {
+                  const l = lessonById.get(id)
+                  return (
+                    l && (
+                      <Link key={id} className="chip chip-link" to={`/lessons/${id}`}>
+                        {l.title}
+                      </Link>
+                    )
+                  )
+                })}
+                {t.sources.map((src) => (
+                  <a key={src.url} className="chip chip-link" href={src.url} target="_blank" rel="noreferrer">
+                    出典：{src.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="lesson-section">
