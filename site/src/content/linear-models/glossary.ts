@@ -1,0 +1,179 @@
+import type { GlossaryTerm } from '../../types'
+
+export const glossary: GlossaryTerm[] = [
+  // 回帰係数の推定と検定
+  {
+    term: '回帰モデル',
+    reading: 'かいきもでる',
+    lesson: 'linear-models-regression-inference',
+    meaning: 'データが $y_i = \\beta_0 + \\beta_1 x_i + \\varepsilon_i$ のように「母集団の直線 ＋ 誤差」で生まれていると考える統計モデル。',
+    easy: 'データの裏には本当の直線があって、そこに偶然のずれが足されている、という考え方。',
+  },
+  {
+    term: '誤差項',
+    reading: 'ごさこう',
+    lesson: 'linear-models-regression-inference',
+    meaning: '回帰モデルの $\\varepsilon_i$。ふつう、互いに独立に平均 0・分散 $\\sigma^2$ の正規分布にしたがうと仮定する。',
+    easy: '説明変数では説明しきれない、たまたまの上下のずれ。',
+  },
+  {
+    term: '回帰係数の標準誤差',
+    reading: 'かいきけいすうのひょうじゅんごさ',
+    lesson: 'linear-models-regression-inference',
+    meaning: '回帰係数の推定値の標準偏差の推定値。単回帰の傾きなら $s / \\sqrt{\\sum (x_i - \\bar{x})^2}$。出力の Std. Error。',
+    easy: '標本を取り直したら、推定した係数がどれくらい揺れそうかの目安。',
+  },
+  {
+    term: '回帰係数の検定',
+    reading: 'かいきけいすうのけんてい',
+    lesson: 'linear-models-regression-inference',
+    meaning: '$H_0: \\beta_j = 0$ を、$t = \\hat\\beta_j / \\mathrm{SE}$ が自由度 $n - p - 1$（単回帰なら $n - 2$）の t 分布にしたがうことを使って検定する。',
+    easy: '「この変数は y と本当は関係ないのでは？」を確かめる検定。',
+  },
+  {
+    term: '予測値',
+    reading: 'よそくち',
+    lesson: 'linear-models-regression-inference',
+    meaning: '推定した回帰式に説明変数の値を代入して得られる $\\hat{y}$。',
+    easy: '回帰の式で計算した「だいたいこれくらい」という見込みの値。',
+  },
+  {
+    term: '外挿',
+    reading: 'がいそう',
+    lesson: 'linear-models-regression-inference',
+    meaning: 'データが観測された範囲の外の x で予測すること。直線関係が続く保証がないので注意が必要。',
+    easy: 'データのない遠いところまで、直線を勝手に伸ばして予測すること。',
+  },
+
+  // 重回帰分析
+  {
+    term: '重回帰モデル',
+    reading: 'じゅうかいきもでる',
+    lesson: 'linear-models-multiple-regression',
+    meaning: '説明変数が2つ以上ある回帰モデル $y = \\beta_0 + \\beta_1 x_1 + \\cdots + \\beta_p x_p + \\varepsilon$。',
+    easy: 'y を、いくつもの x の足し算で説明する式。',
+  },
+  {
+    term: '偏回帰係数',
+    reading: 'へんかいきけいすう',
+    lesson: 'linear-models-multiple-regression',
+    meaning: '重回帰モデルの各説明変数の係数。ほかの説明変数を一定にしたとき、その変数が1単位増えたときの y の平均の変化量。',
+    easy: 'ほかの条件をそろえたうえで、その変数だけを1増やしたときの効果。',
+  },
+  {
+    term: '多重共線性',
+    reading: 'たじゅうきょうせんせい',
+    lesson: 'linear-models-multiple-regression',
+    meaning: '説明変数どうしの相関が強いこと。偏回帰係数の標準誤差が大きくなり、推定が不安定になる。目安に VIF $= 1/(1 - r^2)$ を使う。',
+    easy: '似たような説明変数が入っていて、どちらの効果か区別できなくなっている状態。',
+  },
+  {
+    term: 'ダミー変数',
+    reading: 'だみーへんすう',
+    lesson: 'linear-models-multiple-regression',
+    meaning: 'グループを 0 と 1 で表した説明変数。g 個のグループには g − 1 個のダミー変数を使う。',
+    easy: '「駅前なら1、そうでなければ0」のように、種類を数に置きかえた変数。',
+  },
+  {
+    term: '自由度調整済み決定係数',
+    reading: 'じゆうどちょうせいずみけっていけいすう',
+    lesson: 'linear-models-multiple-regression',
+    meaning: '$1 - (1 - R^2)(n - 1)/(n - p - 1)$。説明変数の数 p が多いほど不利になるように決定係数を修正したもの。修正済み決定係数ともいう。',
+    easy: '変数をむやみに増やすと点数が下がるようにした、公平な当てはまりの良さ。',
+  },
+  {
+    term: '変数選択',
+    reading: 'へんすうせんたく',
+    lesson: 'linear-models-multiple-regression',
+    meaning: '候補の説明変数から、モデルに入れるものを選ぶこと。自由度調整済み決定係数や AIC などを基準にする。',
+    easy: 'どの x を使うと、むだなく y をうまく説明できるかを選ぶこと。',
+  },
+
+  // 実験計画と一元配置分散分析
+  {
+    term: '処理群と対照群',
+    reading: 'しょりぐんとたいしょうぐん',
+    lesson: 'linear-models-anova',
+    meaning: '効果を調べたい処理を行うグループ（処理群）と、比較のために処理を行わない、または従来の処理を行うグループ（対照群）。',
+    easy: '薬を飲む組と、飲まない（ニセ薬の）組。比べる相手がいないと効果はわからない。',
+  },
+  {
+    term: 'ブロック化',
+    reading: 'ぶろっくか',
+    lesson: 'linear-models-anova',
+    meaning: '結果に影響しそうな条件が似た実験単位をまとめてブロックとし、ブロックの中で処理を比べること。フィッシャーの3原則の「局所管理」。',
+    easy: '日当たりが同じ場所どうし、のように条件をそろえたグループの中で比べること。',
+  },
+  {
+    term: '一元配置実験',
+    reading: 'いちげんはいちじっけん',
+    lesson: 'linear-models-anova',
+    meaning: '1つの因子について複数の水準を用意し、各水準で反復して測定する実験。結果は一元配置分散分析で解析する。',
+    easy: '「肥料の種類」のように、変える条件が1つだけの実験。',
+  },
+  {
+    term: '分散分析',
+    reading: 'ぶんさんぶんせき',
+    lesson: 'linear-models-anova',
+    meaning: 'データの変動を要因ごとの変動（群間）と誤差の変動（群内）に分解し、F 比で母平均の差を検定する方法。ANOVA。',
+    easy: 'ばらつきを「グループの違い」と「個体差」に分けて、3つ以上の平均の差を一度に調べる方法。',
+  },
+  {
+    term: '群間変動',
+    reading: 'ぐんかんへんどう',
+    lesson: 'linear-models-anova',
+    meaning: '$S_A = \\sum_j n_j (\\bar{x}_j - \\bar{x})^2$。各群の平均と全体の平均とのずれの平方和。自由度は k − 1。',
+    easy: 'グループの平均どうしが、どれくらい離れているか。',
+  },
+  {
+    term: '群内変動',
+    reading: 'ぐんないへんどう',
+    lesson: 'linear-models-anova',
+    meaning: '$S_E = \\sum_j \\sum_i (x_{ij} - \\bar{x}_j)^2$。各データと所属する群の平均とのずれの平方和。自由度は N − k。誤差変動・残差変動ともいう。',
+    easy: '同じグループの中での、ふつうのばらつき（個体差）。',
+  },
+  {
+    term: 'F比',
+    reading: 'えふひ',
+    lesson: 'linear-models-anova',
+    meaning: '（群間の平均平方）÷（群内の平均平方）。母平均がすべて等しいとき、自由度 (k − 1, N − k) の F 分布にしたがう。',
+    easy: 'グループの違いが、個体差の何倍くらいあるか。1 よりずっと大きければ「差がある」。',
+  },
+  {
+    term: '分散分析表',
+    reading: 'ぶんさんぶんせきひょう',
+    lesson: 'linear-models-anova',
+    meaning: '要因ごとに平方和・自由度・平均平方・F 比（・p 値）を並べた表。回帰分析でも、回帰と残差に分けて作る。',
+    easy: 'ばらつきの分け方と F 比の計算を、1つにまとめた表。',
+  },
+  {
+    term: '多重比較',
+    reading: 'たじゅうひかく',
+    lesson: 'linear-models-anova',
+    meaning: '複数の群の組合せについて検定をくり返すこと。くり返すほど、全体として第1種の過誤をおかす確率が大きくなる。',
+    easy: '何度も検定すると、どこかで「たまたま有意」を引いてしまいやすくなる問題。',
+  },
+
+  // 統計ソフトの出力を読む
+  {
+    term: '残差の標準誤差',
+    reading: 'ざんさのひょうじゅんごさ',
+    lesson: 'linear-models-software-output',
+    meaning: '$s = \\sqrt{S_E / (n - p - 1)}$。誤差の標準偏差 $\\sigma$ の推定値。R の出力の Residual standard error、Excel の回帰統計の「標準誤差」。',
+    easy: '実際のデータが回帰直線から、だいたいどれくらいずれるかの目安。',
+  },
+  {
+    term: 'F統計量',
+    reading: 'えふとうけいりょう',
+    lesson: 'linear-models-software-output',
+    meaning: '回帰分析では $(S_R / p) / (S_E / (n - p - 1))$。「すべての傾きが 0」を検定する。単回帰では傾きの t 値の2乗に等しい。',
+    easy: 'このモデルの説明変数は、まとめて見て役に立っているか、を表す数。',
+  },
+  {
+    term: 'p値（出力の Pr(>|t|)）',
+    reading: 'ぴーち',
+    lesson: 'linear-models-software-output',
+    meaning: '回帰出力の Pr(>|t|) は、$H_0: \\beta_j = 0$ の両側検定の p 値。2.36e-05 は $2.36 \\times 10^{-5}$ を表す。',
+    easy: '「本当は関係ないのに、これくらいの t 値がたまたま出る確率」。小さいほど関係がありそう。',
+  },
+]

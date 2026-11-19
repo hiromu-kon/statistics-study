@@ -1,0 +1,81 @@
+import type { Formula } from '../../types'
+
+export const formulas: Formula[] = [
+  {
+    id: 'sampling-mean-expectation',
+    lesson: 'sampling-sample-mean',
+    title: '標本平均の期待値',
+    tex: 'E(\\bar{X}) = \\mu',
+    note: '標本平均は、平均すると母平均に一致する。標本平均で母平均を推し量ってよい理由。',
+  },
+  {
+    id: 'sampling-mean-variance',
+    lesson: 'sampling-sample-mean',
+    title: '標本平均の分散',
+    tex: 'V(\\bar{X}) = \\frac{\\sigma^2}{n}',
+    note: '標本平均のばらつきは、母分散の 1/n。n 個の値が独立であることが前提。',
+  },
+  {
+    id: 'sampling-standard-error',
+    lesson: 'sampling-sample-mean',
+    title: '標準誤差（標本平均）',
+    tex: '\\frac{\\sigma}{\\sqrt{n}}',
+    note: '標本平均が μ からふつうどれくらいずれるか。n を 4 倍にすると半分になる。',
+  },
+  {
+    id: 'sampling-chebyshev',
+    lesson: 'sampling-lln-clt',
+    title: 'チェビシェフの不等式',
+    tex: 'P(|X - \\mu| \\ge k\\sigma) \\le \\frac{1}{k^2}',
+    note: '分布の形がわからなくても使える、確率の上限。まず「平均から σ の何倍はなれているか」で k を出す。',
+  },
+  {
+    id: 'sampling-clt',
+    lesson: 'sampling-lln-clt',
+    title: '中心極限定理',
+    tex: '\\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\approx N(0, 1)',
+    note: 'n が大きければ、母集団の分布によらず標本平均を標準化して正規分布表で確率を出せる。',
+  },
+  {
+    id: 'sampling-binomial-normal',
+    lesson: 'sampling-normal-approximation',
+    title: '二項分布の正規近似',
+    tex: 'B(n, p) \\approx N\\big(np,\\ np(1-p)\\big)',
+    note: 'np と n(1−p) が十分大きいとき（目安はどちらも5以上）。境界は連続修正で ±0.5 する。',
+  },
+  {
+    id: 'sampling-proportion',
+    lesson: 'sampling-normal-approximation',
+    title: '標本比率の平均と分散',
+    tex: 'E(\\hat{p}) = p,\\quad V(\\hat{p}) = \\frac{p(1-p)}{n}',
+    note: '世論調査などの「割合」のばらつき。母比率の区間推定・検定で使う。',
+  },
+  {
+    id: 'sampling-chi2-variance',
+    lesson: 'sampling-chi2-t-f',
+    title: '標本分散とカイ二乗分布',
+    tex: '\\frac{(n-1)s^2}{\\sigma^2} \\sim \\chi^2(n-1)',
+    note: '正規母集団のとき。母分散の区間推定・検定に使う。s² は n − 1 で割る不偏分散。',
+  },
+  {
+    id: 'sampling-t-statistic',
+    lesson: 'sampling-chi2-t-f',
+    title: 't 統計量',
+    tex: '\\frac{\\bar{X} - \\mu}{s/\\sqrt{n}} \\sim t(n-1)',
+    note: '正規母集団で σ がわからないとき、σ の代わりに s を使うと t 分布に従う。母平均の区間推定・検定に使う。',
+  },
+  {
+    id: 'sampling-f-statistic',
+    lesson: 'sampling-chi2-t-f',
+    title: 'F 統計量（分散の比）',
+    tex: '\\frac{s_1^2/\\sigma_1^2}{s_2^2/\\sigma_2^2} \\sim F(n_1 - 1,\\ n_2 - 1)',
+    note: '2つの正規母集団の分散をくらべるときに使う。自由度は分子・分母の順。',
+  },
+  {
+    id: 'sampling-f-lower',
+    lesson: 'sampling-chi2-t-f',
+    title: 'F 分布の下側の点',
+    tex: 'F_{1-\\alpha}(m_1, m_2) = \\frac{1}{F_{\\alpha}(m_2, m_1)}',
+    note: '表に上側の点しかないとき、自由度を入れ替えて逆数をとれば下側の点が出る。',
+  },
+]
