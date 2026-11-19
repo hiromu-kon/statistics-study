@@ -12,6 +12,7 @@ export function PracticePage() {
   const chapter = params.get('chapter') ?? 'all'
   const level = params.get('level') ?? 'all'
   const status = (params.get('status') ?? 'all') as Status
+  const kind = params.get('kind') ?? 'all'
   const { attempts } = useProgress()
   const course = useCurrentCourse()
 
@@ -25,6 +26,7 @@ export function PracticePage() {
   const list = problemsByCourse(course.id).filter((p) => {
     if (chapter !== 'all' && lessonById.get(p.lesson)?.chapter !== chapter) return false
     if (level !== 'all' && String(p.level) !== level) return false
+    if (kind !== 'all' && (p.kind ?? 'choice') !== kind) return false
     const a = attempts[p.id]
     if (status === 'unanswered' && a) return false
     if (status === 'wrong' && !(a && !a.lastCorrect)) return false
@@ -57,6 +59,14 @@ export function PracticePage() {
           </select>
         </label>
         <label>
+          形式
+          <select value={kind} onChange={(e) => set('kind', e.target.value)}>
+            <option value="all">すべて</option>
+            <option value="choice">選択</option>
+            <option value="numeric">数値入力</option>
+          </select>
+        </label>
+        <label>
           状況
           <select value={status} onChange={(e) => set('status', e.target.value)}>
             <option value="all">すべて</option>
@@ -67,7 +77,7 @@ export function PracticePage() {
         <span className="muted">{list.length}問</span>
       </div>
       {/* 絞り込みを変えたら解答状態をリセットするため key を付ける */}
-      <ProblemList key={`${chapter}-${level}-${status}`} problems={list} showLessonLink />
+      <ProblemList key={`${chapter}-${level}-${kind}-${status}`} problems={list} showLessonLink />
     </div>
   )
 }

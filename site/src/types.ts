@@ -59,18 +59,35 @@ export type Lesson = LessonMeta & { Component: ComponentType }
 
 export type ProblemLevel = 1 | 2 | 3
 
-export type Problem = {
+type ProblemBase = {
   /** 全体で一意。例: descriptive-mean-01 */
   id: string
   lesson: string
   /** 1: 基本（用語・意味の確認） 2: 標準（計算） 3: 本番レベル */
   level: ProblemLevel
   question: Rich
+  explanation: Rich
+}
+
+/** 選択肢から1つ選ぶ問題（kind を省略するとこちら） */
+export type ChoiceProblem = ProblemBase & {
+  kind?: 'choice'
   choices: Rich[]
   /** choices の何番目が正解か（0 始まり） */
   answer: number
-  explanation: Rich
 }
+
+/** 数値を入力して答える問題（準1級の数値入力問題に合わせたもの） */
+export type NumericProblem = ProblemBase & {
+  kind: 'numeric'
+  answerValue: number
+  /** この幅までのずれは正解にする（四捨五入の違いを許すため）。例: 小数第2位まで答えるなら 0.005 */
+  tolerance: number
+  /** 入力欄の横に出す単位や、答え方の指示。例: 「小数第2位まで」 */
+  unit?: string
+}
+
+export type Problem = ChoiceProblem | NumericProblem
 
 export type GlossaryTerm = {
   term: string

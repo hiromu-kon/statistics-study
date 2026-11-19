@@ -1327,6 +1327,61 @@ input[type='number'],
   min-width: 0;
 }
 
+.numeric-answer {
+  margin: 12px 0;
+}
+
+.numeric-answer label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.numeric-label {
+  font-weight: 700;
+}
+
+.numeric-answer input {
+  font: inherit;
+  font-size: 1.05rem;
+  width: 10em;
+  max-width: 100%;
+  padding: 7px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.numeric-answer input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.numeric-answer input.answer {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.numeric-answer input.chosen-wrong {
+  border-color: var(--ng);
+  background: var(--ng-soft);
+}
+
+.numeric-unit {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+
+.numeric-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--ng);
+}
+
 .problem-actions {
   display: flex;
   gap: 8px;

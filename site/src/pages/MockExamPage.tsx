@@ -1,7 +1,8 @@
 import { useEffect, useEffectEvent, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { RichText } from '../components/Math'
-import { LevelBadge } from '../components/Quiz'
+import { AnswerInput, LevelBadge } from '../components/Quiz'
+import { correctAnswerLabel, isAnswered, isCorrect, type Response } from '../lib/answers'
 import { chapterById } from '../content/chapters'
 import { courseById } from '../content/courses'
 import { lessonById, problems, problemsByCourse } from '../content/registry'
@@ -65,7 +66,7 @@ function MockExam({ course, config }: { course: CourseMeta; config: CourseExam }
   const secondsPerProblem = (config.minutes * 60) / config.problems
   const passRate = config.passPercent / 100
   const [exam, setExam] = useState<{ problems: Problem[]; startedAt: number; limit: number } | null>(null)
-  const [answers, setAnswers] = useState<Record<string, number>>({})
+  const [answers, setAnswers] = useState<Record<string, Response>>({})
   const [finished, setFinished] = useState<number | null>(null)
   const [now, setNow] = useState(() => Date.now())
   const mocks = useProgress().mocks.filter((m) => (m.course ?? 'grade2') === course.id)
@@ -83,7 +84,7 @@ function MockExam({ course, config }: { course: CourseMeta; config: CourseExam }
     const sec = (Date.now() - exam.startedAt) / 1000
     let score = 0
     for (const p of exam.problems) {
-      const ok = answers[p.id] === p.answer
+      const ok = isCorrect(p, answers[p.id])
       if (ok) score++
       recordAttempt(p.id, ok)
     }
@@ -160,7 +161,7 @@ function MockExam({ course, config }: { course: CourseMeta; config: CourseExam }
     )
   }
 
-  const answeredCount = exam.problems.filter((p) => answers[p.id] !== undefined).length
+  const answeredCount = exam.problems.filter((p) => isAnswered(p, answers[p.id])).length
   const remaining = exam.limit - elapsed
 
   return (
@@ -194,9 +195,9 @@ function MockExam({ course, config }: { course: CourseMeta; config: CourseExam }
       {finished !== null && <p className="lead">間違えた問題は復習リストに入りました。解説を読んで、元のレッスンに戻って確認しましょう。</p>}
       <div className="problem-list">
         {exam.problems.map((p, i) => {
-          const chosen = answers[p.id]
+          const response = answers[p.id]
           const done = finished !== null
-          const ok = chosen === p.answer
+          const ok = isCorrect(p, response)
           return (
             <article key={p.id} className={`problem ${done ? (ok ? 'is-correct' : 'is-wrong') : ''}`}>
               <header className="problem-head">
@@ -211,24 +212,10 @@ function MockExam({ course, config }: { course: CourseMeta; config: CourseExam }
               <div className="problem-question">
                 <RichText value={p.question} />
               </div>
-              <ol className="choices">
-                {p.choices.map((c, j) => {
-                  const state = done ? (j === p.answer ? 'answer' : j === chosen ? 'chosen-wrong' : '') : j === chosen ? 'selected' : ''
-                  return (
-                    <li key={j}>
-                      <button type="button" className={`choice ${state}`} disabled={done} onClick={() => setAnswers((a) => ({ ...a, [p.id]: j }))}>
-                        <span className="choice-no">{j + 1}</span>
-                        <span className="choice-text">
-                          <RichText value={c} />
-                        </span>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ol>
+              <AnswerInput problem={p} response={answers[p.id]} submitted={done} onChange={(r) => setAnswers((a) => ({ ...a, [p.id]: r }))} />
               {done && (
                 <div className="explanation">
-                  <div className="explanation-result">{ok ? '正解！' : chosen === undefined ? `未解答（正解は ${p.answer + 1}）` : `不正解（正解は ${p.answer + 1}）`}</div>
+                  <div className="explanation-result">{ok ? '正解！' : !isAnswered(p, response) ? `未解答（正解は ${correctAnswerLabel(p)}）` : `不正解（正解は ${correctAnswerLabel(p)}）`}</div>
                   <RichText value={p.explanation} />
                 </div>
               )}
