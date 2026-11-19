@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { Formula, GlossaryTerm, Lesson, LessonMeta, Problem } from '../types'
-import { chapters } from './chapters'
+import { chapterById, chapters } from './chapters'
+import { courseById } from './courses'
 
 // 章ごとのフォルダ（src/content/<章>/）に置いたファイルを自動で集める。
 // 一覧ファイルを手で更新しなくてよいので、レッスンや問題を足すときはファイルを置くだけでよい。
@@ -12,11 +13,12 @@ const problemModules = import.meta.glob<{ problems: Problem[] }>('./*/problems.t
 const glossaryModules = import.meta.glob<{ glossary: GlossaryTerm[] }>('./*/glossary.ts', { eager: true })
 const formulaModules = import.meta.glob<{ formulas: Formula[] }>('./*/formulas.ts', { eager: true })
 
-const chapterOrder = new Map(chapters.map((c) => [c.id, c.order]))
+// コースの順 → コースの中の章の順で並べる
+const chapterOrder = new Map(chapters.map((c) => [c.id, (courseById.get(c.course)?.order ?? 99) * 1000 + c.order]))
 
 export const lessons: Lesson[] = Object.values(lessonModules)
   .map((m) => ({ ...m.meta, Component: m.default }))
-  .sort((a, b) => (chapterOrder.get(a.chapter) ?? 99) - (chapterOrder.get(b.chapter) ?? 99) || a.order - b.order)
+  .sort((a, b) => (chapterOrder.get(a.chapter) ?? 99999) - (chapterOrder.get(b.chapter) ?? 99999) || a.order - b.order)
 
 export const lessonById = new Map(lessons.map((l) => [l.id, l]))
 
@@ -44,3 +46,10 @@ export const glossary: GlossaryTerm[] = Object.values(glossaryModules)
 export const formulas: Formula[] = Object.values(formulaModules)
   .flatMap((m) => m.formulas)
   .sort(byLessonOrder)
+
+/** レッスン・問題・用語・公式がどのコースに属するか（章を経由して決まる） */
+export const courseOfLesson = (lessonId: string) => chapterById.get(lessonById.get(lessonId)?.chapter ?? '')?.course
+
+export const lessonsByCourse = (courseId: string) => lessons.filter((l) => chapterById.get(l.chapter)?.course === courseId)
+
+export const problemsByCourse = (courseId: string) => problems.filter((p) => courseOfLesson(p.lesson) === courseId)

@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
-import { chapterById, chapters } from '../content/chapters'
+import { chapterById, chaptersByCourse } from '../content/chapters'
+import { courseById } from '../content/courses'
 import { lessonsByChapter, problemsByChapter } from '../content/registry'
 import { useProgress } from '../lib/progress'
 import { NotFoundPage } from './NotFoundPage'
@@ -10,12 +11,13 @@ export function ChapterPage() {
   const { completed } = useProgress()
   if (!chapter) return <NotFoundPage />
   const ls = lessonsByChapter(chapter.id)
-  const nextChapter = chapters.find((c) => c.order === chapter.order + 1)
+  const course = courseById.get(chapter.course)
+  const nextChapter = chaptersByCourse(chapter.course).find((c) => c.order === chapter.order + 1)
 
   return (
     <div className="page">
       <p className="breadcrumb">
-        <Link to="/">ホーム</Link> / {chapter.prep ? '準備' : `第${chapter.order}章`}
+        <Link to={`/courses/${chapter.course}`}>{course?.title ?? 'ホーム'}</Link> / {chapter.prep ? '準備' : `第${chapter.order}章`}
       </p>
       <h1>{chapter.title}</h1>
       <p className="lead">{chapter.summary}</p>

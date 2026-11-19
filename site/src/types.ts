@@ -3,8 +3,36 @@ import type { ComponentType, ReactNode } from 'react'
 /** 文字列なら $...$ を数式、**...** を太字として表示する。JSX も渡せる */
 export type Rich = ReactNode
 
+export type CourseExam = {
+  /** 本番の問題数 */
+  problems: number
+  /** 本番の試験時間（分） */
+  minutes: number
+  /** 合格ライン（正答率 %） */
+  passPercent: number
+}
+
+export type CourseMeta = {
+  id: string
+  order: number
+  /** 例: 統計検定2級 */
+  title: string
+  /** メニューなどで使う短い名前。例: 2級 */
+  shortTitle: string
+  summary: string
+  /** ホームの見出し */
+  headline: string
+  /** planned は枠だけで、まだ教材がないコース */
+  status: 'active' | 'planned'
+  officialUrl: string
+  /** 模擬試験の設定。本番の形式を公式サイトで確かめるまでは null にして、模擬試験を出さない */
+  mockExam: CourseExam | null
+}
+
 export type ChapterMeta = {
   id: string
+  /** どのコース（級）の章か */
+  course: string
   order: number
   title: string
   /** 一言での説明 */

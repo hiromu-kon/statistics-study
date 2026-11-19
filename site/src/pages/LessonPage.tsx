@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom'
 import { ProblemList } from '../components/Quiz'
 import { chapterById } from '../content/chapters'
-import { lessonById, lessons, problemsByLesson } from '../content/registry'
+import { courseById } from '../content/courses'
+import { lessonById, lessonsByCourse, problemsByLesson } from '../content/registry'
 import { toggleCompleted, useProgress } from '../lib/progress'
 import { NotFoundPage } from './NotFoundPage'
 
@@ -11,6 +12,8 @@ export function LessonPage() {
   const { completed } = useProgress()
   if (!lesson) return <NotFoundPage />
   const chapter = chapterById.get(lesson.chapter)!
+  // 前後のレッスンは同じコースの中だけでたどる
+  const lessons = lessonsByCourse(chapter.course)
   const idx = lessons.indexOf(lesson)
   const prev = lessons[idx - 1]
   const next = lessons[idx + 1]
@@ -21,7 +24,8 @@ export function LessonPage() {
   return (
     <article className="page lesson">
       <p className="breadcrumb">
-        <Link to="/">ホーム</Link> / <Link to={`/chapters/${chapter.id}`}>{chapter.title}</Link>
+        <Link to={`/courses/${chapter.course}`}>{courseById.get(chapter.course)?.title ?? 'ホーム'}</Link> /{' '}
+        <Link to={`/chapters/${chapter.id}`}>{chapter.title}</Link>
       </p>
       <h1>{lesson.title}</h1>
       <p className="lead">{lesson.summary}</p>

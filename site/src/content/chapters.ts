@@ -1,9 +1,12 @@
 import type { ChapterMeta } from '../types'
 
-// 章立ては統計検定2級の出題範囲表（2018/12/14版）に合わせている。
+// 2級の章立ては統計検定2級の出題範囲表（2018/12/14版）に合わせている。
 // https://www.toukei-kentei.jp/hubfs/files/grade_range/grade2_hani_20181214.pdf
+// 上の級の章を足すときは、章 ID をコース ID で始める（例: pre1-xxx）。章フォルダは全コースで1つの階層に並ぶため。
+// order はコースの中での順番。
 export const chapters: ChapterMeta[] = [
   {
+    course: 'grade2',
     id: 'math',
     order: 0,
     title: '数学の準備',
@@ -12,6 +15,7 @@ export const chapters: ChapterMeta[] = [
     prep: true,
   },
   {
+    course: 'grade2',
     id: 'descriptive',
     order: 1,
     title: '1変数データの要約',
@@ -19,6 +23,7 @@ export const chapters: ChapterMeta[] = [
     scope: 'データソース／データの分布／1変数データ',
   },
   {
+    course: 'grade2',
     id: 'bivariate',
     order: 2,
     title: '2変数データと回帰の入口',
@@ -26,6 +31,7 @@ export const chapters: ChapterMeta[] = [
     scope: '2変数以上のデータ／データの活用（単回帰と予測）',
   },
   {
+    course: 'grade2',
     id: 'collection',
     order: 3,
     title: '時系列とデータの集め方',
@@ -33,6 +39,7 @@ export const chapters: ChapterMeta[] = [
     scope: 'データの活用（時系列）／推測のためのデータ収集法',
   },
   {
+    course: 'grade2',
     id: 'probability',
     order: 4,
     title: '確率',
@@ -40,6 +47,7 @@ export const chapters: ChapterMeta[] = [
     scope: '確率モデルの導入（確率）',
   },
   {
+    course: 'grade2',
     id: 'random-variables',
     order: 5,
     title: '確率変数',
@@ -47,6 +55,7 @@ export const chapters: ChapterMeta[] = [
     scope: '確率モデルの導入（確率変数）',
   },
   {
+    course: 'grade2',
     id: 'distributions',
     order: 6,
     title: '確率分布',
@@ -54,6 +63,7 @@ export const chapters: ChapterMeta[] = [
     scope: '確率モデルの導入（確率分布）',
   },
   {
+    course: 'grade2',
     id: 'sampling',
     order: 7,
     title: '標本分布',
@@ -61,6 +71,7 @@ export const chapters: ChapterMeta[] = [
     scope: '推測（標本分布）',
   },
   {
+    course: 'grade2',
     id: 'estimation',
     order: 8,
     title: '推定',
@@ -68,6 +79,7 @@ export const chapters: ChapterMeta[] = [
     scope: '推測（推定）',
   },
   {
+    course: 'grade2',
     id: 'testing',
     order: 9,
     title: '仮説検定',
@@ -75,6 +87,7 @@ export const chapters: ChapterMeta[] = [
     scope: '推測（仮説検定）',
   },
   {
+    course: 'grade2',
     id: 'linear-models',
     order: 10,
     title: '線形モデル',
@@ -84,3 +97,5 @@ export const chapters: ChapterMeta[] = [
 ]
 
 export const chapterById = new Map(chapters.map((c) => [c.id, c]))
+
+export const chaptersByCourse = (courseId: string) => chapters.filter((c) => c.course === courseId)

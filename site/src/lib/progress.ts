@@ -4,7 +4,14 @@ import { useSyncExternalStore } from 'react'
 const KEY = 'stats2-progress-v1'
 
 export type Attempt = { correct: number; wrong: number; lastCorrect: boolean; at: string }
-export type MockResult = { at: string; score: number; total: number; seconds: number }
+export type MockResult = {
+  at: string
+  score: number
+  total: number
+  seconds: number
+  /** コースを分ける前の記録にはないので、そのときは2級として扱う */
+  course?: string
+}
 
 export type Progress = {
   completed: Record<string, string>

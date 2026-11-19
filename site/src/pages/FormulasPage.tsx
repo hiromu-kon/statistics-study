@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import { MathBlock, RichText } from '../components/Math'
-import { chapters } from '../content/chapters'
+import { chaptersByCourse } from '../content/chapters'
 import { formulas, lessonById } from '../content/registry'
+import { useCurrentCourse } from '../lib/course'
 
 export function FormulasPage() {
+  const course = useCurrentCourse()
   return (
     <div className="page">
-      <h1>公式集</h1>
+      <h1>公式集（{course.shortTitle}）</h1>
       <p className="lead">式だけでなく「何を知りたい式か」を添えています。式を見て意味が言えるかを確認しましょう。</p>
-      {chapters.map((c) => {
+      {chaptersByCourse(course.id).map((c) => {
         const fs = formulas.filter((f) => lessonById.get(f.lesson)?.chapter === c.id)
         if (fs.length === 0) return null
         return (
