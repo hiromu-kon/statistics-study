@@ -95,6 +95,18 @@ describe('用語と公式', () => {
   })
 })
 
+describe('リンク', () => {
+  it('本文・問題から張った /lessons/... のリンク先がすべて存在する', () => {
+    const broken: string[] = []
+    for (const file of [...sourceFiles(join(__dirname)), ...sourceFiles(join(__dirname, '../pages'))]) {
+      for (const m of readFileSync(file, 'utf8').matchAll(/\/lessons\/([a-z0-9-]+)/g)) {
+        if (!lessonById.has(m[1])) broken.push(`${file.replace(join(__dirname, '..'), '')}: ${m[1]}`)
+      }
+    }
+    expect(broken).toEqual([])
+  })
+})
+
 describe('数式の書き方', () => {
   // KaTeX のフォントに日本語の字形がなく、崩れて表示されるため
   it('数式の中に日本語を書かない', () => {
