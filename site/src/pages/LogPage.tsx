@@ -4,7 +4,14 @@ import { useMemo, useState } from 'react'
 // 学習ログはサイトの外（リポジトリ直下）の Markdown をそのまま正とする。
 // サイト側にコピーすると、エディタで書いたログと二重管理になるため。
 const files = import.meta.glob<string>(
-  ['../../../learning-log/**/*.md', '../../../questions/*.md', '../../../mistakes/*.md'],
+  [
+    '../../../learning-log/**/*.md',
+    '../../../questions/*.md',
+    '../../../mistakes/*.md',
+    '../../../glossary/*.md',
+    '../../../roadmap/*.md',
+    '../../../references/*.md',
+  ],
   { query: '?raw', import: 'default', eager: true },
 )
 
@@ -14,14 +21,24 @@ const GROUP_LABEL: Record<string, string> = {
   'learning-log': '学習ログ',
   questions: '疑問メモ',
   mistakes: 'ミスの記録',
+  glossary: '自分の言い換え',
+  roadmap: '目標',
+  references: '使った教材',
 }
+
+const GROUP_ORDER = ['learning-log', 'questions', 'mistakes', 'glossary', 'roadmap', 'references']
 
 const NAME_LABEL: Record<string, string> = {
   unresolved: '未解決の疑問',
   resolved: '解決した疑問',
-  pre2: '準2級',
   grade2: '2級',
-  grade1: '1級',
+  README: '書き方',
+  terms: '用語の言い換え',
+  'easy-explanations': 'やさしい言い換え',
+  goals: '目標と到達ライン',
+  books: '書籍',
+  websites: 'Webサイト',
+  youtube: 'YouTube',
 }
 
 const docs: Doc[] = Object.entries(files)
@@ -31,7 +48,7 @@ const docs: Doc[] = Object.entries(files)
     const base = rel.split('/').pop()!.replace(/\.md$/, '')
     return { path: rel, group, name: NAME_LABEL[base] ?? base, body }
   })
-  .sort((a, b) => a.group.localeCompare(b.group) || b.path.localeCompare(a.path))
+  .sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group) || b.path.localeCompare(a.path))
 
 export function LogPage() {
   const [current, setCurrent] = useState(docs[0]?.path ?? '')
@@ -43,7 +60,7 @@ export function LogPage() {
     <div className="page">
       <h1>学習ログ</h1>
       <p className="lead">
-        リポジトリの <code>learning-log/</code>・<code>questions/</code>・<code>mistakes/</code> にある Markdown を表示しています。
+        リポジトリの <code>learning-log/</code>・<code>questions/</code>・<code>mistakes/</code>・<code>glossary/</code>・<code>roadmap/</code>・<code>references/</code> にある Markdown を表示しています。
         書き足すときはエディタでファイルを編集してください（開発サーバーなら保存するとすぐ反映されます）。
       </p>
       <div className="log-layout">

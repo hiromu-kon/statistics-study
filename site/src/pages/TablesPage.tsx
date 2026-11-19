@@ -248,7 +248,7 @@ export function TablesPage() {
   return (
     <div className="page">
       <h1>分布表・計算機</h1>
-      <p className="lead">2級では、分布表から値を読み取って計算する問題が出ます。どの表のどこを読むかに慣れておきましょう。</p>
+      <p className="lead">本番では、必要な統計数値表が試験会場で配られます（公式サイトより）。どの表のどこを読むかに慣れておきましょう。</p>
       <div className="tabs" role="tablist">
         {TABS.map((t) => (
           <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={`tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
