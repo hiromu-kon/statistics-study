@@ -42,7 +42,7 @@ npm run dev
 ## ディレクトリ構成
 
 ```text
-statistics-learning-log/
+statistics-study/
   README.md
 
   site/                     # 学習サイト（教材・問題・公式集・用語集・分布表）← 学習の中心
