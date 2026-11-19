@@ -145,6 +145,8 @@ h3 {
 .page {
   max-width: 860px;
   margin: 0 auto;
+  /* 本文に書いた URL など、区切りのない長い文字列でスマホの横幅を広げないように */
+  overflow-wrap: anywhere;
 }
 
 .brand {
@@ -1024,6 +1026,12 @@ input[type='number'],
 }
 
 /* ---------- 数式・図 ---------- */
+
+/* KaTeX の読み上げ用 MathML は absolute で置かれるため、数式の枠を基準にして枠の外にはみ出さないようにする */
+.math-inline,
+.math-block {
+  position: relative;
+}
 
 /* 長い文中の数式は折り返せないので、狭い画面ではその数式だけ横にスクロールさせる */
 @media (max-width: 700px) {
