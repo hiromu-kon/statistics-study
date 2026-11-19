@@ -1,0 +1,88 @@
+import type { Formula } from '../../types'
+
+export const formulas: Formula[] = [
+  {
+    id: 'pre1-regression-multiple-ols',
+    lesson: 'pre1-regression-multiple',
+    title: '最小二乗推定量（行列）',
+    tex: '\\hat{\\boldsymbol\\beta} = (X^\\top X)^{-1}X^\\top \\boldsymbol y, \\quad \\mathrm{Var}[\\hat{\\boldsymbol\\beta}] = \\sigma^2 (X^\\top X)^{-1}',
+    note: '説明変数が何個でも、正規方程式 $X^\\top X\\hat{\\boldsymbol\\beta} = X^\\top\\boldsymbol y$ を解けば係数が求まる。分散の対角成分のルート（σ を s に置きかえる）が標準誤差。',
+  },
+  {
+    id: 'pre1-regression-multiple-adjr2',
+    lesson: 'pre1-regression-multiple',
+    title: '自由度調整済み決定係数',
+    tex: 'R^{*2} = 1 - \\frac{S_e/(n-p-1)}{S_y/(n-1)} = 1 - (1 - R^2)\\frac{n-1}{n-p-1}',
+    note: '変数を足すと必ず上がる $R^2$ の代わりに、モデルを比べるときに使う。p は説明変数の個数。',
+  },
+  {
+    id: 'pre1-regression-multiple-cp',
+    lesson: 'pre1-regression-multiple',
+    title: 'Mallows の Cp と AIC',
+    tex: 'C_p = \\frac{S_e}{\\hat\\sigma^2} - n + 2(p+1), \\qquad \\mathrm{AIC} = -2\\log L + 2k',
+    note: '変数選択の規準。$\\hat\\sigma^2$ は全部入りのモデルの残差分散。Cp は小さく p + 1 に近いもの、AIC は小さいものを選ぶ。',
+  },
+  {
+    id: 'pre1-regression-multiple-gls',
+    lesson: 'pre1-regression-multiple',
+    title: '一般化最小二乗推定量',
+    tex: '\\hat{\\boldsymbol\\beta}_{\\mathrm{GLS}} = (X^\\top\\Sigma^{-1}X)^{-1}X^\\top\\Sigma^{-1}\\boldsymbol y',
+    note: '誤差が等分散でない・相関があるとき（分散共分散行列 $\\sigma^2\\Sigma$）。Σ が対角なら、重み $1/\\sigma_i^2$ の重みつき最小二乗法。',
+  },
+  {
+    id: 'pre1-regression-multiple-ridge-lasso',
+    lesson: 'pre1-regression-multiple',
+    title: 'リッジとラッソ',
+    tex: '\\hat{\\boldsymbol\\beta}_{\\mathrm{ridge}} = (X^\\top X + \\lambda I)^{-1}X^\\top\\boldsymbol y, \\qquad \\text{lasso: } \\min \\sum (y_i - \\hat y_i)^2 + \\lambda\\sum|\\beta_j|',
+    note: '係数に罰を与えて縮める。リッジ（L2）は 0 にならず、ラッソ（L1）は一部がちょうど 0 になる。説明変数は標準化してから使う。',
+  },
+  {
+    id: 'pre1-regression-diagnostics-leverage',
+    lesson: 'pre1-regression-diagnostics',
+    title: 'てこ比（ハット行列の対角成分）',
+    tex: 'H = X(X^\\top X)^{-1}X^\\top, \\quad h_{ii} = \\frac{1}{n} + \\frac{(x_i - \\bar x)^2}{\\sum (x_j - \\bar x)^2}, \\quad \\sum h_{ii} = p + 1',
+    note: '2つめの式は単回帰の場合。x が平均から離れているほど大きい。平均 (p+1)/n の2〜3倍を超えると注意。',
+  },
+  {
+    id: 'pre1-regression-diagnostics-cook',
+    lesson: 'pre1-regression-diagnostics',
+    title: '標準化残差と Cook の距離',
+    tex: 'r_i = \\frac{e_i}{s\\sqrt{1 - h_{ii}}}, \\qquad D_i = \\frac{e_i^2}{(p+1)s^2}\\cdot\\frac{h_{ii}}{(1-h_{ii})^2}',
+    note: '|r| が 2〜3 を超えると外れ値の候補。Cook の距離は残差とてこ比の掛け算で、1 を超えると影響の大きい点とされることが多い。',
+  },
+  {
+    id: 'pre1-regression-glm-logistic',
+    lesson: 'pre1-regression-glm',
+    title: 'ロジスティック回帰',
+    tex: '\\log\\frac{p}{1-p} = \\beta_0 + \\beta_1 x, \\quad p = \\frac{1}{1 + e^{-(\\beta_0 + \\beta_1 x)}}, \\quad \\text{OR} = e^{\\beta_1}',
+    note: 'x が1増えるとオッズが $e^{\\beta_1}$ 倍。確率が何倍になるかではない。',
+  },
+  {
+    id: 'pre1-regression-glm-poisson',
+    lesson: 'pre1-regression-glm',
+    title: 'ポアソン回帰',
+    tex: 'y \\sim \\mathrm{Po}(\\mu), \\quad \\log\\mu = \\beta_0 + \\beta_1 x',
+    note: 'x が1増えると平均件数が $e^{\\beta_1}$ 倍（率の比）。x が k 増えれば $e^{k\\beta_1}$ 倍。',
+  },
+  {
+    id: 'pre1-regression-glm-deviance',
+    lesson: 'pre1-regression-glm',
+    title: '逸脱度と尤度比検定',
+    tex: 'D = 2(\\log L_{\\mathrm{sat}} - \\log L), \\qquad D_0 - D_1 \\approx \\chi^2(k_1 - k_0)',
+    note: '2つの入れ子のモデルの逸脱度の差を、パラメータ数の差を自由度とする χ² 分布と比べる。係数1つずつは z = 推定値 ÷ 標準誤差を正規分布と比べる。',
+  },
+  {
+    id: 'pre1-regression-survival-km',
+    lesson: 'pre1-regression-survival',
+    title: 'カプラン・マイヤー推定量',
+    tex: '\\hat S(t) = \\prod_{t_j \\le t}\\left(1 - \\frac{d_j}{n_j}\\right)',
+    note: '$n_j$ は時刻 $t_j$ の直前に観察が続いていた人数（リスク集合）、$d_j$ はその時刻の死亡数。打ち切りの人は打ち切りまでリスク集合に入れる。',
+  },
+  {
+    id: 'pre1-regression-survival-cox',
+    lesson: 'pre1-regression-survival',
+    title: '比例ハザードモデル',
+    tex: 'h(t \\mid x) = h_0(t)\\, e^{\\beta x}, \\qquad S(t \\mid x) = S_0(t)^{e^{\\beta x}}',
+    note: 'x が1増えるとハザードがいつでも $e^{\\beta}$ 倍（ハザード比）。生存関数はべき乗の関係になる。',
+  },
+]

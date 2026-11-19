@@ -1,0 +1,81 @@
+import type { Formula } from '../../types'
+
+export const formulas: Formula[] = [
+  {
+    id: 'pre1-timeseries-stationarity-acf',
+    lesson: 'pre1-timeseries-stationarity',
+    title: '自己相関関数',
+    tex: '\\rho(h) = \\frac{\\gamma(h)}{\\gamma(0)}, \\quad \\gamma(h) = \\mathrm{Cov}(x_t, x_{t+h})',
+    note: '定常な過程で、ラグ h の自己共分散を分散で割ったもの。データからは標本自己相関 r_h で推定する。',
+  },
+  {
+    id: 'pre1-timeseries-stationarity-random-walk',
+    lesson: 'pre1-timeseries-stationarity',
+    title: 'ランダムウォークの分散',
+    tex: 'x_t = x_{t-1} + \\varepsilon_t,\\ x_0 = 0 \\ \\Rightarrow\\ V(x_t) = t\\sigma^2',
+    note: '平均は一定でも分散が時間に比例して増えるので非定常。1階の階差をとるとホワイトノイズになる。',
+  },
+  {
+    id: 'pre1-timeseries-stationarity-pacf2',
+    lesson: 'pre1-timeseries-stationarity',
+    title: 'ラグ2の偏自己相関',
+    tex: '\\phi_{22} = \\frac{\\rho(2) - \\rho(1)^2}{1 - \\rho(1)^2}',
+    note: 'ラグ2の自己相関から、ラグ1を2回たどる間接の分を除いて調整する。ラグ1の偏自己相関は ρ(1) そのもの。',
+  },
+  {
+    id: 'pre1-timeseries-arima-ar1',
+    lesson: 'pre1-timeseries-arima',
+    title: 'AR(1) の平均・分散・自己相関',
+    tex: 'x_t = c + \\phi x_{t-1} + \\varepsilon_t:\\quad \\mu = \\frac{c}{1-\\phi},\\ \\gamma(0) = \\frac{\\sigma^2}{1-\\phi^2},\\ \\rho(k) = \\phi^k',
+    note: '|φ| < 1 のとき定常。分散の分母は 1 − φ²（1 − φ ではない）。自己相関は指数的に減衰し、偏自己相関はラグ2から 0。',
+  },
+  {
+    id: 'pre1-timeseries-arima-ma1',
+    lesson: 'pre1-timeseries-arima',
+    title: 'MA(1) の自己相関',
+    tex: 'x_t = \\mu + \\varepsilon_t + \\theta\\varepsilon_{t-1}:\\quad \\gamma(0) = (1+\\theta^2)\\sigma^2,\\ \\rho(1) = \\frac{\\theta}{1+\\theta^2},\\ \\rho(k) = 0\\ (k \\geq 2)',
+    note: 'いつも定常。自己相関はラグ1の後で切断し、|ρ(1)| ≤ 0.5。ε_t − θε_{t−1} と書く流儀では ρ(1) = −θ/(1+θ²)。',
+  },
+  {
+    id: 'pre1-timeseries-arima-yule-walker',
+    lesson: 'pre1-timeseries-arima',
+    title: 'AR(2) のユール・ウォーカー方程式',
+    tex: '\\rho(1) = \\phi_1 + \\phi_2\\rho(1), \\quad \\rho(2) = \\phi_1\\rho(1) + \\phi_2',
+    note: '係数から自己相関を求める（ρ(1) = φ₁/(1 − φ₂)）。逆に標本自己相関から係数を推定することもできる。',
+  },
+  {
+    id: 'pre1-timeseries-arima-forecast',
+    lesson: 'pre1-timeseries-arima',
+    title: 'AR(1) の h 期先予測',
+    tex: '\\hat{x}_{n+h} = \\mu + \\phi^h(x_n - \\mu), \\quad \\mathrm{error\\ variance} = \\sigma^2\\frac{1 - \\phi^{2h}}{1 - \\phi^2}',
+    note: '平均からのずれが毎期 φ 倍に縮み、予測値は平均に戻っていく。予測誤差の分散は系列の分散 σ²/(1 − φ²) に近づく。',
+  },
+  {
+    id: 'pre1-timeseries-spectrum-periodogram',
+    lesson: 'pre1-timeseries-spectrum',
+    title: 'ペリオドグラム',
+    tex: 'I(f_j) = \\frac{n}{4}(a_j^2 + b_j^2) = \\frac{1}{n}\\left|\\sum_{t=1}^{n}(x_t - \\bar{x})e^{-2\\pi i f_j t}\\right|^2, \\quad f_j = \\frac{j}{n}',
+    note: '周波数 f_j の波がどれだけ強く含まれているか。山の周波数の逆数が周期。定数や横軸（角周波数 2πf）の流儀は本によって違う。',
+  },
+  {
+    id: 'pre1-timeseries-spectrum-ar1',
+    lesson: 'pre1-timeseries-spectrum',
+    title: 'AR(1) のスペクトル密度',
+    tex: 'p(f) = \\frac{\\sigma^2}{1 - 2\\phi\\cos(2\\pi f) + \\phi^2}, \\quad 0 \\leq f \\leq \\frac{1}{2}',
+    note: 'φ > 0 なら低い周波数（ゆっくりした変動）、φ < 0 なら高い周波数が大きい。φ = 0（ホワイトノイズ）では平ら。',
+  },
+  {
+    id: 'pre1-timeseries-spectrum-kalman',
+    lesson: 'pre1-timeseries-spectrum',
+    title: 'ローカルレベルモデルのカルマンフィルタ',
+    tex: 'K_t = \\frac{P_{t-1} + \\sigma_\\eta^2}{P_{t-1} + \\sigma_\\eta^2 + \\sigma_\\varepsilon^2}, \\quad a_t = a_{t-1} + K_t(y_t - a_{t-1}), \\quad P_t = (1 - K_t)(P_{t-1} + \\sigma_\\eta^2)',
+    note: '予測（a はそのまま、分散に σ_η² を足す）→ 更新（予測と観測のずれの K 倍だけ動かす）をくり返す。',
+  },
+  {
+    id: 'pre1-timeseries-spectrum-dw',
+    lesson: 'pre1-timeseries-spectrum',
+    title: 'ダービン・ワトソン比',
+    tex: 'DW = \\frac{\\sum_{t=2}^{n}(e_t - e_{t-1})^2}{\\sum_{t=1}^{n}e_t^2} \\approx 2(1 - r_1)',
+    note: '回帰の残差の系列相関を調べる。2 の近くなら系列相関なし、0 に近いと正、4 に近いと負の系列相関。',
+  },
+]

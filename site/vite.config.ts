@@ -9,7 +9,7 @@ export default defineConfig({
   build: {
     // 全レッスンを1つのファイルにまとめている（レッスン一覧を作るために meta を同期で読むため）。
     // 個人用でオフラインでも読めればよいので、分割せずに警告の上限だけ上げる
-    chunkSizeWarningLimit: 2500,
+    chunkSizeWarningLimit: 4000,
   },
   server: {
     // 学習ログページでリポジトリ直下の learning-log/ などの Markdown を読むため
