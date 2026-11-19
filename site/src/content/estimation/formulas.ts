@@ -1,0 +1,88 @@
+import type { Formula } from '../../types'
+
+export const formulas: Formula[] = [
+  {
+    id: 'estimation-unbiased-variance',
+    lesson: 'estimation-point',
+    title: '不偏分散',
+    tex: 's^2 = \\frac{1}{n-1}\\sum_{i=1}^{n}(X_i - \\bar{X})^2,\\quad E(s^2) = \\sigma^2',
+    note: '母分散を推定するときは n − 1 で割る。n で割ると期待値が (n−1)σ²/n と小さめになる。',
+  },
+  {
+    id: 'estimation-fpc',
+    lesson: 'estimation-point',
+    title: '有限母集団修正',
+    tex: 'V(\\bar{X}) = \\frac{N-n}{N-1} \\cdot \\frac{\\sigma^2}{n}',
+    note: '大きさ N の母集団から n 個を非復元抽出したときの標本平均の分散。標準誤差にはこのルートを使う。',
+  },
+  {
+    id: 'estimation-ci-mean-known',
+    lesson: 'estimation-ci-mean',
+    title: '母平均の95%信頼区間（母分散既知）',
+    tex: '\\bar{x} \\pm 1.96\\frac{\\sigma}{\\sqrt{n}}',
+    note: '「標本平均 ± 1.96 × 標準誤差」。99% なら 1.96 を 2.576 に変える。',
+  },
+  {
+    id: 'estimation-ci-mean-unknown',
+    lesson: 'estimation-ci-mean',
+    title: '母平均の95%信頼区間（母分散未知）',
+    tex: '\\bar{x} \\pm t_{0.025}(n-1)\\frac{s}{\\sqrt{n}}',
+    note: 'σ の代わりに s を使い、1.96 の代わりに自由度 n − 1 の t 分布の上側 2.5% 点を使う。',
+  },
+  {
+    id: 'estimation-sample-size-mean',
+    lesson: 'estimation-ci-mean',
+    title: '必要な標本の大きさ（母平均）',
+    tex: 'n \\ge \\left(\\frac{1.96\\,\\sigma}{d}\\right)^2',
+    note: '95% 信頼区間の幅の半分を d 以下にしたいとき。小数は切り上げる。',
+  },
+  {
+    id: 'estimation-ci-proportion',
+    lesson: 'estimation-ci-proportion-variance',
+    title: '母比率の95%信頼区間',
+    tex: '\\hat{p} \\pm 1.96\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}',
+    note: '世論調査などの割合の推定。n が大きいとき。必要な n を見積もるときは見当がなければ p = 0.5 で計算する。',
+  },
+  {
+    id: 'estimation-ci-variance',
+    lesson: 'estimation-ci-proportion-variance',
+    title: '母分散の95%信頼区間',
+    tex: '\\frac{(n-1)s^2}{\\chi^2_{0.025}(n-1)} \\le \\sigma^2 \\le \\frac{(n-1)s^2}{\\chi^2_{0.975}(n-1)}',
+    note: '正規母集団のとき。大きいほうの点で割ったほうが下限。区間は s² に対して左右非対称。',
+  },
+  {
+    id: 'estimation-fisher-z',
+    lesson: 'estimation-ci-proportion-variance',
+    title: 'フィッシャーの z 変換',
+    tex: 'z = \\frac{1}{2}\\log\\frac{1+r}{1-r},\\quad z \\pm \\frac{1.96}{\\sqrt{n-3}}',
+    note: '相関係数の区間推定。z の世界で区間を作り、両はしを r に戻す。',
+  },
+  {
+    id: 'estimation-pooled-variance',
+    lesson: 'estimation-ci-two-samples',
+    title: 'プールした分散',
+    tex: 's_p^2 = \\frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1+n_2-2}',
+    note: '2つの母分散が等しいと仮定できるとき、共通の分散を推定する。自由度で重みをつけた平均。',
+  },
+  {
+    id: 'estimation-ci-diff-pooled',
+    lesson: 'estimation-ci-two-samples',
+    title: '母平均の差の95%信頼区間（等分散）',
+    tex: '(\\bar{x}_1 - \\bar{x}_2) \\pm t_{0.025}(n_1+n_2-2)\\sqrt{s_p^2\\left(\\frac{1}{n_1}+\\frac{1}{n_2}\\right)}',
+    note: '2つのグループの平均の差。区間が 0 を含まなければ差があると考えられる。',
+  },
+  {
+    id: 'estimation-ci-variance-ratio',
+    lesson: 'estimation-ci-two-samples',
+    title: '母分散の比の95%信頼区間',
+    tex: '\\frac{s_1^2/s_2^2}{F_{0.025}(n_1-1,\\,n_2-1)} \\le \\frac{\\sigma_1^2}{\\sigma_2^2} \\le \\frac{s_1^2}{s_2^2}\\,F_{0.025}(n_2-1,\\,n_1-1)',
+    note: '2つのばらつきの比。上限は「自由度を入れ替えた F 点をかける」。区間が 1 を含むかを見る。',
+  },
+  {
+    id: 'estimation-ci-proportion-diff',
+    lesson: 'estimation-ci-two-samples',
+    title: '母比率の差の95%信頼区間',
+    tex: '(\\hat{p}_1 - \\hat{p}_2) \\pm 1.96\\sqrt{\\frac{\\hat{p}_1(1-\\hat{p}_1)}{n_1} + \\frac{\\hat{p}_2(1-\\hat{p}_2)}{n_2}}',
+    note: '2つのグループの割合の差。分散は足し算する。',
+  },
+]
