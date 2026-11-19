@@ -4,8 +4,9 @@ import { renderToString } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { RichText } from '../components/Math'
-import { chapters } from './chapters'
-import { formulas, glossary, lessonById, lessons, problems, problemsByLesson } from './registry'
+import { chapterById, chapters, chaptersByCourse } from './chapters'
+import { courseById, courses } from './courses'
+import { formulas, glossary, lessonById, lessons, problems, problemsByCourse, problemsByLesson } from './registry'
 
 const JAPANESE = /[぀-ヿ㐀-鿿]/
 
@@ -20,6 +21,40 @@ function sourceFiles(dir: string): string[] {
     return /\.(ts|tsx)$/.test(name) && !name.endsWith('.test.tsx') ? [path] : []
   })
 }
+
+describe('コース', () => {
+  it('ID が重複しない', () => {
+    expect(courseById.size).toBe(courses.length)
+  })
+
+  it('どの章も、存在するコースに属している', () => {
+    for (const c of chapters) expect(courseById.has(c.course), c.id).toBe(true)
+  })
+
+  it('章の順番がコースの中で重複しない', () => {
+    for (const course of courses) {
+      const orders = chaptersByCourse(course.id).map((c) => c.order)
+      expect(new Set(orders).size, course.id).toBe(orders.length)
+    }
+  })
+
+  // 章フォルダは全コースで1つの階層に並ぶので、2級の後に足すコースの章は名前が重ならないようにする
+  it('2級以外のコースの章 ID はコース ID で始まる', () => {
+    for (const c of chapters) if (c.course !== 'grade2') expect(c.id.startsWith(`${c.course}-`), c.id).toBe(true)
+  })
+
+  it('教材のあるコースには章がある', () => {
+    for (const course of courses) if (course.status === 'active') expect(chaptersByCourse(course.id).length, course.id).toBeGreaterThan(0)
+  })
+
+  it('模擬試験のあるコースは、本番と同じ問題数を出せるだけの標準・本番レベルの問題がある', () => {
+    for (const course of courses) {
+      if (!course.mockExam) continue
+      const pool = problemsByCourse(course.id).filter((p) => p.level >= 2 && !chapterById.get(lessonById.get(p.lesson)!.chapter)?.prep)
+      expect(pool.length, course.id).toBeGreaterThanOrEqual(course.mockExam.problems)
+    }
+  })
+})
 
 describe('レッスン', () => {
   it('ID が重複しない', () => {
