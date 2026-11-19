@@ -43,6 +43,97 @@
       </section>
 
       <section>
+        <h2>公式を自分で求める考え方</h2>
+        <p>ベイズの定理は、丸暗記だけにしない方がよいです。</p>
+        <p>出発点は、条件付き確率の定義です。</p>
+
+        <h3>1. 条件付き確率の定義</h3>
+        <p><code>P(A|B)</code> は、「Bが起きた中で、Aも起きている割合」です。</p>
+        <p>なので、次のように書けます。</p>
+        <p class="formula">P(A|B) = P(A∩B) / P(B)</p>
+        <p>ここで <code>A∩B</code> は「AとBが両方起きる」という意味です。</p>
+
+        <div class="card point">
+          <h3>なぜ P(B) で割るのか</h3>
+          <p><code>P(A|B)</code> は、「Bが起きた」という条件の中だけで考える確率です。</p>
+          <p>つまり、全体を100%として見るのではなく、Bが起きた部分を100%として見直します。</p>
+          <pre><code>全体の中でAもBも起きる割合 = P(A∩B)
+全体の中でBが起きる割合     = P(B)</code></pre>
+          <p>知りたいのは、「Bが起きた部分の中で、Aも起きている割合」です。</p>
+          <div style="margin: 18px 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff;">
+            <p><strong>図で見ると</strong></p>
+            <div style="position: relative; min-height: 220px; border: 2px solid var(--line); border-radius: 8px; background: #f9fafb; overflow: hidden;">
+              <div style="position: absolute; inset: 12px; border: 2px dashed #9ca3af; border-radius: 8px;"></div>
+              <div style="position: absolute; left: 12%; top: 28%; width: 72%; height: 52%; border: 3px solid #1d4ed8; background: rgba(219, 234, 254, 0.85); border-radius: 999px;"></div>
+              <div style="position: absolute; left: 35%; top: 37%; width: 30%; height: 34%; border: 3px solid #0f766e; background: rgba(217, 241, 237, 0.95); border-radius: 999px;"></div>
+              <div style="position: absolute; left: 18px; top: 18px; padding: 4px 8px; background: #fff; border: 1px solid var(--line); border-radius: 6px;">全体</div>
+              <div style="position: absolute; left: 17%; top: 31%; padding: 4px 8px; background: #fff; border: 1px solid #1d4ed8; border-radius: 6px; color: #1e3a8a;">Bが起きた部分</div>
+              <div style="position: absolute; left: 41%; top: 48%; padding: 4px 8px; background: #fff; border: 1px solid #0f766e; border-radius: 6px; color: #0f766e;">A∩B</div>
+            </div>
+            <p style="margin-top: 12px;">条件付き確率では、外側の「全体」ではなく、青い <strong>Bが起きた部分</strong> を新しい全体として見ます。</p>
+          </div>
+          <div style="margin: 18px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+            <div class="card" style="margin: 0;">
+              <h3>全体で見る</h3>
+              <p>100人中、AもBも起きた人が10人。</p>
+              <p class="formula">P(A∩B) = 10 / 100</p>
+            </div>
+            <div class="card" style="margin: 0;">
+              <h3>Bの中だけで見る</h3>
+              <p>Bが起きた40人中、AもBも起きた人が10人。</p>
+              <p class="formula">P(A|B) = 10 / 40</p>
+            </div>
+          </div>
+          <div class="card" style="margin: 18px 0 0;">
+            <h3>なぜ 10 / 40 になるのか</h3>
+            <p><code>P(A|B)</code> の <code>|B</code> は、「Bが起きたものだけを見る」という意味です。</p>
+            <p>つまり、Bが起きなかった60人は、ここでは最初から考えません。</p>
+            <pre><code>全体100人
+├─ Bが起きた40人      ← ここだけを見る
+│  ├─ Aも起きた10人  ← 求めたい部分
+│  └─ Aは起きない30人
+└─ Bが起きない60人    ← 今は見ない</code></pre>
+            <p>「Bが起きた40人の中で、Aも起きた人は何人か」を聞いているので、分母は100ではなく40になります。</p>
+            <p class="formula">P(A|B) = 10 / 40</p>
+          </div>
+          <p>だから、次のように割ります。</p>
+          <p class="formula">P(A|B) = P(A∩B) / P(B)</p>
+        </div>
+
+        <h3>2. 両辺に P(B) をかける</h3>
+        <p>上の式を変形します。</p>
+        <pre><code>P(A|B) = P(A∩B) / P(B)
+
+P(A|B) × P(B) = P(A∩B)</code></pre>
+        <p>つまり、AとBが両方起きる確率は次のように書けます。</p>
+        <p class="formula">P(A∩B) = P(A|B) × P(B)</p>
+
+        <h3>3. 同じことを逆向きにも書く</h3>
+        <p>今度は、<code>P(B|A)</code> を考えます。</p>
+        <p><code>P(B|A)</code> は、「Aが起きた中で、Bも起きている割合」です。</p>
+        <p>なので、次のように書けます。</p>
+        <p class="formula">P(B|A) = P(A∩B) / P(A)</p>
+        <p>これも変形すると、次のようになります。</p>
+        <p class="formula">P(A∩B) = P(B|A) × P(A)</p>
+
+        <h3>4. 同じ P(A∩B) を2通りで表している</h3>
+        <p>ここが一番大事です。</p>
+        <p><code>P(A∩B)</code> は「AとBが両方起きる確率」です。</p>
+        <p>これは、次の2通りで表せます。</p>
+        <pre><code>P(A∩B) = P(A|B) × P(B)
+P(A∩B) = P(B|A) × P(A)</code></pre>
+        <p>どちらも同じ <code>P(A∩B)</code> なので、右辺同士も同じです。</p>
+        <p class="formula">P(A|B) × P(B) = P(B|A) × P(A)</p>
+
+        <h3>5. P(A|B) が知りたい形にする</h3>
+        <p>最後に、両辺を <code>P(B)</code> で割ります。</p>
+        <pre><code>P(A|B) × P(B) = P(B|A) × P(A)
+
+P(A|B) = P(B|A) × P(A) / P(B)</code></pre>
+        <p>これがベイズの定理です。</p>
+      </section>
+
+      <section>
         <h2>医療検査の例</h2>
         <p>次のように置きます。</p>
         <ul class="steps">

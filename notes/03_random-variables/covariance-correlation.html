@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>共分散と相関係数</title>
+    <link rel="stylesheet" href="../../assets/learning-page.css">
+  </head>
+  <body>
+    <main>
+      <h1>共分散と相関係数</h1>
+      <p class="lead">共分散は2つの値の動き方、相関係数はその強さを見やすくしたものです。</p>
+
+      <section class="card point">
+        <h2>まず一言で</h2>
+        <p>共分散は、2つのデータが一緒に増えたり減ったりするかを見る値です。</p>
+        <p>相関係数は、共分散を -1 から 1 の範囲に調整した値です。</p>
+      </section>
+
+      <section>
+        <h2>1. 共分散とは</h2>
+        <p>2つのデータ <code>X</code> と <code>Y</code> があるとします。</p>
+        <p>共分散は、ざっくり言うと次を見ています。</p>
+        <pre><code>Xが平均より大きいとき、Yも平均より大きいか
+Xが平均より小さいとき、Yも平均より小さいか</code></pre>
+        <p>同じ方向に動くことが多いなら、共分散は正になります。</p>
+        <p>逆方向に動くことが多いなら、共分散は負になります。</p>
+      </section>
+
+      <section>
+        <h2>2. 共分散の式</h2>
+        <p>データが <code>n</code> 個あるとき、共分散は次のように考えます。</p>
+        <p class="formula">共分散 = (1/n) Σ (x_i - x̄)(y_i - ȳ)</p>
+        <p><code>x_i - x̄</code> は、Xの平均との差です。</p>
+        <p><code>y_i - ȳ</code> は、Yの平均との差です。</p>
+        <p>この2つのズレを掛けて平均します。</p>
+      </section>
+
+      <section>
+        <h2>3. 符号の見方</h2>
+        <table>
+          <thead><tr><th>共分散</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td>正</td><td>Xが大きいときYも大きい傾向がある。</td></tr>
+            <tr><td>負</td><td>Xが大きいときYは小さい傾向がある。</td></tr>
+            <tr><td>0に近い</td><td>直線的な関係が弱い。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>4. 相関係数とは</h2>
+        <p>共分散は、データの単位や大きさに影響されます。</p>
+        <p>そこで、標準偏差で割って、-1から1の範囲に調整したものが相関係数です。</p>
+        <p class="formula">r = 共分散 / (Xの標準偏差 × Yの標準偏差)</p>
+      </section>
+
+      <section>
+        <h2>5. 相関係数の見方</h2>
+        <table>
+          <thead><tr><th>相関係数</th><th>意味</th></tr></thead>
+          <tbody>
+            <tr><td>1に近い</td><td>強い正の相関。Xが増えるとYも増えやすい。</td></tr>
+            <tr><td>-1に近い</td><td>強い負の相関。Xが増えるとYは減りやすい。</td></tr>
+            <tr><td>0に近い</td><td>直線的な関係が弱い。</td></tr>
+          </tbody>
+        </table>
+        <p>相関係数は、因果関係を表すものではありません。</p>
+        <p>相関があるからといって、XがYの原因とは限りません。</p>
+      </section>
+
+      <section class="card answer">
+        <h2>覚えておくポイント</h2>
+        <ul class="steps">
+          <li>共分散は、2つのデータが同じ方向に動くかを見る。</li>
+          <li>共分散が正なら同じ方向、負なら逆方向。</li>
+          <li>相関係数は、共分散を見やすく調整したもの。</li>
+          <li>相関係数は -1 から 1 の範囲に入る。</li>
+          <li>相関は因果を意味しない。</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
