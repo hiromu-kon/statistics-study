@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -30,9 +31,17 @@ export default function Lesson() {
           新しい教え方（A）と従来の教え方（B）でテストの点をくらべます。標本の平均がちがっても、それが本当の差なのか、たまたまのぶれなのかはわかりません。
           そこで母平均の差 <M>{'\\mu_A - \\mu_B'}</M> の信頼区間を作ります。
         </p>
+        <p className="muted">
+          記号の右下の小さな A・B は「どちらのグループのものか」の印です。<M>{'\\bar{x}_A'}</M> は A の標本平均、<M>{'n_A'}</M> は A の人数、
+          <M>{'s_A^2'}</M> は A の不偏分散、<M>{'\\sigma_A^2'}</M> は A の母分散。B も同じです（教科書によっては 1・2 と書きます）。
+        </p>
         <Figure caption="本当はAのほうが4点高い設定。人数が少ないと区間が広く0をまたぎやすい（オレンジ）。人数を増やすと区間が狭まり、0を含まなくなりやすい（青）">
           <TwoGroupsCi />
         </Figure>
+        <p>
+          考え方は 1 つの母平均のときと同じで、「差の推定値 ± 係数 × 差の標準誤差」です。差の標準誤差は、
+          <Link to="/lessons/random-variables-sum-covariance">「和と差・共分散と相関」</Link>で見た「独立なら、差の分散も足し算」から出てきます。
+        </p>
         <MathBlock caption="差の分散は、それぞれの分散の和（独立なとき）。引き算でも分散は足し算">{'V(\\bar{X}_A - \\bar{X}_B) = \\frac{\\sigma_A^2}{n_A} + \\frac{\\sigma_B^2}{n_B}'}</MathBlock>
       </Section>
 
@@ -91,6 +100,19 @@ export default function Lesson() {
         </p>
       </Section>
 
+      <Section title="対応のあるデータ：差をとって 1 つの標本にする">
+        <p>
+          同じ人の「前」と「後」のように、2 つの値が<strong>ペアになっている</strong>（対応がある）ときは、ここまでの方法は使いません。
+          2 つのグループが独立ではない（体重の重い人は前も後も重い）からです。
+        </p>
+        <p>
+          この場合は、一人ひとりの<strong>差</strong> <M>{'d_i'}</M>（i 人目の「後の値 − 前の値」）を計算して、差 d を 1 つの標本とみなします。
+          あとは<Link to="/lessons/estimation-ci-mean">「母平均の区間推定」</Link>と同じで、差の平均 <M>{'\\bar{d}'}</M>、差の標準偏差 <M>{'s_d'}</M>、ペアの数 n を使います。
+        </p>
+        <MathBlock caption="対応のあるデータの母平均の差の 95% 信頼区間（差が正規分布に従うとき）">{'\\bar{d} \\pm t_{0.025}(n-1)\\frac{s_d}{\\sqrt{n}}'}</MathBlock>
+        <p className="muted">自由度は「ペアの数 − 1」。人数の合計から 2 を引くのではありません。</p>
+      </Section>
+
       <Section title="母分散の比の区間推定（F 分布）">
         <p>
           「2 つの機械の製品のばらつきは同じか」を知りたいときは、分散の<strong>比</strong> <M>{'\\sigma_A^2/\\sigma_B^2'}</M> を推定します。
@@ -132,6 +154,34 @@ export default function Lesson() {
         </Example>
       </Section>
 
+      <Section title="まとめ：どの場面でどの式・どの分布を使うか">
+        <p>
+          推定の章で出てきた区間推定を 1 つの表にまとめました。問題文を読んだら、まず<strong>「何の区間か」</strong>（平均・比率・分散・相関、1 つか 2 つか）、
+          次に<strong>「σ がわかっているか」「等分散か」「対応があるか」</strong>を確かめて行を選びます。どれも 95% の場合で、99% などでは係数を取りかえます。
+        </p>
+        <DataTable
+          head={['知りたいもの', '条件', '95% 信頼区間', '使う分布（自由度）']}
+          rows={[
+            ['母平均 μ', 'σ が既知', <M key="a">{'\\bar{x} \\pm 1.96\\dfrac{\\sigma}{\\sqrt{n}}'}</M>, '標準正規'],
+            ['母平均 μ', 'σ が未知（正規母集団）', <M key="b">{'\\bar{x} \\pm t_{0.025}(n-1)\\dfrac{s}{\\sqrt{n}}'}</M>, 't（n − 1）'],
+            ['母比率 p', 'n が大きい', <M key="c">{'\\hat{p} \\pm 1.96\\sqrt{\\dfrac{\\hat{p}(1-\\hat{p})}{n}}'}</M>, '標準正規（近似）'],
+            ['母分散 σ²', '正規母集団', <M key="d">{'\\left[\\dfrac{(n-1)s^2}{\\chi^2_{0.025}(n-1)},\\ \\dfrac{(n-1)s^2}{\\chi^2_{0.975}(n-1)}\\right]'}</M>, 'χ²（n − 1）'],
+            ['母相関係数 ρ', '2 変数が正規分布、n がある程度大きい', <M key="e">{'z \\pm \\dfrac{1.96}{\\sqrt{n-3}}'}</M>, '標準正規（z 変換してから。最後に r に戻す）'],
+            ['平均の差 μA − μB', 'σA², σB² が既知', <M key="f">{'(\\bar{x}_A - \\bar{x}_B) \\pm 1.96\\sqrt{\\dfrac{\\sigma_A^2}{n_A} + \\dfrac{\\sigma_B^2}{n_B}}'}</M>, '標準正規'],
+            ['平均の差 μA − μB', '未知だが等分散を仮定', <M key="g">{'(\\bar{x}_A - \\bar{x}_B) \\pm t_{0.025}(n_A+n_B-2)\\sqrt{s_p^2\\left(\\dfrac{1}{n_A} + \\dfrac{1}{n_B}\\right)}'}</M>, 't（nA + nB − 2）'],
+            ['平均の差 μA − μB', '未知で等分散と言えない', <M key="h">{'(\\bar{x}_A - \\bar{x}_B) \\pm t_{0.025}(\\nu)\\sqrt{\\dfrac{s_A^2}{n_A} + \\dfrac{s_B^2}{n_B}}'}</M>, 't（ウェルチの近似自由度 ν）'],
+            ['平均の差（対応あり）', '同じ人の前後など', <M key="i">{'\\bar{d} \\pm t_{0.025}(n-1)\\dfrac{s_d}{\\sqrt{n}}'}</M>, 't（ペアの数 − 1）'],
+            ['分散の比 σA²/σB²', '2 つとも正規母集団', <M key="j">{'\\left[\\dfrac{s_A^2/s_B^2}{F_{0.025}(n_A-1,\\,n_B-1)},\\ \\dfrac{s_A^2}{s_B^2}F_{0.025}(n_B-1,\\,n_A-1)\\right]'}</M>, 'F（nA − 1, nB − 1）'],
+            ['比率の差 pA − pB', 'nA, nB が大きい', <M key="k">{'(\\hat{p}_A - \\hat{p}_B) \\pm 1.96\\sqrt{\\dfrac{\\hat{p}_A(1-\\hat{p}_A)}{n_A} + \\dfrac{\\hat{p}_B(1-\\hat{p}_B)}{n_B}}'}</M>, '標準正規（近似）'],
+          ]}
+          caption="平均・比率の差の区間は「0 を含むか」、分散の比の区間は「1 を含むか」で、差があると言えるかを判断する"
+        />
+        <p className="muted">
+          1 つの母集団についての区間は<Link to="/lessons/estimation-ci-mean">「母平均の区間推定」</Link>と
+          <Link to="/lessons/estimation-ci-proportion-variance">「母比率・母分散・相関係数の区間推定」</Link>でくわしく扱っています。
+        </p>
+      </Section>
+
       <Section title="よくある勘違い">
         <Pitfall>
           <ul>
@@ -148,6 +198,10 @@ export default function Lesson() {
               等分散の t の自由度を <M>{'n_A + n_B - 1'}</M> にする → 正しくは <M>{'n_A + n_B - 2'}</M>。
             </li>
             <li>分散の比の区間は「1 を含むか」、平均や比率の差の区間は「0 を含むか」を見る。</li>
+            <li>
+              「区間が 0 を含むので、2 つの母平均は等しいと証明された」→ 言えるのは「差があるとは<strong>言い切れない</strong>」まで。差が小さすぎて見えていないだけかもしれません。
+            </li>
+            <li>同じ人の前後をくらべるのに、2 つの独立なグループの式を使う → 対応があるときは差をとって 1 標本の t。</li>
           </ul>
         </Pitfall>
       </Section>
@@ -156,7 +210,8 @@ export default function Lesson() {
         <ExamTip>
           <ul>
             <li>2 グループの平均・標準偏差・人数から、プールした分散と母平均の差の信頼区間を求める問題。</li>
-            <li>等分散を仮定する方法とウェルチの方法のどちらを使うべきかを問う問題。</li>
+            <li>等分散を仮定する方法・ウェルチの方法・対応のあるデータの方法のどれを使うべきかを、場面から判断させる問題。上のまとめの表を使う。</li>
+            <li>区間の式を選ばせる問題。「分散を足しているか」「自由度は nA + nB − 2 か」「F の自由度の順番」を確かめる。</li>
             <li>F 分布の表を使って、母分散の比の信頼区間を求める問題（下側の点の求め方がポイント）。</li>
             <li>2 つのアンケート結果から、母比率の差の信頼区間を求める問題。</li>
           </ul>

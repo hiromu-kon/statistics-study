@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { NormalArea } from '../../../components/charts/common'
 import { M, MathBlock } from '../../../components/Math'
@@ -10,7 +11,7 @@ export const meta: LessonMeta = {
   order: 5,
   title: '関数・グラフ・面積',
   summary: '一次関数の傾きと切片（回帰直線の準備）、グラフの下の面積が確率になる考え方（連続分布の準備）、指数 2^x・e^x・e^{-x} の形を見ます。',
-  minutes: 35,
+  minutes: 40,
   keywords: ['関数', '一次関数', '傾き', '面積', '指数'],
 }
 
@@ -74,32 +75,79 @@ export default function Lesson() {
           </Steps>
         </Example>
         <MathBlock caption="傾きは「y の変化 ÷ x の変化」">{'b = \\frac{y_2 - y_1}{x_2 - x_1}'}</MathBlock>
+        <p>
+          <M>{'(x_1, y_1)'}</M> は「1つ目の点の x と y」、<M>{'(x_2, y_2)'}</M> は「2つ目の点の x と y」です（右下の小さい数は番号。
+          <Link to="/lessons/math-sigma">Σ記号と添字</Link>で練習します）。上の例なら <M>{'(x_1, y_1) = (2, 7)'}</M>、<M>{'(x_2, y_2) = (5, 13)'}</M>。
+        </p>
+        <Example title="傾きと1点から式を求める（回帰直線の準備）">
+          <p>
+            統計の回帰直線は、データの平均の点 <M>{'(\\bar{x}, \\bar{y})'}</M> を必ず通ります（<Link to="/lessons/bivariate-simple-regression">最小二乗法と回帰直線</Link>）。
+            そこで「傾き b と、平均の点」から切片 a を求める計算がよく出ます。
+          </p>
+          <p>
+            傾き <M>{'b = 0.8'}</M> で、点 <M>{'(\\bar{x}, \\bar{y}) = (10, 20)'}</M> を通る直線の切片を求めます。
+          </p>
+          <Steps>
+            <li>
+              <M>{'y = a + bx'}</M> に点を代入：<M>{'20 = a + 0.8 \\times 10'}</M>
+            </li>
+            <li>
+              計算する：<M>{'20 = a + 8'}</M>
+            </li>
+            <li>
+              8 を移項：<M>{'a = 20 - 8 = 12'}</M>。答えは <M>{'y = 12 + 0.8x'}</M>
+            </li>
+          </Steps>
+          <p>
+            文字のまま同じことをすると <M>{'a = \\bar{y} - b\\bar{x}'}</M> という式になります。回帰直線の切片の公式は、この形です。
+          </p>
+        </Example>
       </Section>
 
       <Section title="グラフの下の面積が「割合」になる">
         <p>
-          ヒストグラムで、棒の面積を「その階級に入るデータの割合」にそろえておくと、全部の棒の面積の合計は 1 になります。
+          <Link to="/lessons/descriptive-histogram">ヒストグラム</Link>で、棒の高さを「相対度数 ÷ 階級の幅」にすると、
+          棒の面積（横 × 縦）が「その階級に入るデータの割合」になり、全部の棒の面積の合計は 1 になります。
           階級の幅をどんどん細かくしていくと、棒のでこぼこはなめらかな<strong>曲線</strong>になります。
           このとき「曲線の下の、ある範囲の面積」が「その範囲に入る割合（確率）」です。
         </p>
-        <p>まずは面積がかんたんに計算できる長方形の形で試してみましょう。0 から 10 のどこかがでたらめに選ばれる場合で、高さはどこでも 0.1 です。</p>
+        <p>
+          まずは面積がかんたんに計算できる長方形の形で試してみましょう。0 から 10 のどこかがでたらめに選ばれる場合で、高さはどこでも 0.1 です
+          （この形を<Link to="/lessons/distributions-uniform-exponential">一様分布</Link>といいます）。
+        </p>
         <Figure caption="左端と右端を動かしてみよう。面積 = 横 × 縦（0.1）。全体（0〜10）の面積は 10 × 0.1 = 1">
           <AreaUnderCurve shape="uniform" />
         </Figure>
-        <p>次は右上がりの三角形です。大きい値ほど出やすい形で、0 から x までの面積は三角形の面積 <M>{'\\frac{1}{2} \\times x \\times \\frac{x}{50} = \\frac{x^2}{100}'}</M> です。</p>
+        <p>
+          次は右上がりの三角形です。高さが <M>{'\\frac{x}{50}'}</M>（x = 10 で 0.2）の直線で、大きい値ほど出やすい形です。
+          三角形の面積は「底辺 × 高さ ÷ 2」なので、0 から x までの面積は次のようになります。
+        </p>
+        <Steps>
+          <li>
+            底辺は x、高さは <M>{'\\frac{x}{50}'}</M>
+          </li>
+          <li>
+            面積 = <M>{'x \\times \\frac{x}{50} \\div 2 = \\frac{x^2}{50} \\times \\frac{1}{2} = \\frac{x^2}{100}'}</M>
+          </li>
+          <li>
+            全体（x = 10）なら <M>{'\\frac{100}{100} = 1'}</M>。確率として使える形になっている
+          </li>
+        </Steps>
         <Figure caption="同じ幅でも、右のほう（高いところ）の面積は大きい。面積は「大きい三角形 − 小さい三角形」で求まる">
           <AreaUnderCurve shape="triangle" />
         </Figure>
         <p>
           正規分布のような曲がった形でも考え方は同じで、塗った部分の面積が確率です（曲線の面積は分布表で読み取ります）。
+          下の図は、平均 0、標準偏差 1 の正規分布（<strong>標準正規分布</strong>）です。くわしくは<Link to="/lessons/distributions-normal">正規分布と標準正規分布表</Link>で扱います。
         </p>
-        <Figure caption="左端・右端を動かしてみよう（標準正規分布）。−1 から 1 の面積は約 0.68">
+        <Figure caption="左端・右端を動かしてみよう（標準正規分布）。塗った面積が確率。−1 から 1 の面積は約 0.68、真ん中に近いほど同じ幅でも面積が大きい">
           <NormalArea from={-1} to={1} interactive />
         </Figure>
         <MathNote title="積分という言葉">
           <p>
             曲線 <M>{'f(x)'}</M> の下の、a から b までの面積を求める操作を<strong>積分</strong>といい、<M>{'\\int_a^b f(x)\\,dx'}</M> と書きます。
-            「<M>{'\\int'}</M> は Σ（足し算）をなめらかにしたもの」「a から b までの面積」と読めれば、まずは先に進めます。
+            「<M>{'\\int'}</M>（インテグラル）は Σ（足し算）をなめらかにしたもの」「a から b までの面積」と読めれば、まずは先に進めます。
+            この章では、長方形や三角形のように、図形の面積の公式で求まる場合を練習します。
           </p>
         </MathNote>
       </Section>
@@ -135,17 +183,43 @@ export default function Lesson() {
           <BellShape />
         </Figure>
         <MathBlock caption="指数のルール（かけ算は指数のたし算）">{'a^m \\times a^n = a^{m+n}, \\qquad a^{-n} = \\frac{1}{a^n}, \\qquad a^0 = 1'}</MathBlock>
+        <p>
+          1つ目のルールは、数えればわかります。<M>{'2^2 \\times 2^3 = (2 \\times 2) \\times (2 \\times 2 \\times 2)'}</M> で、2 を全部で 2 + 3 = 5 回かけているので <M>{'2^5 = 32'}</M>（<M>{'4 \\times 8 = 32'}</M> と一致）。
+        </p>
+        <Example title="普通の電卓で累乗を計算する">
+          <p>
+            試験で使える普通の電卓には累乗のキーがありません。<M>{'0.8^7'}</M> のような値は、かけ算をくり返して求めます。
+            指数のルールを使うと、かける回数を減らせます。
+          </p>
+          <Steps>
+            <li>
+              <M>{'0.8^2 = 0.8 \\times 0.8 = 0.64'}</M>
+            </li>
+            <li>
+              <M>{'0.8^4 = 0.8^2 \\times 0.8^2 = 0.64 \\times 0.64 = 0.4096'}</M>
+            </li>
+            <li>
+              <M>{'0.8^7 = 0.8^4 \\times 0.8^2 \\times 0.8 = 0.4096 \\times 0.64 \\times 0.8 \\approx 0.2097'}</M>（4 + 2 + 1 = 7）
+            </li>
+          </Steps>
+          <p>
+            一方、<M>{'e^{-2}'}</M> のような e の累乗は、普通の電卓では直接計算できません（e = 2.718… をくり返しかけることはできますが、手間がかかります）。
+            このような値が必要な問題では、値が問題文に与えられていないか確認しましょう。
+          </p>
+        </Example>
       </Section>
 
       <Section title="対数（ごく軽く）">
         <p>
           <strong>対数</strong>は指数の逆で、「何乗すればその数になるか」を表します。
-          <M>{'10^2 = 100'}</M> なので <M>{'\\log_{10} 100 = 2'}</M>、<M>{'10^3 = 1000'}</M> なので <M>{'\\log_{10} 1000 = 3'}</M>。
+          <M>{'10^2 = 100'}</M> なので <M>{'\\log_{10} 100 = 2'}</M>（「ログ 10 の 100」と読み、「10 を何乗すると 100 か」の答え）、
+          <M>{'10^3 = 1000'}</M> なので <M>{'\\log_{10} 1000 = 3'}</M>。
           e を使った対数 <M>{'\\log_e x'}</M> は <M>{'\\ln x'}</M> とも書きます。
         </p>
         <p>
           対数をとると、10, 100, 1000 のように「桁ちがいに広がった数」が 1, 2, 3 と等間隔になります。
-          年収や人口のように右に長くのびたデータを見やすくする<strong>対数変換</strong>で使われます。まずはこの雰囲気がわかれば先に進めます。
+          年収や人口のように右に長くのびたデータを見やすくする<strong>対数変換</strong>で使われます
+          （<Link to="/lessons/bivariate-r-squared-residual">決定係数・残差プロット・変数変換</Link>）。まずはこの雰囲気がわかれば先に進めます。
         </p>
       </Section>
 
@@ -182,19 +256,23 @@ export default function Lesson() {
         <ExamTip title="統計でどう使うか">
           <ul>
             <li>
-              <strong>回帰直線</strong>（2変数データ・線形モデル）：<M>{'\\hat{y} = a + bx'}</M>。傾き b は「x が1増えると y が平均して b 増える」と読む。
+              <strong>回帰直線</strong>（<Link to="/lessons/bivariate-simple-regression">2変数データ</Link>・線形モデル）：<M>{'\\hat{y} = a + bx'}</M>。
+              <M>{'\\hat{y}'}</M>（ワイハット）は「直線から計算した y の予測値」という意味。傾き b は「x が1増えると y が平均して b 増える」と読む。
             </li>
             <li>
               <strong>連続分布</strong>（確率分布）：一様分布・指数分布・正規分布の確率は、グラフの下の面積。全体の面積は1。
             </li>
             <li>
-              <strong>指数分布</strong>：<M>{'f(x) = \\lambda e^{-\\lambda x}'}</M>。上の「k を動かす図」と同じ、右下がりの形（k が λ の役割）。
+              <strong>指数分布</strong>（<Link to="/lessons/distributions-uniform-exponential">一様分布と指数分布</Link>）：<M>{'f(x) = \\lambda e^{-\\lambda x}'}</M>。
+              <M>{'\\lambda'}</M> はギリシャ文字の「ラムダ」。上の「k を動かす図」と同じ、右下がりの形（k が λ の役割）。
             </li>
             <li>
-              <strong>正規分布</strong>：<M>{'f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}'}</M>。式を覚えるより、つりがね型で面積が確率、と読めればよい。
+              <strong>正規分布</strong>（<Link to="/lessons/distributions-normal">確率分布</Link>）：<M>{'f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}'}</M>
+              （<M>{'\\pi'}</M> は円周率 3.14…）。式を覚えるより、つりがね型で面積が確率、と読めればよい。
             </li>
             <li>
-              <strong>ポアソン分布</strong>：<M>{'P(X = k) = \\frac{\\lambda^k e^{-\\lambda}}{k!}'}</M>。<M>{'e^{-\\lambda}'}</M> の値を電卓や表で使う。
+              <strong>ポアソン分布</strong>（<Link to="/lessons/distributions-poisson">ポアソン分布</Link>）：<M>{'P(X = k) = \\frac{\\lambda^k e^{-\\lambda}}{k!}'}</M>。
+              <M>{'k!'}</M> は「k の階乗」（次の<Link to="/lessons/math-counting">場合の数</Link>のレッスンで扱う）。<M>{'e^{-\\lambda}'}</M> の値は、問題文で与えられたものを使う。
             </li>
           </ul>
         </ExamTip>

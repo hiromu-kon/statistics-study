@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -19,8 +20,8 @@ export default function Lesson() {
     <>
       <Point>
         <p>
-          <strong>比率</strong>の検定は「標本の比率 <M>{'\\hat{p}'}</M> と基準の比率 <M>{'p_0'}</M> の差 ÷ ふつうのぶれ」で z を作ります。
-          <strong>分散</strong>の検定は「標本の分散 <M>{'s^2'}</M> が基準の分散 <M>{'\\sigma_0^2'}</M> の何倍か」を χ² にして調べます。
+          <strong>比率</strong>の検定は「標本の比率 <M>{'\\hat{p}'}</M>（ピー・ハット）と基準の比率 <M>{'p_0'}</M>（ピー・ゼロ）の差 ÷ ふつうのぶれ」で z を作ります。
+          <strong>分散</strong>の検定は「標本の分散 <M>{'s^2'}</M> が基準の分散 <M>{'\\sigma_0^2'}</M>（シグマ・ゼロの2乗）の何倍か」を χ²（カイ二乗）にして調べます。
         </p>
       </Point>
 
@@ -32,7 +33,9 @@ export default function Lesson() {
         </Example>
         <p>
           H0（不良品率 0.1）が正しいとすると、400個中の不良品の数は二項分布 <M>{'B(400,\\ 0.1)'}</M> にしたがいます。n が大きいので、
-          これは平均 <M>{'np_0 = 40'}</M>、標準偏差 <M>{'\\sqrt{np_0(1-p_0)} = 6'}</M> の正規分布でよく近似できます（<strong>正規近似</strong>）。
+          これは平均 <M>{'np_0 = 400 \\times 0.1 = 40'}</M>、標準偏差 <M>{'\\sqrt{np_0(1-p_0)} = \\sqrt{400 \\times 0.1 \\times 0.9} = \\sqrt{36} = 6'}</M> の正規分布でよく近似できます
+          （<strong>正規近似</strong>。<Link to="/lessons/sampling-normal-approximation">二項分布の正規近似</Link>）。<M>{'np_0'}</M> と <M>{'n(1-p_0)'}</M> がどちらも 5 以上（10 以上とする本もある）
+          なら近似してよい、という目安がよく使われます。
         </p>
         <Figure caption="H0 のもとでの不良品の数の分布。棒（二項分布）と曲線（正規分布）はほぼ重なる。観測した 52個は右の棄却域にぎりぎり入る">
           <BinomNormal />
@@ -47,7 +50,9 @@ export default function Lesson() {
           }
           statistic={
             <>
-              <M>{'\\hat{p} = 52/400 = 0.13'}</M>。<M>{'z = \\frac{0.13 - 0.1}{\\sqrt{0.1 \\times 0.9 / 400}} = \\frac{0.03}{0.015} = 2.00'}</M>
+              <M>{'\\hat{p} = 52/400 = 0.13'}</M>。分母は <M>{'\\sqrt{0.1 \\times 0.9 / 400} = \\sqrt{0.000225} = 0.015'}</M>。
+              <br />
+              <M>{'z = \\frac{0.13 - 0.1}{0.015} = \\frac{0.03}{0.015} = 2.00'}</M>
             </>
           }
           compare={
@@ -68,12 +73,13 @@ export default function Lesson() {
       <Section title="母分散の検定">
         <Example title="機械の精度">
           <p>
-            ある機械で作るネジの長さの分散は <M>{'\\sigma_0^2 = 4'}</M>（mm²）でした。古くなってばらつきが大きくなっていないか、15本を測ると不偏分散は
-            <M>{'s^2 = 7.2'}</M> でした（母集団は正規分布とする）。
+            ある機械で作るネジの長さの分散は <M>{'\\sigma_0^2 = 4'}</M>（mm²）でした。古くなってばらつきが大きくなっていないか、15本を測ると
+            <Link to="/lessons/estimation-point">不偏分散</Link>（偏差の2乗の合計を n − 1 で割った分散）は <M>{'s^2 = 7.2'}</M> でした（母集団は正規分布とする）。
           </p>
         </Example>
         <p>
-          分散は「差」ではなく「何倍か」で比べます。H0 が正しく母集団が正規分布なら、次の χ² は<strong>自由度 n − 1 のカイ二乗分布</strong>にしたがいます。
+          分散は「差」ではなく「何倍か」で比べます。H0 が正しく母集団が正規分布なら、次の χ² は<strong>自由度 n − 1 のカイ二乗分布</strong>
+          （<Link to="/lessons/sampling-chi2-t-f">χ² 分布のレッスン</Link>）にしたがいます。分布表の <M>{'\\chi^2_{0.05}(14)'}</M> は「自由度 14 で、右側の面積が 0.05 になる点」です。
         </p>
         <MathBlock caption="母分散の検定統計量。s² が σ0² の何倍かに、自由度 n − 1 をかけた形">{'\\chi^2 = \\frac{(n-1)s^2}{\\sigma_0^2}'}</MathBlock>
         <TestSteps
@@ -100,6 +106,11 @@ export default function Lesson() {
         <p>
           もし H1 を <M>{'\\sigma^2 \\ne 4'}</M>（両側）にしていたら、境目は下側 <M>{'\\chi^2_{0.975}(14) = 5.629'}</M> と上側
           <M>{'\\chi^2_{0.025}(14) = 26.119'}</M>。25.2 はその間なので棄却できません。H1 の立て方で結論が変わる例です。
+          だからこそ、片側か両側かは<strong>データを見る前に</strong>目的から決めます（「大きくなっていないか」が知りたいなら右片側）。
+        </p>
+        <p>
+          逆に「新しい機械でばらつきが<strong>小さくなった</strong>か」を調べるなら H1: <M>{'\\sigma^2 < \\sigma_0^2'}</M>（左片側）で、χ² が<strong>下側</strong>の境目
+          <M>{'\\chi^2_{0.95}(n-1)'}</M>（右側の面積が 0.95 ＝ 左側の面積が 0.05 になる点）より小さいときに棄却します。
         </p>
       </Section>
 
@@ -149,6 +160,7 @@ export default function Lesson() {
             <li>支持率・不良品率などの比率について、z の値を計算して 5%・1% で棄却されるかを選ぶ問題。</li>
             <li>標本分散から χ² の値を計算し、χ² 分布表の上側・下側の値と比べる問題。</li>
             <li>片側検定か両側検定かで結論が変わる、きわどい数値の問題。</li>
+            <li>検定統計量を<strong>求める式</strong>（分母が p0 か p̂ か、分子が n − 1 か n か）を選ばせる問題。</li>
           </ul>
         </ExamTip>
       </Section>

@@ -23,6 +23,13 @@ export const formulas: Formula[] = [
     note: '「標本平均 ± 1.96 × 標準誤差」。99% なら 1.96 を 2.576 に変える。',
   },
   {
+    id: 'estimation-ci-mean-general',
+    lesson: 'estimation-ci-mean',
+    title: '母平均の 100(1−α)% 信頼区間（母分散既知）',
+    tex: '\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}',
+    note: '両側に α/2 ずつ残すので上側 α/2 点を使う。90%・95%・99% で 1.645・1.96・2.576。',
+  },
+  {
     id: 'estimation-ci-mean-unknown',
     lesson: 'estimation-ci-mean',
     title: '母平均の95%信頼区間（母分散未知）',
@@ -70,6 +77,20 @@ export const formulas: Formula[] = [
     title: '母平均の差の95%信頼区間（等分散）',
     tex: '(\\bar{x}_1 - \\bar{x}_2) \\pm t_{0.025}(n_1+n_2-2)\\sqrt{s_p^2\\left(\\frac{1}{n_1}+\\frac{1}{n_2}\\right)}',
     note: '2つのグループの平均の差。区間が 0 を含まなければ差があると考えられる。',
+  },
+  {
+    id: 'estimation-ci-diff-welch',
+    lesson: 'estimation-ci-two-samples',
+    title: '母平均の差の95%信頼区間（ウェルチの方法）',
+    tex: '(\\bar{x}_1 - \\bar{x}_2) \\pm t_{0.025}(\\nu)\\sqrt{\\frac{s_1^2}{n_1} + \\frac{s_2^2}{n_2}}',
+    note: '等分散と言えないとき。自由度 ν はウェルチ・サタースウェイトの近似式で求める（整数にならないこともある）。',
+  },
+  {
+    id: 'estimation-ci-paired',
+    lesson: 'estimation-ci-two-samples',
+    title: '対応のあるデータの母平均の差の95%信頼区間',
+    tex: '\\bar{d} \\pm t_{0.025}(n-1)\\frac{s_d}{\\sqrt{n}}',
+    note: '同じ人の前後などペアのデータ。一人ひとりの差 d を 1 つの標本とみなす。n はペアの数。',
   },
   {
     id: 'estimation-ci-variance-ratio',

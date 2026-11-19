@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -36,7 +37,8 @@ export default function Lesson() {
       <Section title="四分位数の求め方">
         <p>
           中央値でデータを<strong>前半と後半</strong>に分け、前半の中央値を<strong>第1四分位数 Q1</strong>、後半の中央値を<strong>第3四分位数 Q3</strong>とします。
-          中央値そのものが<strong>第2四分位数 Q2</strong>です。
+          中央値そのものが<strong>第2四分位数 Q2</strong>です。Q は英語の quartile（クォータイル＝四分位数）の頭文字です。
+          小さいほうから約25%の位置が Q1、50%が Q2、75%が Q3 になります。
         </p>
         <Steps>
           <li>データを小さい順に並べる。</li>
@@ -63,14 +65,16 @@ export default function Lesson() {
         </Example>
         <Note title="四分位数の求め方には流儀がある">
           <p>
-            ここで説明したのは、日本の高校の数学Iで扱われるのと同じ考え方の方法です。統計ソフトや表計算ソフトには別の決め方（間の値を比例で補う方法など）もあり、同じデータでも Q1・Q3 が少し違う値になることがあります。
+            ここで説明したのは、統計WEB（https://bellcurve.jp/statistics/course/5224.html 、5226.html、参照日 2026-11-19）の箱ひげ図の解説と同じ方法です。
+            統計ソフトや表計算ソフトには別の決め方（間の値を比例で補う方法など）もあり、同じデータでも Q1・Q3 が少し違う値になることがあります。
             たとえば上の9個のデータでは、Python の numpy の既定の方法だと Q1 = 5、Q3 = 12 になります。試験の問題では、求め方が書かれていればそれに従いましょう。
+            ヒストグラムとの対応を問う問題のように「どの階級に入るか」だけを見る問題なら、流儀の違いで答えが変わることはまずありません。
           </p>
         </Note>
       </Section>
 
       <Section title="四分位範囲と外れ値">
-        <MathBlock caption="四分位範囲：真ん中の50%のデータが入る幅">{'IQR = Q_3 - Q_1'}</MathBlock>
+        <MathBlock caption="四分位範囲：真ん中の50%のデータが入る幅（IQR は英語 interquartile range の略）">{'IQR = Q_3 - Q_1'}</MathBlock>
         <p>
           四分位範囲（IQR）は真ん中の半分のデータだけで決まるので、範囲とちがって外れ値の影響をほとんど受けません。
           偶数個の例なら <M>{'14 - 6 = 8'}</M> です（範囲は <M>{'30 - 3 = 27'}</M> と大きく出ます）。
@@ -78,9 +82,10 @@ export default function Lesson() {
         <p>
           箱ひげ図では、箱の端から <strong>四分位範囲の1.5倍</strong> より外にある値を<strong>外れ値</strong>として点で描くことがよくあります。
         </p>
-        <MathBlock caption="この範囲の外にある値を外れ値とみなす（よく使われる目安）">{'Q_1 - 1.5 \\times IQR \\quad \\sim \\quad Q_3 + 1.5 \\times IQR'}</MathBlock>
+        <MathBlock caption="左の値から右の値まで（〜）の外にある値を外れ値とみなす（よく使われる目安）">{'Q_1 - 1.5 \\times IQR \\quad \\sim \\quad Q_3 + 1.5 \\times IQR'}</MathBlock>
         <p>
-          偶数個の例では <M>{'6 - 12 = -6'}</M> から <M>{'14 + 12 = 26'}</M> まで。30 はこの外なので外れ値です。
+          偶数個の例では IQR = 8 なので、その1.5倍は <M>{'1.5 \\times 8 = 12'}</M>。下の基準は <M>{'6 - 12 = -6'}</M>、上の基準は <M>{'14 + 12 = 26'}</M> です。
+          −6 から 26 までの外にある 30 が外れ値になります。
         </p>
       </Section>
 
@@ -125,7 +130,7 @@ export default function Lesson() {
           <li>左に裾が長いなら、その逆。</li>
         </ul>
         <Example title="待ち時間 50人分">
-          <p>右に裾が長いデータです。いちばん右の 30分 は外れ値として○で描いています。</p>
+          <p>右に裾が長いデータです。いちばん右の 30分 は外れ値として○で描いています。棒の上の数は人数です。</p>
           <HistBox
             data={WAIT_TIMES}
             x={[0, 35]}
@@ -134,6 +139,25 @@ export default function Lesson() {
             withOutliers
             showLabels
           />
+          <p>ヒストグラムの数だけから、Q1・中央値・Q3 がどの階級に入るかを確かめてみます。</p>
+          <Steps>
+            <li>
+              度数を左から足して<Link to="/lessons/descriptive-histogram">累積度数</Link>をつくる：5, 23, 39, 47, 49, 49, 50（「5分未満が5人」「10分未満が23人」…）。
+            </li>
+            <li>
+              中央値は50人の真ん中、25番目と26番目の平均。10分未満が23人なので、24番目〜39番目は 10〜15分の階級。中央値はこの階級に入る（実際は10分）。
+            </li>
+            <li>
+              Q1 は前半25人の真ん中＝13番目。6番目〜23番目が 5〜10分なので、Q1 は 5〜10分の階級（実際は6分）。
+            </li>
+            <li>
+              Q3 は後半25人（26番目〜50番目）の真ん中＝38番目。これも 10〜15分の階級（実際は14分）。
+            </li>
+          </Steps>
+          <p>
+            箱の左半分（6〜10分）と右半分（10〜14分）は同じ4分の幅ですが、右のひげ（14分から24分までの10分）は左のひげ（3分から6分までの3分）よりずっと長く、
+            右に裾が長い形が箱ひげ図にも表れています。
+          </p>
         </Example>
         <Note title="ヒストグラムには出ない情報">
           <p>
@@ -143,7 +167,16 @@ export default function Lesson() {
         </Note>
       </Section>
 
-      <Section title="箱ひげ図で比べる">
+      <Section title="箱ひげ図で比べる（2つ以上のグラフの視覚的比較）">
+        <p>
+          いくつかのグループを箱ひげ図で並べたときは、次の順に見比べます。
+        </p>
+        <Steps>
+          <li><strong>中心</strong>：中央値の線の位置（右にあるほど値が大きいグループ）。</li>
+          <li><strong>散らばり</strong>：箱の長さ（四分位範囲）とひげの端から端（範囲）。</li>
+          <li><strong>形</strong>：箱の中の中央値の位置と、左右のひげの長さの違い（長いほうに裾がのびている）。</li>
+          <li><strong>割合</strong>：「◯点以上が半数以上」は中央値、「◯点以上が4分の1以上」は Q3 と比べて判断する。</li>
+        </Steps>
         <Figure caption="3つのクラスの数学のテスト（架空のデータ）">
           <BoxPlotX
             boxes={[

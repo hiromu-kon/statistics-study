@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -54,6 +55,11 @@ export default function Lesson() {
         <p>
           「右上がりかどうか」を1つの数にするために、x の平均と y の平均で線を引き、散布図を4つの部屋に分けます。
         </p>
+        <p>
+          ここで使うのが<strong>偏差</strong>（へんさ）です。偏差は「その値 − 平均」で、平均より大きければプラス、小さければマイナスになります
+          （<Link to="/lessons/descriptive-spread">「分散と標準偏差」のレッスン</Link>で出てきたものと同じです）。
+          たとえば平均が 3 時間のとき、5 時間勉強した人の偏差は 5 − 3 = +2、1 時間の人は 1 − 3 = −2 です。
+        </p>
         <ul>
           <li>
             <strong>右上の部屋</strong>：x も y も平均より大きい → 偏差はどちらもプラス → 掛けると<strong>プラス</strong>
@@ -75,9 +81,19 @@ export default function Lesson() {
         <MathBlock caption="共分散：x の偏差と y の偏差を掛けて、平均する">
           {'s_{xy} = \\frac{1}{n}\\sum_{i=1}^{n}(x_i - \\bar{x})(y_i - \\bar{y})'}
         </MathBlock>
-        <p>
-          <M>{'\\bar{x}'}</M> は x の平均、<M>{'\\bar{y}'}</M> は y の平均です。分散と同じく、n ではなく n − 1 で割る定義もあります。問題文の指定にしたがってください。
-        </p>
+        <ul>
+          <li>
+            <M>{'s_{xy}'}</M>（エス・エックスワイ）は x と y の共分散を表す記号です。
+          </li>
+          <li>
+            <M>{'x_i'}</M> は「i 番目の人の x」、<M>{'\\bar{x}'}</M>（エックスバー）は x の平均、<M>{'\\bar{y}'}</M> は y の平均です。
+          </li>
+          <li>
+            <M>{'\\sum_{i=1}^{n}'}</M>（シグマ）は「1番目から n 番目まで全部足す」という記号です（<Link to="/lessons/math-sigma">Σ記号のレッスン</Link>）。
+            つまりこの式は「1人ずつ偏差の積を計算して、全員分を足し、人数 n で割る」と言っています。
+          </li>
+          <li>分散と同じく、n ではなく n − 1 で割る定義もあります。問題文の指定にしたがってください。</li>
+        </ul>
       </Section>
 
       <Section title="相関係数：共分散の目盛りをそろえる">
@@ -85,7 +101,11 @@ export default function Lesson() {
           共分散には困った点があります。勉強時間を「時間」から「分」に直すと、偏差が60倍になるので共分散も60倍になります。
           関係の強さは何も変わっていないのに、数だけが変わってしまうのです。
         </p>
-        <p>そこで、共分散を x の標準偏差と y の標準偏差で割って、単位を消します。これが<strong>相関係数</strong>です。</p>
+        <p>
+          そこで、共分散を x の標準偏差 <M>{'s_x'}</M> と y の標準偏差 <M>{'s_y'}</M> で割って、単位を消します。これが<strong>相関係数</strong>です。
+          標準偏差は「平均からのはなれ方のふつうの大きさ」で、偏差の2乗の平均（分散）のルートです（<Link to="/lessons/descriptive-spread">「分散と標準偏差」のレッスン</Link>）。
+          勉強時間を分に直すと、共分散も <M>{'s_x'}</M> も60倍になるので、割り算で60倍が打ち消しあいます。
+        </p>
         <MathBlock caption="相関係数：共分散を、それぞれの標準偏差で割る">{'r = \\frac{s_{xy}}{s_x \\, s_y}'}</MathBlock>
         <MathBlock caption="同じことを偏差の合計で書いた形（n が消えるので計算が楽）">
           {'r = \\frac{\\sum (x_i - \\bar{x})(y_i - \\bar{y})}{\\sqrt{\\sum (x_i - \\bar{x})^2}\\,\\sqrt{\\sum (y_i - \\bar{y})^2}}'}
@@ -124,6 +144,26 @@ export default function Lesson() {
             <M>{'r = 18 \\div (1.414 \\times 14.14) \\approx 0.9'}</M>。
           </p>
         </Example>
+        <MathNote title="合計（Σx、Σxy など）だけから計算する方法">
+          <p>
+            試験では、表の代わりに「Σx = 15、Σxy = 990」のような<strong>合計だけ</strong>が与えられることがあります。そのときは次の式で偏差の合計に直します。
+          </p>
+          <MathBlock caption="偏差の積の合計 ＝ xy の合計 −（x の合計 × y の合計）÷ n">
+            {'\\sum (x_i - \\bar{x})(y_i - \\bar{y}) = \\sum x_i y_i - \\frac{(\\sum x_i)(\\sum y_i)}{n}'}
+          </MathBlock>
+          <p>y を x にすれば、偏差の2乗の合計 <M>{'\\sum (x_i - \\bar{x})^2 = \\sum x_i^2 - (\\sum x_i)^2 / n'}</M> になります。上の5人で確かめると：</p>
+          <Steps>
+            <li>
+              <M>{'\\sum x_i y_i = 1 \\times 40 + 2 \\times 60 + 3 \\times 50 + 4 \\times 70 + 5 \\times 80 = 990'}</M>
+            </li>
+            <li>
+              偏差の積の合計：<M>{'990 - 15 \\times 300 \\div 5 = 990 - 900 = 90'}</M>（表の合計と同じ）
+            </li>
+            <li>
+              x の偏差の2乗の合計：<M>{'\\sum x_i^2 = 1 + 4 + 9 + 16 + 25 = 55'}</M> なので <M>{'55 - 15^2 \\div 5 = 55 - 45 = 10'}</M>
+            </li>
+          </Steps>
+        </MathNote>
         <MathNote title="n で割っても n − 1 で割っても r は同じ">
           <p>
             共分散も標準偏差も同じ数で割るので、分子と分母で割る数が打ち消しあいます。共分散は定義によって値が変わりますが、相関係数は変わりません。
@@ -187,8 +227,15 @@ export default function Lesson() {
           <ul>
             <li>いくつかの散布図を見て、相関係数の値（0.9、0.5、0、−0.5 など）を対応させる問題。</li>
             <li>小さな表や、Σx・Σy・Σx²・Σy²・Σxy などの合計から、共分散や相関係数を計算する問題。</li>
-            <li>単位の変換や「a 倍して b を足す」変換をしたとき、共分散・相関係数がどう変わるかを問う問題。</li>
+            <li>
+              単位の変換や「a 倍して b を足す」変換（たとえば摂氏から華氏へ：<M>{'F = 1.8C + 32'}</M>）をしたとき、共分散・相関係数がどう変わるかを問う問題。
+              共分散は掛けた数の分だけ変わり（足した数は関係ない）、相関係数は変わりません。
+            </li>
             <li>「r が 0 に近いので2つの変数は無関係」のような記述が正しいかを判断する問題。</li>
+            <li>
+              CBT では小問の誘導がなく、散布図や表を見ていきなり「正しい記述を選べ」と問われる、と受験記などで言われています。
+              「向き（正か負か）」「直線へのまとまり具合」「外れ値・曲線の関係がないか」の3点を順に見る習慣をつけておきます。
+            </li>
           </ul>
         </ExamTip>
       </Section>

@@ -37,6 +37,20 @@ export const formulas: Formula[] = [
     note: 'n が大きければ、母集団の分布によらず標本平均を標準化して正規分布表で確率を出せる。',
   },
   {
+    id: 'sampling-sum-clt',
+    lesson: 'sampling-lln-clt',
+    title: '合計の分布（中心極限定理）',
+    tex: 'X_1 + \\cdots + X_n \\approx N(n\\mu,\\ n\\sigma^2)',
+    note: '合計の期待値は nμ、分散は nσ²（標準偏差は √n σ）。平均で考えても同じ確率になる。',
+  },
+  {
+    id: 'sampling-chebyshev-mean',
+    lesson: 'sampling-lln-clt',
+    title: '標本平均に対するチェビシェフの不等式',
+    tex: 'P(|\\bar{X} - \\mu| \\ge \\varepsilon) \\le \\frac{\\sigma^2}{n\\varepsilon^2}',
+    note: 'n を大きくすると右辺が 0 に近づく。大数の法則の理由づけ。',
+  },
+  {
     id: 'sampling-binomial-normal',
     lesson: 'sampling-normal-approximation',
     title: '二項分布の正規近似',
@@ -49,6 +63,13 @@ export const formulas: Formula[] = [
     title: '標本比率の平均と分散',
     tex: 'E(\\hat{p}) = p,\\quad V(\\hat{p}) = \\frac{p(1-p)}{n}',
     note: '世論調査などの「割合」のばらつき。母比率の区間推定・検定で使う。',
+  },
+  {
+    id: 'sampling-binomial-standardize',
+    lesson: 'sampling-normal-approximation',
+    title: '二項分布の標準化（連続修正つき）',
+    tex: 'P(X \\ge k) \\approx P\\left(Z \\ge \\frac{k - 0.5 - np}{\\sqrt{np(1-p)}}\\right)',
+    note: '「k 以上」は k の棒を含むので k − 0.5 から。「k 以下」なら k + 0.5 まで。分母は分散のルート。',
   },
   {
     id: 'sampling-chi2-variance',

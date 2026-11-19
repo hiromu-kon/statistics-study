@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -19,10 +20,15 @@ export default function Lesson() {
       <Point>
         <p>
           結果が「成功か失敗か」の2つしかない試しを<strong>ベルヌーイ試行</strong>といいます。これを同じ条件で <M>n</M> 回くり返したとき、
-          <strong>成功した回数</strong>が従う分布が<strong>二項分布</strong> <M>{'B(n, p)'}</M> です。
-          確率は「並び方の数 × 1通りの並びの確率」で求まり、期待値は <M>np</M>、分散は <M>{'np(1-p)'}</M> です。
+          <strong>成功した回数</strong>が従う分布が<strong>二項分布</strong> <M>{'B(n, p)'}</M> です（B は「二項」の英語 binomial の頭文字。
+          <M>n</M> は試す回数、<M>p</M> は1回あたりの成功確率）。
+          確率は「並び方の数 × 1通りの並びの確率」で求まり、期待値（平均）は <M>np</M>、分散（ばらつき）は <M>{'np(1-p)'}</M> です。
         </p>
       </Point>
+      <p className="small muted">
+        前提：「確率変数」「期待値」「分散」は<Link to="/lessons/random-variables-intro">確率変数の章</Link>、
+        「何通りあるか」の数え方（<M>{'{}_{n}C_{k}'}</M> や <M>{'k!'}</M>）は<Link to="/lessons/math-counting">場合の数のレッスン</Link>で復習できます。
+      </p>
 
       <Section title="どんな場面で使う分布か">
         <p>次のような「◯回中、何回うまくいくか」を数える場面で使います。</p>
@@ -67,7 +73,7 @@ export default function Lesson() {
 
       <Section title="定義・式">
         <p>
-          成功確率 <M>p</M> のベルヌーイ試行を <M>n</M> 回くり返したときの成功回数を <M>X</M> とすると、<M>X</M> がちょうど <M>k</M> になる確率は次の式です。
+          成功確率 <M>p</M> のベルヌーイ試行を <M>n</M> 回くり返したときの成功回数を <M>X</M>（<strong>確率変数</strong>：結果しだいで値が変わる数）とすると、<M>X</M> がちょうど <M>k</M> になる確率は次の式です。
           このとき「<M>X</M> は二項分布 <M>{'B(n, p)'}</M> に従う」といい、<M>{'X \\sim B(n, p)'}</M> と書きます（<M>{'\\sim'}</M> は「〜に従う」の記号）。
         </p>
         <MathBlock caption="n 回中ちょうど k 回成功する確率（k = 0, 1, …, n）">{'P(X = k) = {}_{n}C_{k}\\, p^{k} (1-p)^{n-k}'}</MathBlock>
@@ -79,10 +85,14 @@ export default function Lesson() {
             [<M key="c">{'(1-p)^{n-k}'}</M>, '残りの n − k 回が失敗する確率'],
           ]}
         />
-        <MathNote title="nCk の計算（復習）">
+        <MathNote title="nCk と ! の読み方と計算（復習）">
+          <p>
+            <M>{'{}_{n}C_{k}'}</M> は「エヌ・シー・ケー」と読み、「n 個の中から k 個を選ぶ選び方の数」です（C は「組合せ」の英語 combination の頭文字）。
+            <M>{'n!'}</M> は「n の階乗」で、<M>{'n \\times (n-1) \\times \\cdots \\times 1'}</M> のことです（例：<M>{'3! = 3 \\times 2 \\times 1 = 6'}</M>）。
+          </p>
           <p>
             <M>{'{}_{n}C_{k} = \\dfrac{n!}{k!\\,(n-k)!}'}</M>。たとえば <M>{'{}_{5}C_{2} = \\dfrac{5 \\times 4}{2 \\times 1} = 10'}</M>。
-            「上から k 個かけたもの ÷ k から1までかけたもの」と覚えると計算が速いです。
+            「n から下に k 個かけたもの ÷ k から1までかけたもの」と覚えると計算が速いです。くわしくは<Link to="/lessons/math-counting">場合の数のレッスン</Link>へ。
           </p>
         </MathNote>
         <MathBlock caption="二項分布の期待値（平均）と分散">{'E(X) = np, \\qquad V(X) = np(1-p)'}</MathBlock>
@@ -96,6 +106,20 @@ export default function Lesson() {
           <p>
             入る本数を <M>X</M> とすると <M>{'X \\sim B(5, 0.7)'}</M>。ちょうど3本入る確率は
           </p>
+          <Steps>
+            <li>
+              並び方の数：5本のうちどの3本が入るか <M>{'{}_{5}C_{3} = \\dfrac{5 \\times 4 \\times 3}{3 \\times 2 \\times 1} = 10'}</M> 通り
+            </li>
+            <li>
+              3本入る：<M>{'0.7^3 = 0.7 \\times 0.7 \\times 0.7 = 0.343'}</M>
+            </li>
+            <li>
+              残り2本は外れる：<M>{'0.3^2 = 0.3 \\times 0.3 = 0.09'}</M>
+            </li>
+            <li>
+              全部かける：<M>{'10 \\times 0.343 \\times 0.09 = 0.3087'}</M>
+            </li>
+          </Steps>
           <MathBlock>{'P(X=3) = {}_{5}C_{3} \\times 0.7^3 \\times 0.3^2 = 10 \\times 0.343 \\times 0.09 = 0.3087'}</MathBlock>
           <p>
             平均して入る本数は <M>{'5 \\times 0.7 = 3.5'}</M> 本、分散は <M>{'5 \\times 0.7 \\times 0.3 = 1.05'}</M> です。
@@ -106,17 +130,25 @@ export default function Lesson() {
           rows={[['確率', '0.00243', '0.02835', '0.1323', '0.3087', '0.36015', '0.16807']]}
           caption="B(5, 0.7) の確率（ちょうどの値。合計は1）"
         />
+        <Example title="「少なくとも1回」は余事象で">
+          <p>
+            同じ選手が5本打って、少なくとも1本入る確率。1本・2本・…・5本の確率を全部足すより、「1本も入らない」（5本とも外れる）確率を1から引くほうが速いです。
+          </p>
+          <MathBlock>{'P(X \\ge 1) = 1 - P(X = 0) = 1 - 0.3^5 = 1 - 0.00243 = 0.99757'}</MathBlock>
+        </Example>
       </Section>
 
       <Section title="直感的な理解">
         <Intuition title="期待値が np になるわけ：1回ずつの「成功したら1」を足す">
           <p>
-            1回のベルヌーイ試行で「成功なら1、失敗なら0」とする数を考えます。この平均は <M>{'1 \\times p + 0 \\times (1-p) = p'}</M>、
-            分散は <M>{'p(1-p)'}</M> です。二項分布の <M>X</M> は、この「0か1」を <M>n</M> 回分足したものです。
+            1回のベルヌーイ試行で「成功なら1、失敗なら0」とする数を考えます。この平均は <M>{'1 \\times p + 0 \\times (1-p) = p'}</M>。
+            分散は「2乗の平均 − 平均の2乗」で、0 も 1 も2乗しても同じ値なので2乗の平均も <M>p</M>。よって <M>{'p - p^2 = p(1-p)'}</M> です。
+            二項分布の <M>X</M> は、この「0か1」を <M>n</M> 回分足したものです。
           </p>
           <MathBlock caption="X は n 個のベルヌーイの和">{'X = X_1 + X_2 + \\cdots + X_n'}</MathBlock>
           <p>
-            期待値は足し算できるので <M>{'p + p + \\cdots + p = np'}</M>。各回は独立なので分散も足し算できて <M>{'np(1-p)'}</M> になります。
+            期待値は足し算できるので <M>{'p + p + \\cdots + p = np'}</M>。各回は独立なので分散も足し算できて <M>{'np(1-p)'}</M> になります
+            （和の期待値・分散のルールは<Link to="/lessons/random-variables-sum-covariance">確率変数の和のレッスン</Link>）。
           </p>
         </Intuition>
         <Compare>
@@ -131,7 +163,7 @@ export default function Lesson() {
             </p>
           </Card>
         </Compare>
-        <Figure caption="n と p を動かしてみよう。p = 0.5 なら左右対称、p が小さいと左に寄り、大きいと右に寄る。n を大きくすると山が右へ動き、なだらかな「つりがね形」に近づく">
+        <Figure caption="n と p を動かしてみよう。見るところは棒の山の位置と、山の左右の広がり。点線（期待値 np）の近くがいちばん高い。p = 0.5 なら左右対称、p が小さいと左に寄り、大きいと右に寄る。n を大きくすると山が右へ動き、なだらかな「つりがね形」に近づく">
           <BinomialExplorer />
         </Figure>
         <Intuition title="分散 np(1−p) は p = 0.5 のとき最大">

@@ -122,3 +122,70 @@ export function CumulativePlot() {
     </div>
   )
 }
+
+/**
+ * 度数を棒の上に書いたヒストグラム。問題文で「図から読み取る」ために使う。
+ * 整数の値（点数など）をそのまま棒にしたいときは、start を 0.5 ずらし width を 1 にする。
+ */
+export function CountHistogram({
+  counts,
+  start,
+  width,
+  xTicks,
+  xLabel,
+  title,
+  height = 190,
+  color = 'c1',
+}: {
+  counts: number[]
+  start: number
+  width: number
+  xTicks?: number[]
+  xLabel?: string
+  title?: string
+  height?: number
+  color?: 'c1' | 'c2' | 'c3' | 'c4'
+}) {
+  const max = Math.max(...counts)
+  const bars = counts.map((y, i) => ({ x: start + (i + 0.5) * width, y }))
+  return (
+    <div>
+      {title && <p className="small" style={{ margin: '0 0 2px', fontWeight: 600 }}>{title}</p>}
+      <Plot x={[start, start + counts.length * width]} y={[0, max * 1.25]} height={height} hideY grid={false} xTicks={xTicks} xLabel={xLabel}>
+        <Bars data={bars} width={width} color={color} opacity={0.7} labels={(y) => (y > 0 ? String(y) : '')} />
+      </Plot>
+    </div>
+  )
+}
+
+/** 累積相対度数グラフ（動かない版）。各階級の右端に点を打ち、値も書き込む */
+export function CumulativeStatic({ edges, freqs, xLabel }: { edges: number[]; freqs: number[]; xLabel?: string }) {
+  const n = freqs.reduce((a, b) => a + b, 0)
+  const pts = [{ x: edges[0], y: 0 }]
+  let acc = 0
+  freqs.forEach((f, i) => {
+    acc += f
+    pts.push({ x: edges[i + 1], y: acc / n })
+  })
+  return (
+    <Plot
+      x={[edges[0], edges[edges.length - 1]]}
+      y={[0, 1.08]}
+      height={260}
+      xTicks={edges}
+      yTicks={[0, 0.25, 0.5, 0.75, 1]}
+      xLabel={xLabel}
+      yLabel="累積相対度数"
+    >
+      {pts.slice(1).map((q, i) => (
+        <Segment key={i} x1={pts[i].x} y1={pts[i].y} x2={q.x} y2={q.y} color="c1" width={2.5} />
+      ))}
+      <Points data={pts} r={5} opacity={1} />
+      {pts.slice(1).map((q) => (
+        <Label key={`v${q.x}`} x={q.x} y={q.y} dy={-10} anchor="end" color="ink">
+          {round(q.y, 2).toFixed(2)}
+        </Label>
+      ))}
+    </Plot>
+  )
+}

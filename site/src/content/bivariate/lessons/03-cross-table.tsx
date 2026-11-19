@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
 import { Bars, Legend, Plot } from '../../../components/charts/Plot'
-import { MathBlock } from '../../../components/Math'
+import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { CrossTableExplorer } from '../figures/CrossTableExplorer'
 
@@ -27,7 +28,7 @@ export default function Lesson() {
     <>
       <Point>
         <p>
-          「年代」×「朝ごはん」のような2つの質的変数（カテゴリーで表す変数）の関係は、<strong>クロス集計表</strong>にまとめます。
+          「年代」×「朝ごはん」のような2つの質的変数（数ではなくカテゴリーで表す変数。<Link to="/lessons/descriptive-data-types">データの種類</Link>）の関係は、<strong>クロス集計表</strong>にまとめます。
           関係を読むときは度数をそのまま比べず、<strong>割合（行パーセント・列パーセント）</strong>にして比べます。
           関係がなければ、どのグループでも割合がそろいます。
         </p>
@@ -67,7 +68,7 @@ export default function Lesson() {
           いちばん右の列といちばん下の行の「合計」を<strong>周辺度数</strong>といいます。下の行の合計（270, 130）は、上の度数表と同じです。
         </p>
         <p>
-          では「60代のほうが朝ごはんを食べる」といえるでしょうか。40代の「毎日食べる」は90人、20代は60人ですが、40代はそもそも人数が多いので、人数のままでは比べられません。そこで割合にします。
+          では「40代は20代より朝ごはんを毎日食べる人が多い」といえるでしょうか。40代の「毎日食べる」は90人、20代は60人ですが、40代はそもそも人数が多い（150人と100人）ので、人数のままでは比べられません。そこで割合にします。
         </p>
       </Section>
 
@@ -101,7 +102,7 @@ export default function Lesson() {
         <p>
           行パーセントを見ると、20代と40代は60%、60代は80%が毎日食べています。年代によって割合が違うので、<strong>年代と朝ごはんには関連がある</strong>といえそうです。
         </p>
-        <Figure caption="帯グラフ（積み上げ100%棒グラフ）。ボタンで行パーセントと列パーセントを切りかえられる。「関連の強さ」を0にすると、どの帯も「全体」と同じ区切りになる">
+        <Figure caption="帯グラフ（積み上げ100%棒グラフ）。見るところは「色の境目の位置が帯ごとにそろっているか」。ずれていれば関連がある。ボタンで行パーセントと列パーセントを切りかえられ、「関連の強さ」を0にすると、どの帯も「全体」と同じ区切りになる">
           <CrossTableExplorer rowLabels={ROWS} colLabels={COLS} counts={COUNTS} rowTitle="年代" />
         </Figure>
       </Section>
@@ -115,8 +116,10 @@ export default function Lesson() {
         </Intuition>
         <MathBlock caption="関連がないときに期待される度数：（その行の合計）×（その列の合計）÷（総数）">{'E_{ij} = \\frac{R_i \\times C_j}{N}'}</MathBlock>
         <p>
-          <strong>R</strong> は行の合計、<strong>C</strong> は列の合計、<strong>N</strong> は総数です。上の図のスライダーを0にしたときの表がこれです。
-          実際の度数がこの「関連がないときの度数」からどれくらいずれているかを1つの数にまとめて、関連があるといえるかを調べるのが<strong>独立性の検定</strong>（カイ二乗検定）です。くわしくは「仮説検定」の章で扱います。
+          <M>{'E_{ij}'}</M> は「i 行目・j 列目のマス」の期待される度数（期待度数）、<M>{'R_i'}</M> は i 行目の合計、<M>{'C_j'}</M> は j 列目の合計、<M>{'N'}</M> は総数です。
+          たとえば「40代（2行目）× 毎日食べる（1列目）」なら <M>{'E_{21} = 150 \\times 270 \\div 400 = 101.25'}</M>。上の図のスライダーを0にしたときの表がこれです。
+          実際の度数がこの「関連がないときの度数」からどれくらいずれているかを1つの数にまとめて、関連があるといえるかを調べるのが<strong>独立性の検定</strong>（カイ二乗検定）です。
+          くわしくは<Link to="/lessons/testing-chi2">「適合度検定と独立性の検定」のレッスン</Link>で扱います。
         </p>
       </Section>
 
@@ -133,7 +136,7 @@ export default function Lesson() {
           ]}
           caption="重症度別の回復率"
         />
-        <Figure caption="軽症でも重症でも A のほうが回復率が高いのに、合計すると B のほうが高くなる">
+        <Figure caption="青が A、オレンジが B。軽症の組・重症の組ではどちらも青の棒が高いのに、合計の組だけオレンジの棒が高くなる">
           <Plot x={[0, 9]} y={[0, 110]} height={260} yLabel="回復率（%）" xTicks={[1.5, 4.5, 7.5]} xTickFormat={(v) => (v === 1.5 ? '軽症' : v === 4.5 ? '重症' : '合計')}>
             <Bars data={[{ x: 1, y: 95 }, { x: 4, y: 60 }, { x: 7, y: 67 }]} color="c1" labels={(v) => `${v}%`} />
             <Bars data={[{ x: 2, y: 90 }, { x: 5, y: 50 }, { x: 8, y: 82 }]} color="c2" labels={(v) => `${v}%`} />
@@ -177,6 +180,9 @@ export default function Lesson() {
             <li>クロス集計表から、行パーセントや列パーセントを計算させる問題。「〜のうち」が何かを読み取るのがポイント。</li>
             <li>帯グラフ（積み上げ棒グラフ）とクロス集計表の対応を問う問題。</li>
             <li>関連がないときに期待される度数を計算させる問題（独立性の検定の準備として）。</li>
+            <li>
+              クロス集計表を示して「正しい記述をすべて選べ」（I・II・III の組み合わせ）の形で問う問題。記述ごとに「分母は何か（〜のうち）」を確かめてから計算します。
+            </li>
           </ul>
         </ExamTip>
       </Section>

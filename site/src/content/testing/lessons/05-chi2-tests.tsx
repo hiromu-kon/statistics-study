@@ -1,4 +1,5 @@
-import { DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { DataTable, Example, ExamTip, Figure, Intuition, MathNote, Note, Pitfall, Point, Section } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import { chi2Pdf } from '../../../lib/stats'
 import type { LessonMeta } from '../../../types'
@@ -24,7 +25,7 @@ export default function Lesson() {
     <>
       <Point>
         <p>
-          実際に数えた<strong>観測度数 O</strong> と、H0 が正しければこうなるはずという<strong>期待度数 E</strong> を並べ、
+          実際に数えた<strong>観測度数 O</strong>（かんそくどすう）と、H0 が正しければこうなるはずという<strong>期待度数 E</strong>（きたいどすう）を並べ、
           ずれ <M>{'(O-E)^2/E'}</M> を全部足したものが χ² です。χ² が大きいほど「H0 とデータが合わない」ことを表します。
         </p>
       </Point>
@@ -47,6 +48,10 @@ export default function Lesson() {
           caption="χ² の計算表"
         />
         <MathBlock caption="カイ二乗統計量。k はカテゴリの数">{'\\chi^2 = \\sum_{i=1}^{k} \\frac{(O_i - E_i)^2}{E_i}'}</MathBlock>
+        <p>
+          Σ（シグマ）は「全部足す」という記号です（<Link to="/lessons/math-sigma">Σ記号のレッスン</Link>）。O は Observed（観測された）、E は Expected（期待される）の頭文字です。
+          ずれを2乗するのは、プラスとマイナスが打ち消し合わないようにするため、E で割るのは「期待度数が大きいマスでは多少ずれるのがふつう」なので、ずれを期待度数に対する割合で測るためです。
+        </p>
         <TestSteps
           hypothesis={
             <>
@@ -92,8 +97,27 @@ export default function Lesson() {
         <MathBlock caption="適合度検定の自由度。m はデータから推定したパラメータの数">{'k - 1 - m'}</MathBlock>
         <p>
           たとえば「データはポアソン分布にしたがう」を調べるとき、ポアソン分布の λ が与えられておらず、データの平均から推定したなら、
-          推定した1個のぶんだけさらに自由度が減って <M>{'k - 1 - 1'}</M> になります。
+          推定した1個のぶんだけさらに自由度が減って <M>{'k - 1 - 1'}</M> になります。正規分布にあてはめるとき、平均と分散の2つをデータから推定したなら
+          <M>{'k - 1 - 2'}</M> です。
         </p>
+        <Example title="割合が等しくない理論に合うか">
+          <p>
+            期待度数は「総数 × 理論の割合」で求めます。どのカテゴリも同じ割合である必要はありません。たとえば、ある町の年代構成が「若年 30%・中年 50%・高年 20%」で、
+            店に来た 200 人の年代を調べたら 48 人・104 人・48 人だったとします。
+          </p>
+          <DataTable
+            head={['', '若年', '中年', '高年', '合計']}
+            rows={[
+              ['観測度数 O', '48', '104', '48', '200'],
+              ['期待度数 E', '200 × 0.3 = 60', '200 × 0.5 = 100', '200 × 0.2 = 40', '200'],
+              ['(O − E)² / E', '144 / 60 = 2.40', '16 / 100 = 0.16', '64 / 40 = 1.60', <strong key="s">4.16</strong>],
+            ]}
+          />
+          <p>
+            自由度は 3 − 1 = 2（割合は町のデータで与えられていて、推定していない）。<M>{'\\chi^2_{0.05}(2) = 5.991'}</M> より小さいので、5% で
+            「来店客の年代構成は町と同じ」は棄却できません。
+          </p>
+        </Example>
       </Section>
 
       <Section title="独立性の検定：2つの分類に関係はあるか">
@@ -142,8 +166,22 @@ export default function Lesson() {
         <Figure caption="行・列の合計を固定して、左上のマスを動かしてみよう。40人（期待度数）のとき χ² = 0、そこから離れるほど χ² が大きくなる">
           <IndependenceDemo />
         </Figure>
+        <MathNote title="2×2 の表なら1行で計算できる">
+          <p>
+            表のマスを <M>{'\\begin{smallmatrix} a & b \\\\ c & d \\end{smallmatrix}'}</M>、総数を N とすると、χ² は次の式でも求められます（上と同じ値になる）。
+          </p>
+          <MathBlock caption="2×2 のクロス表の χ²（補正なし）。分母は行と列の合計を全部かけたもの">
+            {'\\chi^2 = \\frac{N(ad - bc)^2}{(a+b)(c+d)(a+c)(b+d)} = \\frac{150 \\times (30 \\times 20 - 70 \\times 30)^2}{100 \\times 50 \\times 60 \\times 90} = 12.5'}
+          </MathBlock>
+        </MathNote>
         <Note title="ここでの計算について">
           <p>2×2 の表では「イェーツの補正」という修正を加える方法もあります。このサイトの計算は、補正をしない χ² で行っています。</p>
+        </Note>
+        <Note title="統計ソフトの出力で見ると">
+          <p>
+            同じ表を統計ソフトで独立性の検定にかけると、「χ² 統計量 12.5、自由度 1、p 値 0.0004」のような結果が出ます（補正なしの場合）。p 値が 0.01 より小さいので 1% でも棄却、と読みます。
+            補正ありで計算するソフトもあるので、出力に「補正」「continuity correction」などと書かれていないか確かめましょう。
+          </p>
         </Note>
       </Section>
 
@@ -198,6 +236,9 @@ export default function Lesson() {
             <li>χ² の値を計算し、自由度を正しく求めて χ² 分布表と比べる問題。</li>
             <li>適合度検定で、推定したパラメータの数を引いた自由度を問う問題。</li>
             <li>統計ソフトの独立性の検定の出力（χ² 値・自由度・p 値）を読む問題。</li>
+            <li>
+              適合度検定と独立性の検定を重要とする受験記があります。「期待度数の求め方」「自由度」「右側だけを見る」の3点と、「関係がある ≠ 因果関係がある」という解釈を押さえておきましょう。
+            </li>
           </ul>
         </ExamTip>
       </Section>

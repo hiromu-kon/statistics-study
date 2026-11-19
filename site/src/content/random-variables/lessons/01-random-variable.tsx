@@ -1,4 +1,5 @@
-import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section } from '../../../components/blocks'
 import { Curve, Plot } from '../../../components/charts/Plot'
 import { M, MathBlock } from '../../../components/Math'
 import { normalCdf } from '../../../lib/stats'
@@ -65,11 +66,37 @@ export default function Lesson() {
         </p>
       </Section>
 
+      <Section title="確率変数は「結果に数をつけるルール」">
+        <p>
+          もう少し正確にいうと、確率変数は<strong>試行の結果1つ1つに、数を1つずつ割り当てるルール</strong>です。
+          コインを2枚投げて「表の枚数」を X とすると、次のように数が割り当てられます。
+        </p>
+        <DataTable
+          head={['結果（1枚目, 2枚目）', '（表, 表）', '（表, 裏）', '（裏, 表）', '（裏, 裏）']}
+          rows={[
+            ['X ＝ 表の枚数', '2', '1', '1', '0'],
+            ['その結果の確率', '1/4', '1/4', '1/4', '1/4'],
+          ]}
+          caption="結果ごとに X の値が決まる。X の値が「変数」、結果の確率が「確率」の出どころ"
+        />
+        <p>
+          ここで <M>{'X = 1'}</M> は「（表, 裏）か（裏, 表）が出る」という<strong>事象</strong>です。
+          だから <M>{'P(X = 1)'}</M> は、前の章の<Link to="/lessons/probability-basics">事象の確率</Link>と同じように
+          <M>{'\\frac{1}{4} + \\frac{1}{4} = \\frac{1}{2}'}</M> と計算できます。
+          <strong>確率変数の確率は、新しいものではなく「X がその値になる事象」の確率</strong>です。
+        </p>
+        <p>
+          同じ試行から、ルールを変えれば別の確率変数が作れます。たとえば「裏の枚数」や「1枚目が表なら1、裏なら0」も確率変数です。
+          どのルールで数をつけるかを決めることが、「確率変数 X を〜とする」という問題文の意味です。
+        </p>
+      </Section>
+
       <Section title="具体例：値と確率の対応表を作る">
         <Example title="コインを2枚投げたときの、表の枚数 X">
           <p>
             出方は（表,表）（表,裏）（裏,表）（裏,裏）の4通り。表の枚数は 2, 1, 1, 0 なので、X のとりうる値は 0, 1, 2 です。
           </p>
+          <p>同じ値になる結果をまとめると、「値 → 確率」の表になります。</p>
           <DataTable
             head={[<M key="x">{'x'}</M>, '0', '1', '2', '合計']}
             rows={[[<M key="p">{'P(X = x)'}</M>, '1/4', '2/4 = 1/2', '1/4', <strong key="s">1</strong>]]}
@@ -105,7 +132,10 @@ export default function Lesson() {
           ]}
           caption="離散型と連続型の違い"
         />
-        <Figure caption="右の図のスライダーで区間の幅を狭めていくと、確率（面積）はどんどん 0 に近づく">
+        <p>
+          下の図の、左（離散型）は棒の高さ、右（連続型）は塗った部分の面積に注目してください。スライダーで連続型の区間の幅を狭めると、塗った面積がやせていきます。
+        </p>
+        <Figure caption="連続型のスライダーで区間の幅を狭めていくと、確率（面積）はどんどん 0 に近づく">
           <DiscreteVsContinuous />
         </Figure>
         <p>
@@ -114,7 +144,8 @@ export default function Lesson() {
         </p>
         <MathBlock caption="連続型：a から b までの確率 = 曲線 f(x) の下の、a から b までの面積">{'P(a \\le X \\le b) = \\int_a^b f(x)\\,dx'}</MathBlock>
         <p>
-          <M>{'\\int'}</M>（インテグラル）は「面積を求める」という記号だと思えば十分です。2級では、図形の面積や分布表で求められる場面がほとんどです。
+          <M>{'\\int'}</M>（インテグラル）は「面積を求める」という記号だと思えば十分です。<M>{'\\int_a^b f(x)\\,dx'}</M> は「曲線 f(x) の下の、a から b までの面積」と読みます。
+          2級では、三角形・長方形の面積や分布表で求められる場面がほとんどです（<Link to="/lessons/math-function-graph-area">「関数・グラフ・面積」</Link>で復習できます）。
           全体の面積は、確率の合計なので必ず 1 です。
         </p>
         <Intuition title="なぜ「ちょうど 170 cm」の確率は 0 なの？">
@@ -136,7 +167,8 @@ export default function Lesson() {
         </Figure>
         <p>
           F(x) は 0 から始まって、右へ行くほど増え（減ることはない）、最後は 1 になります。
-          「2 より大きく 5 以下」の確率は、階段の高さの差で <M>{'F(5) - F(2) = 5/6 - 2/6 = 1/2'}</M> と求まります。
+          「2 より大きく 5 以下」の確率は、階段の高さの差で <M>{'F(5) - F(2) = 5/6 - 2/6 = 3/6 = 1/2'}</M> と求まります。
+          「5 以下」から「2 以下」を取りのぞくと、残るのは 3, 4, 5 の3つの目なので、数えても <M>{'3/6'}</M> です。
         </p>
         <Compare>
           <Card title="離散型の F(x)：階段">
@@ -166,6 +198,15 @@ export default function Lesson() {
             </li>
           </ul>
         </Pitfall>
+      </Section>
+
+      <Section title="この先とのつながり：標本平均も確率変数">
+        <Note title="「標本平均」がよくわからないときに">
+          <p>
+            たとえば5人を選んで身長の平均をとると、<strong>誰が選ばれるかで平均の値が変わります</strong>。選ぶ前の標本平均は、サイコロを振る前の出目と同じく「まだ決まっていない数」なので、確率変数として扱えます。
+            「どの値がどれくらいの確率で出るか」（標本平均の分布）は、<Link to="/lessons/sampling-sample-mean">「母集団・標本と標本平均の分布」</Link>のレッスンで扱います。この章の期待値・分散は、そのための道具です。
+          </p>
+        </Note>
       </Section>
 
       <Section title="統計検定での出方">

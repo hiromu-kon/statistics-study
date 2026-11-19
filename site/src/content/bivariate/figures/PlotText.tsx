@@ -3,8 +3,8 @@ import { colorVar, usePlot, type Color } from '../../../components/charts/Plot'
 
 /**
  * データ座標に色つきの文字を置く。
- * 共通の Label は fill 属性で色を指定しているが、.plot-annot の CSS の fill が優先されて色が消えるため、
- * style で指定するこの部品を章内で使う。
+ * 共通の Label に色が付かなかった時期に作った部品。今は Label でも同じ表示になるが、
+ * この章の図はこの部品で位置を調整しているので置き換えていない。
  */
 export function PlotText({
   x,

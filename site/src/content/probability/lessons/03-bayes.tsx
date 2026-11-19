@@ -1,4 +1,5 @@
-import { DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { BayesArea } from '../figures/BayesArea'
@@ -33,7 +34,19 @@ export default function Lesson() {
         </ul>
         <p>
           ある人が検査で陽性になりました。この人が本当に病気である確率は？　「90%くらい？」と思ったら、1万人で数えてみましょう。
+          確率のままだと小数のかけ算が続いて迷いやすいので、<strong>人数に直して表を埋める</strong>のがコツです。
         </p>
+        <Steps>
+          <li>
+            まず<strong>原因（病気かどうか）</strong>で分ける：病気は <M>{'10000 \\times 0.01 = 100'}</M> 人、健康は <M>{'10000 - 100 = 9900'}</M> 人。
+          </li>
+          <li>
+            病気の100人を<strong>結果（陽性かどうか）</strong>で分ける：陽性は <M>{'100 \\times 0.9 = 90'}</M> 人、陰性は <M>{'100 - 90 = 10'}</M> 人。
+          </li>
+          <li>
+            健康な9900人も分ける：陽性（健康なのに陽性）は <M>{'9900 \\times 0.1 = 990'}</M> 人、陰性は <M>{'9900 - 990 = 8910'}</M> 人。
+          </li>
+        </Steps>
         <DataTable
           head={['1万人', '陽性', '陰性', '合計']}
           rows={[
@@ -46,10 +59,36 @@ export default function Lesson() {
         <p>
           陽性の人は全部で <M>{'90 + 990 = 1080'}</M> 人。そのうち本当に病気なのは90人だけです。
         </p>
-        <MathBlock caption="陽性の人の中で、病気の人が占める割合">{'\\frac{90}{1080} = \\frac{1}{12} \\approx 0.083'}</MathBlock>
+        <MathBlock caption="陽性の人の中で、病気の人が占める割合。分子と分母を90で割ると 1/12">{'\\frac{90}{1080} = \\frac{90 \\div 90}{1080 \\div 90} = \\frac{1}{12} \\approx 0.083'}</MathBlock>
         <p>
           陽性でも、本当に病気である確率は<strong>約8%</strong>しかありません。もともと病気の人が少ない（1%）ので、
           「健康なのに陽性」の990人のほうがずっと多くなってしまうのです。
+        </p>
+      </Section>
+
+      <Section title="P(病気|陽性) と P(陽性|病気) を表で見比べる">
+        <p>
+          同じ1万人の表から、向きの違う2つの条件付き確率を読んでみます。<strong>分子はどちらも「病気で陽性」の90人</strong>ですが、分母（見る範囲）が違います。
+        </p>
+        <Compare>
+          <Card title="P(陽性 | 病気)：病気の「行」を見る">
+            <p>
+              病気の人100人の中で、陽性は90人。
+              <br />
+              <M>{'90 / 100 = 0.9'}</M>（これが感度。問題文で与えられる数字）
+            </p>
+          </Card>
+          <Card title="P(病気 | 陽性)：陽性の「列」を見る">
+            <p>
+              陽性の人1080人の中で、病気は90人。
+              <br />
+              <M>{'90 / 1080 \\approx 0.083'}</M>（これが知りたい答え）
+            </p>
+          </Card>
+        </Compare>
+        <p>
+          「| の右側 ＝ 見る範囲 ＝ 分母」です。<strong>与えられるのは右側が「病気」のほう、聞かれるのは右側が「陽性」のほう</strong>。
+          この向きを入れかえる計算が、ベイズの定理です。
         </p>
       </Section>
 
@@ -57,6 +96,7 @@ export default function Lesson() {
         <p>
           同じことを面積で描きます。上の四角が全体（1万人）。左の細い赤い列が病気の人、右の緑が健康な人。
           <strong>濃い色が陽性</strong>です。下の帯は、<strong>陽性の人だけを集めて並べ直したもの</strong>です。
+          見てほしいのは、上の四角では赤い列がとても細いのに、下の帯では赤い部分が「帯の約8%」になっていることです。
         </p>
         <Figure caption="陽性と出た時点で、陰性の人（うすい色）はもう考えない。残った濃い部分だけを「新しい全体」にする">
           <BayesArea interactive={false} />
@@ -71,7 +111,8 @@ export default function Lesson() {
 
       <Section title="定義・式">
         <p>
-          A を「病気である」（原因）、B を「陽性になる」（結果）とします。前の回の条件付き確率と乗法定理から、
+          A を「病気である」（原因）、B を「陽性になる」（結果）とします。
+          前のレッスン<Link to="/lessons/probability-conditional">「条件付き確率と独立」</Link>の、条件付き確率の式と乗法定理を2つ並べます。
         </p>
         <MathBlock caption="① 知りたいもの：陽性（B）の中で病気（A）の割合">{'P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}'}</MathBlock>
         <MathBlock caption="② 分子は乗法定理で、わかっている確率から作れる">{'P(A \\cap B) = P(A)\\,P(B \\mid A)'}</MathBlock>
@@ -82,7 +123,11 @@ export default function Lesson() {
         </p>
         <MathBlock caption="全確率の公式：B になる道すじを全部足す">{'P(B) = P(A)\\,P(B \\mid A) + P(\\bar{A})\\,P(B \\mid \\bar{A})'}</MathBlock>
         <p>数字を入れると、1万人の表とまったく同じ計算になります。</p>
-        <MathBlock>{'P(A \\mid B) = \\frac{0.01 \\times 0.9}{0.01 \\times 0.9 + 0.99 \\times 0.1} = \\frac{0.009}{0.009 + 0.099} = \\frac{0.009}{0.108} = \\frac{1}{12}'}</MathBlock>
+        <MathBlock>{'P(A \\mid B) = \\frac{0.01 \\times 0.9}{0.01 \\times 0.9 + 0.99 \\times 0.1} = \\frac{0.009}{0.009 + 0.099} = \\frac{0.009}{0.108}'}</MathBlock>
+        <p>
+          小数のままでは割りにくいので、分子と分母に1000をかけて <M>{'\\frac{9}{108}'}</M>、さらに9で割って <M>{'\\frac{1}{12}'}</M> です。
+          表の <M>{'90/1080'}</M> は、この分子と分母をそれぞれ1万倍したものです。確率に「全体の人数」をかけると人数になるので、<strong>表で数えても式で計算しても同じ</strong>になります。
+        </p>
         <DataTable
           head={['記号', '名前', 'この例での意味', '値']}
           rows={[
@@ -136,7 +181,10 @@ export default function Lesson() {
           <p>
             1回目の陽性で、病気の確率は 1% → 約8.3%（1/12）に上がりました。この 1/12 を新しい事前確率にして同じ検査をもう一度受け、また陽性なら、
           </p>
-          <MathBlock>{'\\frac{\\frac{1}{12} \\times 0.9}{\\frac{1}{12} \\times 0.9 + \\frac{11}{12} \\times 0.1} = \\frac{0.9}{0.9 + 1.1} = 0.45'}</MathBlock>
+          <MathBlock>{'\\frac{\\frac{1}{12} \\times 0.9}{\\frac{1}{12} \\times 0.9 + \\frac{11}{12} \\times 0.1} = \\frac{0.9}{0.9 + 1.1} = \\frac{0.9}{2} = 0.45'}</MathBlock>
+          <p>
+            2つめの等号では、分子と分母の両方に12をかけて分数を消しています（<M>{'\\frac{1}{12} \\times 12 = 1'}</M>、<M>{'\\frac{11}{12} \\times 0.1 \\times 12 = 1.1'}</M>）。
+          </p>
           <p>
             45% まで上がります（2回の検査の結果が互いに独立と仮定した場合）。事後確率が次の事前確率になる、というのがベイズの考え方です。
           </p>
@@ -144,7 +192,10 @@ export default function Lesson() {
       </Section>
 
       <Section title="問題文の、どれが A でどれが B？">
-        <p>ベイズの問題で一番迷うのがここです。次の手順で決めると迷いません。</p>
+        <p>
+          ベイズの問題で一番迷うのがここです。先に大事なことを1つ。<strong>A と B という文字の名前に意味はありません。</strong>
+          問題によっては逆の文字を使うこともあります。大事なのは「どちらが<strong>わかったこと（条件）</strong>で、どちらが<strong>知りたいこと</strong>か」です。次の手順で決めると迷いません。
+        </p>
         <Steps>
           <li>
             <strong>問われている確率の文を探す。</strong>「〜だったとき、〜である確率」「〜とわかった。〜である確率は？」の形になっているはずです。
@@ -181,8 +232,22 @@ export default function Lesson() {
               不良品 320 個のうち Y 製は 200 個なので、<M>{'200 / 320 = 0.625'}</M>。
             </li>
           </ul>
+          <p>
+            計算の途中も書いておきます。X 製の不良は <M>{'6000 \\times 0.02 = 120'}</M> 個、Y 製の不良は <M>{'4000 \\times 0.05 = 200'}</M> 個。
+            式で書くと <M>{'\\frac{0.4 \\times 0.05}{0.6 \\times 0.02 + 0.4 \\times 0.05} = \\frac{0.02}{0.012 + 0.02} = \\frac{0.02}{0.032} = 0.625'}</M> です。
+          </p>
           <p>Y が作るのは 40% でも、不良品に限ると 62.5% が Y 製です。</p>
         </Example>
+        <DataTable
+          head={['問題文', 'わかったこと（条件・B）', '知りたいこと（A）', '求めるもの']}
+          rows={[
+            ['陽性だった人が、本当に病気である確率', '陽性', '病気', <M key="1">{'P(A \\mid B)'}</M>],
+            ['「無料」を含むメールが、迷惑メールである確率', '「無料」を含む', '迷惑メール', <M key="2">{'P(A \\mid B)'}</M>],
+            ['不良品だったとき、それが Y 製である確率', '不良品', 'Y 製', <M key="3">{'P(A \\mid B)'}</M>],
+            ['陰性だった人が、実は病気である確率', '陰性', '病気', <M key="4">{'P(A \\mid B)'}</M>],
+          ]}
+          caption="練習：どれも「わかったこと」を B（| の右）に置く。最後の行のように、条件が「陰性」になる問題もある"
+        />
       </Section>
 
       <Section title="よくある勘違い">

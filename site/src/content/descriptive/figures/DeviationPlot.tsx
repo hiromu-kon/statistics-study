@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Controls, Slider } from '../../../components/blocks'
+import { Card, Compare, Controls, Slider } from '../../../components/blocks'
 import { Label, Plot, Points, Segment, VLine } from '../../../components/charts/Plot'
 import { mean, round, sd, variance } from '../../../lib/stats'
+import { CountHistogram } from './HistogramFigures'
 
 /**
  * データの点と平均からの距離（偏差）を見せる図。
@@ -27,7 +28,9 @@ export function DeviationPlot({ data, interactive = false, width }: { data: numb
         ))}
       </Plot>
       <p className="figure-readout">
-        分散 = <strong>{round(variance(xs), 3)}</strong>　標準偏差 = <strong>{round(sd(xs), 3)}</strong>（n で割った場合）
+        n で割る：分散 <strong>{round(variance(xs), 3)}</strong>・標準偏差 <strong>{round(sd(xs), 3)}</strong>
+        <br />
+        n − 1 で割る：分散 <strong>{round(variance(xs, 1), 3)}</strong>・標準偏差 <strong>{round(sd(xs, 1), 3)}</strong>
       </p>
       {interactive && (
         <Controls>
@@ -35,5 +38,44 @@ export function DeviationPlot({ data, interactive = false, width }: { data: numb
         </Controls>
       )}
     </div>
+  )
+}
+
+/** 平均も範囲も同じで、形だけが違う3つの分布（値は 1〜9 の整数） */
+const SPREAD_SHAPES: { title: string; counts: number[] }[] = [
+  { title: '山形（真ん中に集まる）', counts: [1, 2, 4, 6, 8, 6, 4, 2, 1] },
+  { title: '一様（どの値も同じ人数）', counts: [4, 4, 4, 4, 4, 4, 4, 4, 4] },
+  { title: 'U字形（両端に集まる）', counts: [8, 6, 4, 2, 1, 2, 4, 6, 8] },
+]
+
+/** 範囲が同じでも、平均から遠い値が多いほど標準偏差は大きい */
+export function SpreadShapes({
+  showSd = true,
+  labels,
+  order = [0, 1, 2],
+}: {
+  showSd?: boolean
+  /** カードの見出し。省略すると形の名前 */
+  labels?: string[]
+  /** 並べる順番（SPREAD_SHAPES の番号）。問題で形の順に並ばないようにするため */
+  order?: number[]
+}) {
+  return (
+    <Compare>
+      {order.map((idx, k) => {
+        const sh = SPREAD_SHAPES[idx]
+        const xs = sh.counts.flatMap((c, i) => Array.from({ length: c }, () => i + 1))
+        return (
+          <Card key={sh.title} title={labels ? labels[k] : sh.title}>
+            <CountHistogram counts={sh.counts} start={0.5} width={1} xTicks={[1, 3, 5, 7, 9]} height={150} color={(['c1', 'c2', 'c3'] as const)[idx]} />
+            {showSd && (
+              <p className="figure-readout">
+                {xs.length}人・平均 {round(mean(xs), 2)}・標準偏差 <strong>{round(sd(xs, 1), 2)}</strong>（n − 1 で割る）
+              </p>
+            )}
+          </Card>
+        )
+      })}
+    </Compare>
   )
 }

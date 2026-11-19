@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import { correlation } from '../../../lib/stats'
@@ -49,7 +50,8 @@ export default function Lesson() {
         </Figure>
         <p>
           そうはならないでしょう。両方とも「<strong>気温</strong>」が高い日に増えるので、アイスと事故がいっしょに増えて見えるだけです。
-          このように、第3の変数のせいで生まれる相関を<strong>みかけの相関</strong>（<strong>擬相関</strong>）といいます。
+          このように、第3の変数のせいで生まれる相関を<strong>みかけの相関</strong>（<strong>擬相関</strong>、ぎそうかん）といいます。
+          「疑似相関」と書かれることもあります。
         </p>
       </Section>
 
@@ -57,7 +59,7 @@ export default function Lesson() {
         <p>
           小学校の2年生・4年生・6年生、合わせて24人の「身長」と「計算テストの点」を調べました（架空のデータ）。全体で見ると、背の高い子ほど点が高いように見えます。
         </p>
-        <Figure caption="ボタンで「学年ごとに見る」に切りかえると、学年の中では身長と点数にほとんど関係がないことがわかる">
+        <Figure caption="まず「全体で見る」で右上がりの直線を確認し、次に「学年ごとに見る」に切りかえる。色ごとの3本の直線がほぼ水平になり、学年の中では身長と点数にほとんど関係がないことがわかる">
           <StratifiedPlot groups={gradeGroups} xLabel="身長（cm）" yLabel="計算テスト（点）" />
         </Figure>
         <p>
@@ -70,6 +72,9 @@ export default function Lesson() {
             年代ごとに見ると、どの年代でも<strong>運動する人ほど血圧が低い</strong>という逆の関係になっています。
           </p>
           <StratifiedPlot groups={ageGroups} xLabel="1週間の運動時間（時間）" yLabel="血圧（mmHg）" />
+          <p className="small">
+            見るところ：「全体で見る」の直線は右上がり、「グループごとに見る」の3本の直線はどれも右下がり。全体の r は約 0.51、年代ごとの r はどれも約 −0.79 です。
+          </p>
           <p>
             年齢が上がると血圧が上がりやすく、このデータでは年齢の高い人ほど運動時間も長い、という設定です。年代を無視すると、年齢の影響が混ざって見かけの関係が逆向きになります。
           </p>
@@ -98,8 +103,9 @@ export default function Lesson() {
 
       <Section title="偏相関係数：第3の変数の影響を取り除いた相関">
         <p>
-          「気温が同じ日どうしで比べたら、アイスと事故に相関は残るか？」を1つの数にしたのが<strong>偏相関係数</strong>です。z の影響を取り除いた x と y の相関、という意味で
-          <M>{'r_{xy \\cdot z}'}</M> と書きます。
+          「気温が同じ日どうしで比べたら、アイスと事故に相関は残るか？」を1つの数にしたのが<strong>偏相関係数</strong>（へんそうかんけいすう）です。z の影響を取り除いた x と y の相関、という意味で
+          <M>{'r_{xy \\cdot z}'}</M> と書きます（右下の「xy・z」は「x と y の相関。ただし z の影響を除く」と読みます）。
+          式に出てくるのは、相関行列にある3つの相関係数 <M>{'r_{xy}'}</M>（x と y）、<M>{'r_{xz}'}</M>（x と z）、<M>{'r_{yz}'}</M>（y と z）だけです。
         </p>
         <MathBlock caption="z の影響を取り除いた、x と y の相関（3つの相関係数だけで計算できる）">
           {'r_{xy\\cdot z} = \\frac{r_{xy} - r_{xz}\\,r_{yz}}{\\sqrt{1 - r_{xz}^2}\\,\\sqrt{1 - r_{yz}^2}}'}
@@ -125,9 +131,23 @@ export default function Lesson() {
           </p>
         </Intuition>
         <p>
-          偏相関係数は「x から z で説明できる部分を取り除いた残り」と「y から z で説明できる部分を取り除いた残り」の相関と同じです。学年のデータでこれを図にすると、次のようになります。
+          偏相関係数は「x から z で説明できる部分を取り除いた残り」と「y から z で説明できる部分を取り除いた残り」の相関と同じです。
+          「z で説明できる部分」とは、z から直線で予測できる分のことで、取り除いた残りは<Link to="/lessons/bivariate-simple-regression">回帰直線のレッスン</Link>で学ぶ「残差」にあたります。
+          学年のデータでこれを確かめてみます。
         </p>
         <CorrMatrix labels={['身長', '計算の点', '学年']} matrix={gradeMatrix} caption="学年のデータの相関行列" />
+        <Example title="学年の影響を取り除いた、身長と点数の偏相関">
+          <p>
+            相関行列から <M>{'r_{xy} = 0.70'}</M>（身長と点数）、<M>{'r_{xz} = 0.91'}</M>（身長と学年）、<M>{'r_{yz} = 0.77'}</M>（点数と学年）を読みとります。
+          </p>
+          <Steps>
+            <li>
+              分子：<M>{'0.70 - 0.91 \\times 0.77 = 0.70 - 0.70 \\approx 0'}</M>
+            </li>
+            <li>分子がほぼ 0 なので、分母が何であっても偏相関係数はほぼ 0（丸めずに計算すると約 −0.02）</li>
+          </Steps>
+          <p>下の図は、実際に「残り」どうしの散布図を描いたものです。同じくほぼ 0 になります。</p>
+        </Example>
         <Figure caption="身長・点数それぞれから「学年で説明できる部分」を取り除いた残りの散布図。全体では 0.70 あった相関が、ほぼ 0 になる">
           <Scatter xs={heightResid} ys={scoreResid} xLabel="身長の残り（cm）" yLabel="点数の残り（点）" meanLines showR />
         </Figure>
@@ -146,7 +166,10 @@ export default function Lesson() {
             <strong>偶然</strong>：データが少ないと、関係のないものどうしでもたまたま相関が出ることがある
           </li>
         </ul>
-        <p>因果関係を確かめるには、条件をそろえた実験などのデータの集め方が大切です（「時系列とデータの集め方」の章で扱います）。</p>
+        <p>
+          因果関係を確かめるには、条件をそろえた実験などのデータの集め方が大切です（<Link to="/lessons/collection-observational-experimental">「観察研究と実験研究」のレッスン</Link>で扱います）。
+          なお、偏相関係数で第3の変数の影響を取り除いても、それだけで因果関係が示せるわけではありません（ほかにも調べていない変数があるかもしれないため）。
+        </p>
       </Section>
 
       <Section title="よくある勘違い">
@@ -170,6 +193,9 @@ export default function Lesson() {
             <li>相関行列を読んで、3つの相関係数から偏相関係数を計算する問題。</li>
             <li>層別した散布図を見て、「全体の相関」と「グループ内の相関」について正しい記述を選ぶ問題。</li>
             <li>「〜と〜に相関があるので、〜が原因である」のような記述の誤りを見抜く問題（みかけの相関・因果との区別）。</li>
+            <li>
+              色分けした散布図を見て、記述を選ぶ問題では「全体の傾き」と「色ごとの傾き」を<strong>別々に</strong>読みます。2つが食い違っていたら、層（グループ）を表す変数がみかけの相関を生んでいるサインです。
+            </li>
           </ul>
         </ExamTip>
       </Section>

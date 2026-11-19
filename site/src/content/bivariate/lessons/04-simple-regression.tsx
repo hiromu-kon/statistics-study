@@ -1,4 +1,5 @@
-import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { Curve, Plot, Points, VLine } from '../../../components/charts/Plot'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -23,7 +24,7 @@ export default function Lesson() {
     <>
       <Point>
         <p>
-          散布図に、点の並びをいちばんよく表す直線 <M>{'\\hat{y} = a + bx'}</M> を引くと、x から y を予測できます。これが<strong>回帰直線</strong>です。
+          散布図に、点の並びをいちばんよく表す直線 <M>{'\\hat{y} = a + bx'}</M>（a が切片、b が傾き）を引くと、x から y を予測できます。これが<strong>回帰直線</strong>です。
           「いちばんよく」とは、<strong>残差（実際の値と直線のずれ）の2乗の合計がいちばん小さい</strong>という意味で、この決め方を<strong>最小二乗法</strong>といいます。
         </p>
       </Point>
@@ -45,6 +46,13 @@ export default function Lesson() {
           明日の最高気温が 27℃ と予報されたら、アイスを何個用意すればよいでしょうか。点の並びに直線を引けば、その直線から読み取れます。
           このとき、予測に使う x を<strong>説明変数</strong>、予測したい y を<strong>目的変数</strong>（被説明変数）といいます。
         </p>
+        <MathNote title="直線の式 y = a + bx の読み方">
+          <p>
+            <strong>a（切片）</strong>は x = 0 のときの y の値、<strong>b（傾き）</strong>は x が 1 増えたときに y がいくつ増えるかです（<Link to="/lessons/math-function-graph-area">「関数・グラフ・面積」のレッスン</Link>）。
+            たとえば <M>{'y = 10 + 2x'}</M> なら、x = 0 で y = 10、x = 1 で 12、x = 2 で 14 と、1 増えるごとに 2 ずつ増えます。
+            回帰直線では、予測した値だということがわかるように y の上に「^」をつけて <M>{'\\hat{y}'}</M> と書きます。
+          </p>
+        </MathNote>
       </Section>
 
       <Section title="残差と最小二乗法">
@@ -68,7 +76,7 @@ export default function Lesson() {
 
       <Section title="定義・式">
         <p>最小二乗法で求めた直線の傾き b と切片 a は、次の式で計算できます（導き方は省略します）。b を<strong>回帰係数</strong>ともいいます。</p>
-        <MathBlock caption="傾き b：x と y の共分散を、x の分散で割る">{'b = \\frac{s_{xy}}{s_x^2} = \\frac{\\sum (x_i - \\bar{x})(y_i - \\bar{y})}{\\sum (x_i - \\bar{x})^2}'}</MathBlock>
+        <MathBlock caption="傾き b：x と y の共分散を、x の分散（標準偏差の2乗）で割る">{'b = \\frac{s_{xy}}{s_x^2} = \\frac{\\sum (x_i - \\bar{x})(y_i - \\bar{y})}{\\sum (x_i - \\bar{x})^2}'}</MathBlock>
         <MathBlock caption="同じ b を、相関係数と標準偏差で表した形">{'b = r \\, \\frac{s_y}{s_x}'}</MathBlock>
         <MathBlock caption="切片 a：直線が平均の点 (x̄, ȳ) を通るように決まる">{'a = \\bar{y} - b\\,\\bar{x}'}</MathBlock>
         <Example title="アイスのデータで計算する">
@@ -123,7 +131,8 @@ export default function Lesson() {
         <Intuition title="b = r × (s_y ÷ s_x) の意味">
           <p>
             x が標準偏差1つ分（<M>{'s_x'}</M>）増えると、予測値は y の標準偏差の r 倍（<M>{'r s_y'}</M>）だけ増える、という意味です。
-            r が 1 より小さいと、予測は「平均のほうへ少し戻る」ことになります。アイスの例では <M>{'s_x \\approx 2.83'}</M>、<M>{'s_y \\approx 14.53'}</M>、
+            r が 1 より小さいと、「標準偏差いくつ分はなれているか」で測ったとき、予測値は x よりも平均の近くに来ます。
+            たとえば r = 0.5 なら、x が平均より標準偏差2つ分大きい人の予測値は、y の平均より標準偏差1つ分だけ大きい値です（<strong>平均への回帰</strong>）。アイスの例では <M>{'s_x \\approx 2.83'}</M>、<M>{'s_y \\approx 14.53'}</M>、
             <M>{'r \\approx 0.973'}</M> で、<M>{'0.973 \\times 14.53 \\div 2.83 \\approx 5'}</M> と、上の b と一致します。
           </p>
         </Intuition>
@@ -193,6 +202,10 @@ export default function Lesson() {
             <li>回帰直線を使って予測値や残差を計算する問題。</li>
             <li>「回帰直線は (x̄, ȳ) を通る」「残差の合計は0」などの性質を使う問題。</li>
             <li>y を x に回帰した傾きと x を y に回帰した傾きの関係（掛けると r² になる）を使う問題。</li>
+            <li>
+              回帰式の読み方（傾きの意味、外挿、因果ではないこと）について正しい記述を選ぶ問題。統計ソフトの出力表から回帰式を読みとる問題は
+              <Link to="/lessons/linear-models-software-output">「統計ソフトの出力を読む」のレッスン</Link>で扱います。
+            </li>
           </ul>
         </ExamTip>
       </Section>

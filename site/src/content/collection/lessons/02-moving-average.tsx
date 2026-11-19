@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -72,7 +73,10 @@ export default function Lesson() {
           </p>
         </Example>
         <MathBlock caption="3項移動平均：時点 t とその前後1つずつ、合わせて3つの平均">{'\\tilde{x}_t = \\frac{x_{t-1} + x_t + x_{t+1}}{3}'}</MathBlock>
-        <Figure caption="区間を長くするほど線はなめらかになる。12か月にすると、夏の山・冬の谷（季節変動）が消えてトレンドだけが残る">
+        <p>
+          <M>{'\\tilde{x}_t'}</M> の「~」は<strong>チルダ</strong>と読み、ここでは「ならした値」という印です。<M>{'x_{t-1}'}</M> は1つ前の時点、<M>{'x_{t+1}'}</M> は1つ後の時点の値です。
+        </p>
+        <Figure caption="スライダーで平均する区間を長くしていくと、オレンジの線（移動平均）がなめらかになる。見るところは、オレンジの線に毎年の山と谷が残っているかどうか。12か月にすると、夏の山・冬の谷（季節変動）が消えてトレンドだけが残る">
           <MovingAverageChart />
         </Figure>
         <Intuition title="なぜ12か月で季節変動が消えるの？">
@@ -103,7 +107,7 @@ export default function Lesson() {
 
       <Section title="自己相関：ずらした自分自身との相関">
         <p>
-          相関係数は、2つの変数（身長と体重など）がどれくらい一緒に動くかを表す数でした。<strong>自己相関</strong>（<strong>系列相関</strong>ともいう）は、
+          <Link to="/lessons/bivariate-scatter-correlation">相関係数</Link>は、2つの変数（身長と体重など）がどれくらい一緒に動くかを表す数でした。<strong>自己相関</strong>（<strong>系列相関</strong>ともいう）は、
           <strong>同じ時系列を k 時点ずらして</strong>、元の系列との相関を見たものです。ずらす幅 k を<strong>ラグ</strong>（遅れ）といいます。
         </p>
         <p>
@@ -118,6 +122,14 @@ export default function Lesson() {
         <MathBlock caption="分子：k 時点はなれた2つの偏差の積を足したもの。分母：全体の偏差の2乗の合計">
           {'r_k = \\frac{\\sum_{t=1}^{n-k}(x_t - \\bar{x})(x_{t+k} - \\bar{x})}{\\sum_{t=1}^{n}(x_t - \\bar{x})^2}'}
         </MathBlock>
+        <ul>
+          <li>
+            分子の <M>{'\\sum_{t=1}^{n-k}'}</M> は「t = 1 から n − k まで足す」という意味です（<Link to="/lessons/math-sigma">Σ記号のレッスン</Link>）。
+            k 時点ずらすと、最後の k 個には組になる相手がないので、組は n − k 組になります。
+          </li>
+          <li>平均 <M>{'\\bar{x}'}</M> は、ずらした組ごとに計算し直さず、<strong>系列全体の平均</strong>を使います。</li>
+          <li>分母は、どのラグでも同じ「系列全体の偏差の2乗の合計」です。</li>
+        </ul>
         <Example title="小さなデータで計算してみよう">
           <p>右上がりのデータ 1, 2, 3, 4, 5 で計算します。平均は3、偏差は −2, −1, 0, 1, 2、偏差の2乗の合計（分母）は 4 + 1 + 0 + 1 + 4 = 10 です。</p>
           <Steps>
@@ -140,7 +152,7 @@ export default function Lesson() {
           ラグ <M>{'k = 1, 2, 3, \\dots'}</M> の自己相関を順に棒グラフにしたものが<strong>コレログラム</strong>です。
           形を見ると、その系列にどんな成分が含まれているかの見当がつきます。ボタンで系列を切り替えて比べてください。
         </p>
-        <Figure caption="上が元の系列、下がそのコレログラム（オレンジの棒がラグ12と24）">
+        <Figure caption="上が元の系列、下がそのコレログラム（オレンジの棒がラグ12と24）。見るところは「棒がどのラグで高くなるか（山の位置）」と「ラグが大きくなるにつれてどう減るか」">
           <Correlogram />
         </Figure>
         <TextTable
@@ -174,6 +186,7 @@ export default function Lesson() {
             <li>
               いくつかの時系列グラフとコレログラムを見比べ、どのグラフがどのコレログラムに対応するかを選ぶ問題。季節性（周期の位置の山）とトレンド（ゆっくり減る）がヒントになる。
             </li>
+            <li>時系列データの処理は、受験記などで出題が多めの分野として挙げられています。移動平均・自己相関の手計算は、小さな数で何度か練習しておくと本番で迷いません。</li>
           </ul>
         </ExamTip>
       </Section>

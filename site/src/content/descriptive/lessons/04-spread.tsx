@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom'
 import { Compare, Card, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
-import { DeviationPlot } from '../figures/DeviationPlot'
+import { DeviationPlot, SpreadShapes } from '../figures/DeviationPlot'
 
 export const meta: LessonMeta = {
   id: 'descriptive-spread',
@@ -18,8 +19,8 @@ export default function Lesson() {
     <>
       <Point>
         <p>
-          <strong>分散</strong>は「平均からのはなれ具合を2乗して、平均したもの」。<strong>標準偏差</strong>はそのルートで、
-          「データは平均からだいたい何点くらいはなれているか」を表します。
+          <strong>分散</strong>は「平均からのはなれ具合を2乗して、（ほぼ）平均したもの」。<strong>標準偏差</strong>はそのルート（平方根）で、
+          「データは平均からだいたい何点くらいはなれているか」を表します。どちらも、大きいほどデータが散らばっています。
         </p>
       </Point>
 
@@ -56,6 +57,10 @@ export default function Lesson() {
             ルートをとる：<M>{'\\sqrt{5} \\approx 2.24'}</M>　← これが<strong>標準偏差</strong>
           </li>
         </Steps>
+        <p className="small muted">
+          ※ <M>{'\\sqrt{5}'}</M>（ルート5）は「2乗すると 5 になる正の数」で、<M>{'2.24 \\times 2.24 \\approx 5'}</M> です。<M>{'\\approx'}</M> は「だいたい等しい」の記号。
+          ルートに自信がなければ<Link to="/lessons/math-square-root">「2乗と平方根（ルート）」</Link>へ。
+        </p>
         <DataTable
           head={['データ x', '偏差 x − 5', '偏差の2乗']}
           rows={[
@@ -77,21 +82,26 @@ export default function Lesson() {
 
       <Section title="定義・式">
         <p>
-          データを <M>{'x_1, x_2, \\dots, x_n'}</M>、平均を <M>{'\\bar{x}'}</M>（エックスバー）と書くと、分散 <M>{'s^2'}</M> は次の式です。
+          データを <M>{'x_1, x_2, \\dots, x_n'}</M>（1番目から n 番目のデータ）、平均を <M>{'\\bar{x}'}</M>（エックスバー）と書きます。
+          <M>{'x_i - \\bar{x}'}</M> が i 番目の偏差、<M>{'\\sum'}</M> は「全部足す」の記号です（<Link to="/lessons/math-sigma">Σ記号の復習</Link>）。
+          上の手順をそのまま式にすると、次のようになります。
         </p>
-        <MathBlock caption="偏差の2乗を全部足して、n で割る">{'s^2 = \\frac{1}{n}\\sum_{i=1}^{n}(x_i - \\bar{x})^2'}</MathBlock>
+        <MathBlock caption="偏差の2乗を全部足して、n で割る（n で割る分散）">{'\\frac{1}{n}\\sum_{i=1}^{n}(x_i - \\bar{x})^2'}</MathBlock>
         <p>
-          ただし統計検定2級の出題範囲表では、分散は「<strong>n − 1 で割る</strong>」ものとされています。n − 1 で割ったものは
-          <strong>不偏分散</strong>とも呼ばれます（なぜ n − 1 なのかは「推定」の章で説明します）。
+          ただし統計検定2級の出題範囲表には「<strong>分散（n-1で割る）</strong>」と書かれています（統計検定2級 出題範囲表、2018年12月14日版）。
+          そこでこのサイトでも、ただ「分散」と書いたときは n − 1 で割るものを指し、記号 <M>{'s^2'}</M> で表します。n − 1 で割ったものは
+          <strong>不偏分散</strong>とも呼ばれます（なぜ n − 1 なのかは<Link to="/lessons/estimation-point">「点推定」のレッスン</Link>で説明します）。
         </p>
-        <MathBlock caption="n − 1 で割る分散（不偏分散）">{'s^2 = \\frac{1}{n-1}\\sum_{i=1}^{n}(x_i - \\bar{x})^2'}</MathBlock>
+        <MathBlock caption="n − 1 で割る分散（このサイトでの s²）">{'s^2 = \\frac{1}{n-1}\\sum_{i=1}^{n}(x_i - \\bar{x})^2'}</MathBlock>
         <p>
-          B班なら <M>{'20 \\div 3 \\approx 6.67'}</M>、標準偏差は <M>{'\\sqrt{6.67} \\approx 2.58'}</M> になります。
-          標準偏差はどちらの場合も「分散のルート」です。
+          B班なら、偏差の2乗の合計 20 を <M>{'n - 1 = 3'}</M> で割って <M>{'20 \\div 3 \\approx 6.67'}</M>、標準偏差は <M>{'\\sqrt{6.67} \\approx 2.58'}</M> です（n で割ると分散 5、標準偏差 2.24）。
+          標準偏差はどちらの場合も「分散のルート」です。n が大きいと、2つの差はほとんどなくなります。
         </p>
-        <MathBlock caption="計算を楽にする式：2乗の平均 − 平均の2乗（n で割る分散のとき）">{'s^2 = \\overline{x^2} - \\bar{x}^2'}</MathBlock>
+        <MathBlock caption="計算を楽にする式：2乗の平均 − 平均の2乗（n で割る分散になる）">{'\\frac{1}{n}\\sum_{i=1}^{n}(x_i - \\bar{x})^2 = \\overline{x^2} - \\bar{x}^2'}</MathBlock>
         <p>
-          B班で確かめると、2乗の平均は <M>{'(4+16+36+64) \\div 4 = 30'}</M>、平均の2乗は <M>{'5^2 = 25'}</M> で、差は 5。上の結果と一致します。
+          <M>{'\\overline{x^2}'}</M> は「各データを2乗してから平均したもの」、<M>{'\\bar{x}^2'}</M> は「平均を2乗したもの」です。B班で確かめると、
+          2乗の平均は <M>{'(4+16+36+64) \\div 4 = 30'}</M>、平均の2乗は <M>{'5^2 = 25'}</M> で、差は 5。n で割った分散と一致します。
+          n − 1 で割る分散がほしいときは、これを <M>{'\\frac{n}{n-1}'}</M> 倍します（<M>{'5 \\times \\frac{4}{3} \\approx 6.67'}</M>）。
         </p>
       </Section>
 
@@ -111,6 +121,21 @@ export default function Lesson() {
         <Figure caption="スライダーでデータを広げると、偏差は k 倍・分散は k² 倍・標準偏差は k 倍になる">
           <DeviationPlot data={[2, 4, 6, 8]} interactive />
         </Figure>
+      </Section>
+
+      <Section title="ヒストグラムから標準偏差の大小を見分ける">
+        <p>
+          試験では、計算せずに図を見て「どちらの標準偏差が大きいか」を答える問題も出ます。下の3つは、どれも値が 1〜9、平均 5 で、<strong>範囲（最大 − 最小）も同じ</strong>です。
+        </p>
+        <Figure caption="見るところ：平均（真ん中の5）から遠い値に、どれだけ人がいるか。山形 < 一様 < U字形 の順に標準偏差が大きい">
+          <SpreadShapes />
+        </Figure>
+        <Intuition title="範囲が同じでも標準偏差は違う">
+          <p>
+            標準偏差は「平均からの距離」をすべてのデータで平均したようなものです。山形は多くの人が5の近くにいるので小さく、U字形は多くの人が両端（1や9）にいるので大きくなります。
+            範囲は両端の2つの値しか見ないので、この違いをとらえられません。
+          </p>
+        </Intuition>
       </Section>
 
       <Section title="よくある勘違い">
@@ -136,7 +161,7 @@ export default function Lesson() {
         <ExamTip>
           <ul>
             <li>少ないデータの分散・標準偏差を電卓で計算させる問題。「2乗の平均 − 平均の2乗」を使うと速い。</li>
-            <li>ヒストグラムや箱ひげ図を見て、どちらのグループの標準偏差が大きいかを選ぶ問題。</li>
+            <li>ヒストグラムや箱ひげ図を見て、どちらのグループの標準偏差が大きいかを選ぶ問題。「平均から遠いところにデータが多いほど大きい」で判断する。</li>
             <li>データを「a倍してbを足す」変換をしたときの、平均・分散・標準偏差の変化を問う問題。</li>
           </ul>
         </ExamTip>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import { NormalArea } from '../../../components/charts/common'
@@ -26,7 +27,7 @@ export default function Lesson() {
           </li>
           <li>
             <strong>中心極限定理</strong>：n が大きければ、母集団がどんな形の分布でも、標本平均の分布は正規分布
-            <M>{'N(\\mu, \\sigma^2/n)'}</M> で近似できる。
+            <M>{'N(\\mu, \\sigma^2/n)'}</M>（平均 μ・分散 σ²/n の正規分布）で近似できる。
           </li>
           <li>
             <strong>チェビシェフの不等式</strong>：どんな分布でも「平均から標準偏差の k 倍以上はなれる確率は <M>{'1/k^2'}</M> 以下」。
@@ -59,6 +60,10 @@ export default function Lesson() {
           大数の法則は「μ に近づく」ことを言いますが、「μ のまわりにどんな形でばらつくか」までは言いません。それを教えてくれるのが
           <strong>中心極限定理</strong>です。
         </p>
+        <p className="muted">
+          記号の確認：<M>{'N(\\mu, \\sigma^2)'}</M> は「平均 μ・分散 σ² の正規分布」です。かっこの 2 つ目は標準偏差ではなく<strong>分散</strong>なので、
+          <M>{'N(500, 10^2)'}</M> なら標準偏差は 10 です（<Link to="/lessons/distributions-normal">「正規分布と標準正規分布表」</Link>）。
+        </p>
         <Figure caption="もとの分布が右に長い（待ち時間）でも平ら（サイコロ）でも、n を大きくすると標本平均のヒストグラムはオレンジの正規曲線に重なっていく">
           <CltDemo />
         </Figure>
@@ -71,9 +76,24 @@ export default function Lesson() {
         <MathBlock caption="中心極限定理：n が大きいとき、標本平均はおよそ正規分布に従う（≈ は「近似的に」の意味）">{'\\bar{X} \\approx N\\left(\\mu,\\ \\frac{\\sigma^2}{n}\\right)'}</MathBlock>
         <MathBlock caption="標準化すると、およそ標準正規分布に従う">{'Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\approx N(0, 1)'}</MathBlock>
         <p>
+          標準化（<Link to="/lessons/descriptive-standardize">「標準化と変動係数」</Link>）は「平均を引いて、標準偏差で割る」でした。ここで割るのは
+          <strong>標本平均の</strong>標準偏差、つまり標準誤差 <M>{'\\sigma/\\sqrt{n}'}</M> です。1 人ぶんの σ で割らないように注意します。
+        </p>
+        <p className="muted">
+          細かい条件：母集団の分散 σ² が存在すること（ふつうの問題ではいつも満たされる）と、n 個の値が独立であることが前提です。
+        </p>
+        <p>
           母集団がもともと正規分布なら、n が小さくても標本平均は<strong>ぴったり</strong>正規分布に従います。中心極限定理のありがたさは、
           母集団が正規分布で<strong>なくても</strong>、n が大きければ正規分布で計算してよい、という点にあります。
         </p>
+        <DataTable
+          head={['知りたいもの', '期待値', '分散', '標準偏差', 'n が大きいとき']}
+          rows={[
+            ['標本平均 X̄', <M key="a">{'\\mu'}</M>, <M key="b">{'\\sigma^2/n'}</M>, <M key="c">{'\\sigma/\\sqrt{n}'}</M>, <M key="d">{'N(\\mu,\\ \\sigma^2/n)'}</M>],
+            ['合計 X₁ + … + Xₙ', <M key="e">{'n\\mu'}</M>, <M key="f">{'n\\sigma^2'}</M>, <M key="g">{'\\sqrt{n}\\,\\sigma'}</M>, <M key="h">{'N(n\\mu,\\ n\\sigma^2)'}</M>],
+          ]}
+          caption="中心極限定理は合計にも使える。合計 = n × 平均 なので、どちらで計算しても同じ確率になる"
+        />
         <Example title="計算してみよう：電池の寿命">
           <p>
             ある電池の寿命は平均 500 時間・標準偏差 100 時間で、分布の形はわかりません。100 個を選んだとき、平均寿命が 515 時間以上になる確率は？
@@ -89,7 +109,7 @@ export default function Lesson() {
               標準化：<M>{'z = (515 - 500)/10 = 1.5'}</M>
             </li>
             <li>
-              正規分布表から <M>{'P(Z \\ge 1.5) = 0.0668'}</M>。約 6.7% です。
+              正規分布表で「1.5」の上側確率を引くと <M>{'P(Z \\ge 1.5) = 0.0668'}</M>。約 6.7% です。
             </li>
           </Steps>
           <NormalArea from={1.5} to={10} />
@@ -128,6 +148,17 @@ export default function Lesson() {
             チェビシェフの不等式を標本平均（標準偏差 <M>{'\\sigma/\\sqrt{n}'}</M>）にあてはめると、「標本平均が μ から一定以上はなれる確率」の上限は
             n を大きくすると 0 に近づきます。これが大数の法則の理由づけになります。
           </p>
+          <Steps>
+            <li>
+              「μ から ε（イプシロン：小さな正の数）以上はなれる」を、標準誤差の何倍かで言いかえる：<M>{'\\varepsilon = k \\times \\sigma/\\sqrt{n}'}</M> なので
+              <M>{'k = \\varepsilon\\sqrt{n}/\\sigma'}</M>
+            </li>
+            <li>
+              上限は <M>{'1/k^2 = \\sigma^2/(n\\varepsilon^2)'}</M>
+            </li>
+            <li>n を大きくすると分母が大きくなり、上限は 0 に近づく。</li>
+          </Steps>
+          <MathBlock caption="標本平均に対するチェビシェフの不等式">{'P(|\\bar{X} - \\mu| \\ge \\varepsilon) \\le \\frac{\\sigma^2}{n\\varepsilon^2}'}</MathBlock>
         </Intuition>
       </Section>
 
@@ -156,6 +187,9 @@ export default function Lesson() {
           <ul>
             <li>大数の法則・中心極限定理の説明として正しい文を選ぶ問題。何が何に近づくのかを正確に。</li>
             <li>分布の形がわからない母集団から n 個とったとき、標本平均（や合計）がある範囲に入る確率を正規分布で近似する問題。</li>
+            <li>
+              「標準化した式として正しいもの」を選ぶ問題。分母が <M>{'\\sigma/\\sqrt{n}'}</M> か、σ か、<M>{'\\sigma^2/n'}</M> かを見分ける。
+            </li>
             <li>チェビシェフの不等式で、確率の上限（または下限）を求める問題。「平均から何σはなれているか」をまず計算する。</li>
           </ul>
         </ExamTip>

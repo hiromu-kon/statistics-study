@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -29,7 +30,7 @@ export default function Lesson() {
 
       <Section title="成長率：前の年より何%増えた？">
         <p>ある店の売上（万円）を5年分ならべ、各年の成長率を棒の上に書きました。</p>
-        <Figure caption="棒が売上、上の数字が前の年からの成長率（緑は増加、赤は減少）">
+        <Figure caption="棒が売上、上の数字が前の年からの成長率（緑は増加、赤は減少）。2023年だけ棒が低くなり、成長率がマイナスになっている">
           <SalesGrowthBars years={YEARS} values={SALES} />
         </Figure>
         <p>
@@ -37,7 +38,8 @@ export default function Lesson() {
           <M>{'40 \\div 200 = 0.2'}</M>、つまり <strong>+20%</strong> です。
         </p>
         <p>
-          時点 <M>{'t'}</M> の値を <M>{'x_t'}</M>、1つ前の時点の値を <M>{'x_{t-1}'}</M> と書くと、成長率 <M>{'r_t'}</M> は次の式です。
+          時点 <M>{'t'}</M> の値を <M>{'x_t'}</M>（エックス・ティー）、1つ前の時点の値を <M>{'x_{t-1}'}</M> と書くと、成長率 <M>{'r_t'}</M> は次の式です。
+          たとえば t = 2021年なら、<M>{'x_t'}</M> は2021年の売上 240、<M>{'x_{t-1}'}</M> は2020年の売上 200 です。
         </p>
         <MathBlock caption="成長率：前の時点と比べて、何割増えたか（増えた分 ÷ 前の時点の値）">{'r_t = \\frac{x_t - x_{t-1}}{x_{t-1}} = \\frac{x_t}{x_{t-1}} - 1'}</MathBlock>
         <p>
@@ -79,6 +81,20 @@ export default function Lesson() {
       </Section>
 
       <Section title="幾何平均：掛け算の平均">
+        <MathNote title="「n 乗根」とは">
+          <p>
+            <M>{'\\sqrt{a}'}</M>（ルート a、2乗根）は「2回掛けると a になる正の数」でした（<Link to="/lessons/math-square-root">「2乗と平方根」のレッスン</Link>）。
+            同じように、「3回掛けると a になる数」を <M>{'\\sqrt[3]{a}'}</M>（3乗根）、「4回掛けると a になる数」を <M>{'\\sqrt[4]{a}'}</M>（4乗根）と書きます。
+          </p>
+          <ul>
+            <li>
+              <M>{'2 \\times 2 \\times 2 = 8'}</M> なので <M>{'\\sqrt[3]{8} = 2'}</M>
+            </li>
+            <li>
+              <M>{'3 \\times 3 \\times 3 \\times 3 = 81'}</M> なので <M>{'\\sqrt[4]{81} = 3'}</M>
+            </li>
+          </ul>
+        </MathNote>
         <p>
           「毎年同じ率で成長したとしたら、何%ずつなら同じ結果になるか」を考えます。2年で 1.5倍 × 0.5倍 = 0.75倍 になったので、
           毎年 <M>{'g'}</M> 倍とすると <M>{'g \\times g = 0.75'}</M>。つまり <M>{'g = \\sqrt{0.75} \\approx 0.866'}</M>。
@@ -168,6 +184,10 @@ export default function Lesson() {
             <li>数年分の成長率（または値）が表で与えられ、平均成長率を幾何平均で求める問題。√を2回押す計算や、選択肢を3乗して確かめる計算が多い。</li>
             <li>「最初と最後の値」だけから、n 年間の平均成長率 <M>{'\\sqrt[n]{x_n / x_0} - 1'}</M>（<M>{'x_0'}</M> が最初、<M>{'x_n'}</M> が最後の値） を求める問題。</li>
             <li>基準年=100 の指数の表やグラフを読み、別の年を基準にした値や、ある期間の伸び率を求める問題。</li>
+            <li>
+              指数の表から「正しい記述を選ぶ」問題では、<strong>ポイント（指数の差）と % （伸び率）の取り違え</strong>と、
+              <strong>指数だけでは元の量どうしの大小はわからない</strong>こと（基準年の値がちがえば、同じ指数でも量はちがう）がよく使われるひっかけです。
+            </li>
           </ul>
         </ExamTip>
       </Section>

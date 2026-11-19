@@ -9,6 +9,13 @@ export const glossary: GlossaryTerm[] = [
     easy: '「当たりかはずれか」のように、結果が2つしかない1回の試し。',
   },
   {
+    term: 'ベルヌーイ分布',
+    reading: 'べるぬーいぶんぷ',
+    lesson: 'distributions-binomial',
+    meaning: '1回のベルヌーイ試行で、成功なら1、失敗なら0をとる確率変数の分布。期待値 $p$、分散 $p(1-p)$。二項分布 $B(1, p)$ と同じ。',
+    easy: '1回だけ試したときの「当たりなら1、はずれなら0」の分布。',
+  },
+  {
     term: '二項分布',
     reading: 'にこうぶんぷ',
     lesson: 'distributions-binomial',

@@ -6,8 +6,8 @@ import { colorVar, usePlot, type Color } from '../../../components/charts/Plot'
 
 /**
  * 色つきの文字。
- * 共通の Label は CSS の .plot-annot { fill } が fill 属性より優先されて色が効かないため、
- * style で fill を指定するこちらを使う。
+ * 共通の Label に色が付かなかった時期に作った部品。今は Label でも同じ表示になるが、
+ * この章の図はこの部品で位置を調整しているので置き換えていない。
  */
 export function Text({
   x,

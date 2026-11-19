@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -44,7 +45,12 @@ export default function Lesson() {
       <Section title="定義・式">
         <MathBlock caption="z 得点：偏差（x − x̄）を標準偏差 s で割る">{'z = \\frac{x - \\bar{x}}{s}'}</MathBlock>
         <p>
-          どんなデータでも、全員の値を標準化すると<strong>平均 0・標準偏差 1</strong>になります。z が正なら平均より上、負なら下です。
+          <M>{'x'}</M> は1人の値、<M>{'\\bar{x}'}</M>（エックスバー）は平均、<M>{'s'}</M> は<Link to="/lessons/descriptive-spread">標準偏差</Link>です。
+          分子の <M>{'x - \\bar{x}'}</M> は偏差（平均からのずれ）なので、z は「偏差が標準偏差の何個ぶんか」を表します。
+        </p>
+        <p>
+          どんなデータでも、全員の値を標準化すると<strong>平均 0・標準偏差 1</strong>になります（標準偏差を n で割って求めても n − 1 で割って求めても、同じほうで計算すればそうなります）。
+          z が正なら平均より上、負なら下です。
         </p>
         <MathBlock caption="偏差値：z 得点を「平均50・標準偏差10」の目盛りに直したもの">{'T = 50 + 10z'}</MathBlock>
         <p>
@@ -66,6 +72,16 @@ export default function Lesson() {
           <LinearTransform />
         </Figure>
         <MathBlock caption="平均は同じ変換を受け、分散は a² 倍、標準偏差は |a| 倍">{'\\bar{y} = a\\bar{x} + b, \\qquad s_y^2 = a^2 s_x^2, \\qquad s_y = |a|\\, s_x'}</MathBlock>
+        <p>
+          <M>{'s_x, s_y'}</M> は x と y の標準偏差です。<M>{'|a|'}</M> は a の<strong>絶対値</strong>（マイナスの符号をとった大きさ）で、<M>{'|-2| = 2'}</M>、<M>{'|3| = 3'}</M> です。
+          a がマイナスだと並び順はひっくり返りますが、散らばりの大きさはマイナスになりようがないので、標準偏差は |a| 倍になります。
+        </p>
+        <Example title="なぜ b は散らばりに効かないのか（3つのデータで確かめる）">
+          <p>
+            データ 1, 2, 3（平均 2）を「2倍して10を足す」と 12, 14, 16（平均 <M>{'2 \\times 2 + 10 = 14'}</M>）。
+            偏差は、元が −1, 0, +1、変換後が −2, 0, +2 で、ちょうど2倍。足した10は平均も一緒に10ずらすので、偏差には残りません。
+          </p>
+        </Example>
         <Example title="℃ から °F へ">
           <p>
             ある月の最高気温が平均 20℃、標準偏差 5℃ だったとします。°F では平均 <M>{'1.8 \\times 20 + 32 = 68'}</M>°F、標準偏差 <M>{'1.8 \\times 5 = 9'}</M>°F。
@@ -120,6 +136,13 @@ export default function Lesson() {
         <p>
           パンの2026年は <M>{'250 \\div 200 \\times 100 = 125'}</M>。基準より25%上がった、と読みます。消費者物価指数なども、この考え方で作られています。
         </p>
+        <Example title="基準年以外の2つの年を比べるとき">
+          <p>
+            パンの2023年から2026年への値上がり率は、指数の差 <M>{'125 - 115 = 10'}</M> をそのまま「10%」と読むのではなく、
+            比をとって <M>{'125 \\div 115 \\approx 1.087'}</M>、つまり約 <strong>8.7%</strong> です（円で計算しても <M>{'250 \\div 230 \\approx 1.087'}</M> で同じ）。
+            指数の差が「%」と一致するのは、基準年（100）と比べるときだけです。
+          </p>
+        </Example>
       </Section>
 
       <Section title="よくある勘違い">
@@ -128,7 +151,10 @@ export default function Lesson() {
             <li>点数が高いほうが「クラスの中で上」→ 平均と標準偏差が違えば、z 得点で比べないとわかりません。</li>
             <li>全員に10点足すと標準偏差も変わる → 変わりません（全員が同じだけずれるだけ）。ただし<strong>変動係数は変わります</strong>（平均が変わるため）。</li>
             <li>2倍すると分散も2倍 → 分散は <strong>4倍</strong>、標準偏差が2倍です。</li>
-            <li>偏差値60は「上位60%」→ 偏差値60は z = 1。分布が正規分布に近ければ上位およそ16%です。</li>
+            <li>
+              偏差値60は「上位60%」→ 偏差値60は z = 1。分布が<Link to="/lessons/distributions-normal">正規分布</Link>（左右対称のベル型の分布）に近ければ上位およそ16%です。
+            </li>
+            <li>指数が 115 から 125 に上がったので10%上昇 → 基準年以外どうしは比で比べます（約8.7%）。</li>
           </ul>
         </Pitfall>
       </Section>
@@ -139,7 +165,7 @@ export default function Lesson() {
             <li>平均と標準偏差が違う2つのテストの点数を、z 得点（標準化）で比べる問題。</li>
             <li>単位変換（℃→°F、円→ドルなど）や「a倍してbを足す」変換をしたあとの平均・分散・標準偏差を求める問題。</li>
             <li>平均の大きさが違う2つのデータの散らばりを、変動係数で比べる問題。</li>
-            <li>基準年を100とした指数を計算する問題。</li>
+            <li>基準年を100とした指数を計算する問題。基準年を変えたときの指数や、基準年以外の2時点の変化率を問う問題。</li>
           </ul>
         </ExamTip>
       </Section>

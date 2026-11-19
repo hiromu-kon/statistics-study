@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
 import type { LessonMeta } from '../../../types'
 import { TextTable } from '../figures/TextTable'
@@ -29,18 +30,19 @@ export default function Lesson() {
           ある市で「新しい公園をつくることに賛成か」を知りたいとします。本当に知りたいのは<strong>市民全員</strong>の賛成率で、これが<strong>母集団</strong>です。
           でも全員に聞くのは大変なので、一部の人を選んで聞きます。選ばれた人たちが<strong>標本</strong>で、選んだ人数を<strong>標本の大きさ</strong>（標本サイズ）といいます。
         </p>
-        <Figure caption="標本の賛成率は、選び直すたびに少しずつちがう。標本を大きくすると、母集団の40%に近い値が出やすくなる">
+        <Figure caption="標本の賛成率は、選び直すたびに少しずつちがう。標本の大きさ n のスライダーを大きくすると、母集団の40%に近い値が出やすくなる">
           <PopulationSample />
         </Figure>
         <p>
-          標本から母集団のことを推しはかるのが「推測統計」です。そのためには、標本が母集団の<strong>縮図</strong>になるように選ぶことが大切です（選び方は次のレッスン）。
+          標本から母集団のことを推しはかるのが「推測統計」です（<Link to="/chapters/sampling">「標本分布」の章</Link>から本格的に扱います）。
+          そのためには、標本が母集団の<strong>縮図</strong>（全体をそのまま小さくしたもの）になるように選ぶことが大切です（選び方は<Link to="/lessons/collection-sampling-methods">次のレッスン</Link>）。
         </p>
       </Section>
 
       <Section title="全数調査と標本調査">
         <p>
           母集団の全員（全部）を調べるのが<strong>全数調査</strong>（悉皆調査ともいう）、一部を選んで調べるのが<strong>標本調査</strong>です。
-          日本の<strong>国勢調査</strong>は、国内に住むすべての人と世帯を対象にする全数調査です（<a href="https://www.stat.go.jp/data/kokusei/2020/gaiyou.html" target="_blank" rel="noreferrer">総務省統計局「令和2年国勢調査 調査の概要」</a>、2026年11月19日参照）。テレビの視聴率調査や内閣支持率の世論調査は標本調査です。
+          日本の<strong>国勢調査</strong>は、国内に住むすべての人と世帯（外国人も含む。外国の外交官や軍人などごく一部を除く）を対象にする全数調査です（<a href="https://www.stat.go.jp/data/kokusei/2020/gaiyou.html" target="_blank" rel="noreferrer">総務省統計局「令和2年国勢調査 調査の概要」</a>、2026年11月19日参照）。テレビの視聴率調査や内閣支持率の世論調査は標本調査です。
         </p>
         <Compare>
           <Card title="全数調査">
@@ -67,6 +69,25 @@ export default function Lesson() {
             <li>毎週の内閣支持率：毎週全国民に聞くことは時間的にもお金の面でもできない。</li>
           </ul>
         </Example>
+      </Section>
+
+      <Section title="調査の設計：調べる前に決めること">
+        <p>
+          調査で失敗しないためには、データを集める<strong>前</strong>に、次のことを順に決めておきます。これを<strong>調査の設計</strong>といいます。
+        </p>
+        <TextTable
+          head={['決めること', '公園の例']}
+          rows={[
+            ['① 目的：何を知りたいか', '新しい公園への賛成率'],
+            ['② 母集団：誰について知りたいか', 'この市に住む18歳以上の市民全員'],
+            ['③ 全数か標本か、標本ならその大きさ', '標本調査で1000人'],
+            ['④ 標本の選び方（抽出法）', '住民の名簿から無作為に選ぶ（次のレッスン）'],
+            ['⑤ 調べ方と質問の文', '郵送で回答。答えを誘導しない、中立な聞き方にする'],
+          ]}
+        />
+        <p>
+          ② の母集団と、④ で実際に選べる名簿の範囲がずれていたり、⑤ の聞き方が偏っていたりすると、人数をいくら増やしても結果がずれます（「偏り」として次のレッスンで扱います）。
+        </p>
       </Section>
 
       <Section title="観察研究と実験研究">
@@ -125,6 +146,10 @@ export default function Lesson() {
             <li>調査の説明文を読み、観察研究か実験研究か、全数調査か標本調査かを判定する問題。</li>
             <li>「この調査の母集団は何か」「標本は何か」を選ぶ問題。</li>
             <li>観察研究の結果から言えること・言えないこと（因果の主張、交絡因子の可能性）を選ぶ問題。</li>
+            <li>
+              判定のポイントは「処理（薬・教え方など）を<strong>誰が決めたか</strong>」です。調べる側が割り当てていれば実験研究、本人の希望や生まれつきの状態で群が決まっていれば観察研究です。
+              <Link to="/lessons/bivariate-spurious-partial">みかけの相関</Link>のレッスンで見た「相関があっても因果とは限らない」と同じ話です。
+            </li>
           </ul>
         </ExamTip>
       </Section>

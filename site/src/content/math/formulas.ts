@@ -16,6 +16,13 @@ export const formulas: Formula[] = [
     tex: 'p = \\frac{A}{B}, \\qquad A = B \\times p',
     note: 'p が割合、A が比べる量、B がもとにする量。相対度数・確率・標本比率は、どれもこの「全体のうちどれだけか」の形。',
   },
+  {
+    id: 'math-increase-rate',
+    lesson: 'math-fraction-percent',
+    title: '増加率（何%増えたか）',
+    tex: '\\frac{\\text{new} - \\text{old}}{\\text{old}}',
+    note: 'new が後の値、old が前の値。もとにする量は**前の値**。80 → 100 なら $\\frac{20}{80} = 0.25$ で25%増。時系列の成長率で使う。',
+  },
 
   // 文字式と方程式
   {
@@ -30,7 +37,14 @@ export const formulas: Formula[] = [
     lesson: 'math-algebra',
     title: '標準化の式と、その逆',
     tex: 'z = \\frac{x - \\mu}{\\sigma} \\iff x = \\mu + z\\sigma',
-    note: '元の値 x を z に直す式と、z から元の値に戻す式。正規分布表を使ったあと、元の単位に戻すときに使う。',
+    note: '元の値 x を z に直す式と、z から元の値に戻す式（$\\iff$ は「どちらの形に変形しても同じ意味」という記号）。正規分布表を使ったあと、元の単位に戻すときに使う。',
+  },
+  {
+    id: 'math-square-expansion',
+    lesson: 'math-algebra',
+    title: '2乗の展開',
+    tex: '(x - a)^2 = x^2 - 2ax + a^2',
+    note: '真ん中の $-2ax$ を忘れやすい。分散の式 $\\sum (x_i - \\bar{x})^2 = \\sum x_i^2 - n\\bar{x}^2$ を導くときに使う。',
   },
 
   // 2乗と平方根
@@ -63,6 +77,13 @@ export const formulas: Formula[] = [
     title: '偏差の2乗の合計',
     tex: '\\sum_{i=1}^{n} (x_i - \\bar{x})^2 = \\sum_{i=1}^{n} x_i^2 - n\\bar{x}^2',
     note: '$\\sum x_i$ と $\\sum x_i^2$ だけがわかっているときに、分散を求めるのに使う。',
+  },
+  {
+    id: 'math-frequency-mean',
+    lesson: 'math-sigma',
+    title: '度数分布表の平均',
+    tex: '\\bar{x} = \\frac{1}{n} \\sum_{k} x_k f_k, \\qquad n = \\sum_{k} f_k',
+    note: '$x_k$ が値、$f_k$ がその度数（何回出たか）。「値 × 度数」を全部足して、度数の合計で割る。値の種類の数で割らない。',
   },
 
   // 関数・グラフ・面積

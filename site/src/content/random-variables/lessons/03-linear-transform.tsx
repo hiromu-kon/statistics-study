@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -22,6 +23,9 @@ export default function Lesson() {
           <M>{'Y = aX + b'}</M> のとき、期待値は同じ計算で <M>{'aE(X) + b'}</M>。分散は <M>{'a^2 V(X)'}</M> で、<strong>足した b は分散に関係しません</strong>。
           全体を横にずらしても、散らばり方は変わらないからです。標準偏差は <M>{'|a|'}</M> 倍になります。
         </p>
+        <p className="small">
+          <M>{'|a|'}</M> は a の<strong>絶対値</strong>（マイナスをとった大きさ）です。たとえば <M>{'|-2| = 2'}</M>、<M>{'|3| = 3'}</M>。
+        </p>
       </Point>
 
       <Section title="具体例：お店の利益">
@@ -31,7 +35,8 @@ export default function Lesson() {
         </p>
         <MathBlock caption="利益 = 300 × 売れた数 − 固定費">{'Y = 300X - 2000'}</MathBlock>
         <p>
-          のように、<M>{'X'}</M> を <strong>a 倍して b を足した形</strong>（1次変換）になります。売れる数の期待値が40個、標準偏差が5個なら、利益の期待値と標準偏差はいくらでしょうか。
+          のように、<M>{'X'}</M> を <strong>a 倍して b を足した形</strong>（1次変換）になります。この例では <M>{'a = 300'}</M>、<M>{'b = -2000'}</M> です。
+          「1次」は、中学の1次関数 <M>{'y = ax + b'}</M> と同じく、X が2乗などされずに1乗のまま入っている、という意味です。売れる数の期待値が40個、標準偏差が5個なら、利益の期待値と標準偏差はいくらでしょうか。
         </p>
         <Steps>
           <li>
@@ -41,7 +46,7 @@ export default function Lesson() {
             標準偏差：1個売れる数がずれると利益は300円ずれるので、<M>{'300 \\times 5 = 1500'}</M> 円。固定費の2000円は毎日同じなので、ばらつきには影響しません。
           </li>
           <li>
-            分散：<M>{'300^2 \\times 5^2 = 2250000'}</M>（<M>{'= 1500^2'}</M>）。
+            分散：<M>{'V(Y) = 300^2 \\times V(X) = 90000 \\times 25 = 2250000'}</M>（<M>{'V(X) = 5^2 = 25'}</M>）。標準偏差を2乗した <M>{'1500^2'}</M> と同じです。
           </li>
         </Steps>
       </Section>
@@ -51,6 +56,9 @@ export default function Lesson() {
         <MathBlock caption="分散：a の2乗倍になる。b は消える">{'V(aX + b) = a^2\\,V(X)'}</MathBlock>
         <MathBlock caption="標準偏差：|a| 倍になる（マイナスでも散らばりはマイナスにならない）">{'\\sigma_{aX+b} = |a|\\,\\sigma_X'}</MathBlock>
         <MathNote title="なぜこうなるのか（式で確かめる）">
+          <p>
+            <M>{'\\sum'}</M> は「全部足す」記号です（<Link to="/lessons/math-sigma">「Σ記号と添字」</Link>）。<M>{'\\mu'}</M> は X の期待値 <M>{'E(X)'}</M> のことです。
+          </p>
           <p>
             期待値：<M>{'E(aX + b) = \\sum (a x_i + b) p_i = a \\sum x_i p_i + b \\sum p_i = aE(X) + b'}</M>。最後は確率の合計 <M>{'\\sum p_i = 1'}</M> を使いました。
           </p>
@@ -83,7 +91,7 @@ export default function Lesson() {
         </p>
         <MathBlock caption="標準化：期待値を引いて中心を0にし、標準偏差で割って幅を1にする">{'Z = \\frac{X - \\mu}{\\sigma}'}</MathBlock>
         <p>
-          これは <M>{'a = 1/\\sigma'}</M>、<M>{'b = -\\mu/\\sigma'}</M> の1次変換なので、上の式から
+          分数を2つに分けると <M>{'Z = \\frac{1}{\\sigma} X - \\frac{\\mu}{\\sigma}'}</M> なので、これは <M>{'a = 1/\\sigma'}</M>、<M>{'b = -\\mu/\\sigma'}</M> の1次変換です。上の式から
         </p>
         <MathBlock>{'E(Z) = \\frac{E(X) - \\mu}{\\sigma} = 0, \\qquad V(Z) = \\frac{V(X)}{\\sigma^2} = \\frac{\\sigma^2}{\\sigma^2} = 1'}</MathBlock>
         <Figure caption="① → ② で中心が0に、② → ③ で幅（標準偏差）が1になる。形は変わらない">
@@ -131,7 +139,9 @@ export default function Lesson() {
         <ExamTip>
           <ul>
             <li>単位の変換（円→ドル、℃→℉）や得点の調整で、期待値・分散・標準偏差がどう変わるかを問う問題。</li>
-            <li>標準化して、正規分布表を引く問題（「確率分布」の章で何度も使います）。</li>
+            <li>
+              標準化して、正規分布表を引く問題（<Link to="/lessons/distributions-normal">「正規分布と標準正規分布表」</Link>のレッスンなど、「確率分布」の章で何度も使います）。
+            </li>
             <li>「平均0・分散1にするには a, b をいくつにするか」を問う問題。</li>
           </ul>
         </ExamTip>

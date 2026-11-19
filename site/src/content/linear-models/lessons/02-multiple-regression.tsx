@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Mark, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -21,13 +22,16 @@ export default function Lesson() {
     <>
       <Point>
         <p>
-          <strong>重回帰分析</strong>は、y を2つ以上の x で説明する回帰です。それぞれの係数（<strong>偏回帰係数</strong>）は、
+          <strong>重回帰分析</strong>（じゅうかいきぶんせき）は、y を2つ以上の x で説明する回帰です。それぞれの係数（<strong>偏回帰係数</strong>〈へんかいきけいすう〉）は、
           「<strong>ほかの説明変数を同じ値に固定したとき</strong>、その変数が1増えると y が平均していくつ変わるか」を表します。
         </p>
       </Point>
 
       <Section title="重回帰モデル">
-        <p>説明変数が p 個あるとき、モデルは単回帰を素直に広げた形です。</p>
+        <p>
+          予測したい y を<strong>目的変数</strong>、説明に使う x を<strong>説明変数</strong>といいます。説明変数が p 個あるとき、モデルは単回帰を素直に広げた形です。
+          この章の p は<strong>説明変数の個数</strong>で、p 値の p とは別物です（どちらもよく使う文字なので、文脈で区別します）。
+        </p>
         <MathBlock caption="y を p 個の説明変数の足し算で説明する（ε は誤差項）">{'y_i = \\beta_0 + \\beta_1 x_{1i} + \\beta_2 x_{2i} + \\cdots + \\beta_p x_{pi} + \\varepsilon_i'}</MathBlock>
         <p>
           係数の決め方は単回帰と同じ<strong>最小二乗法</strong>（残差の2乗の合計が最小になるように選ぶ）です。手計算はたいへんなので、
@@ -79,7 +83,7 @@ export default function Lesson() {
         </Intuition>
         <MathBlock caption="推定された重回帰式（家賃[万円]、広さ x1[m²]、徒歩 x2[分]）">{'\\hat{y} = 0.541 + 0.224\\,x_1 - 0.165\\,x_2'}</MathBlock>
         <p>
-          予測は、それぞれの値を代入するだけです。広さ 30 m²・徒歩 10 分なら <M>{'0.541 + 0.224 \\times 30 - 0.165 \\times 10 \\approx 5.61'}</M> 万円。
+          予測は、それぞれの値を代入するだけです。広さ 30 m²・徒歩 10 分なら <M>{'0.541 + 0.224 \\times 30 - 0.165 \\times 10 = 0.541 + 6.72 - 1.65 \\approx 5.61'}</M> 万円。
         </p>
       </Section>
 
@@ -105,7 +109,8 @@ export default function Lesson() {
         </Example>
         <p>
           「説明変数が全部役に立たない」<M>{'(H_0: \\beta_1 = \\beta_2 = \\cdots = \\beta_p = 0)'}</M> をまとめて調べるのが <strong>F 検定</strong>で、
-          出力の F-statistic がそれです（4つ目のレッスンで扱います）。
+          R の出力の F-statistic、Excel の分散分析表の「観測された分散比」と「有意 F」がそれです（4つ目のレッスンで扱います）。
+          F 検定で有意でも、「少なくとも1つの係数は 0 でない」とわかるだけで、どの係数が有意かは t 検定で1つずつ見ます。
         </p>
       </Section>
 
@@ -119,8 +124,10 @@ export default function Lesson() {
         </Figure>
         <MathBlock caption="説明変数が2つのとき、x1 の係数の分散は相関 r が高いほど大きくなる">{'\\mathrm{Var}(\\hat\\beta_1) = \\frac{\\sigma^2}{\\sum (x_{1i} - \\bar{x}_1)^2} \\times \\frac{1}{1 - r^2}'}</MathBlock>
         <p>
-          右の <M>{'1/(1-r^2)'}</M> を <strong>VIF</strong>（分散拡大係数）といいます。家賃の例では徒歩と広さの相関が 0.90 なので VIF は約 5.5。
-          VIF が 10 を超えると多重共線性を疑う、という目安がよく紹介されます。
+          右の <M>{'1/(1-r^2)'}</M> を <strong>VIF</strong>（Variance Inflation Factor、分散拡大係数）といいます。「係数の分散が何倍にふくらむか」という意味です。
+          家賃の例では徒歩と広さの相関が 0.90 なので、<M>{'1 \\div (1 - 0.90^2) = 1 \\div 0.19 \\approx 5.3'}</M>（丸める前の相関 0.905 で計算すると約 5.5）。
+          説明変数が3つ以上のときは、<M>{'x_j'}</M> をほかの説明変数で回帰したときの決定係数 <M>{'R_j^2'}</M> を使って <M>{'\\mathrm{VIF}_j = 1/(1 - R_j^2)'}</M> と定義します。
+          VIF が 10 を超えると多重共線性を疑う、という目安がよく紹介されます（5 を目安にする本もあります）。
         </p>
         <p>多重共線性があるときに起こりやすいこと：</p>
         <ul>
@@ -172,7 +179,8 @@ export default function Lesson() {
         <MathBlock caption="自由度調整済み決定係数（n はデータ数、p は説明変数の数）">{'\\bar{R}^2 = 1 - (1 - R^2)\\,\\frac{n - 1}{n - p - 1}'}</MathBlock>
         <p>
           分子の <M>n − 1</M> と分母の <M>n − p − 1</M> は、それぞれ全体と残差の自由度です。家賃の重回帰では <M>{'R^2 = 0.861'}</M>、n = 20、p = 2 なので、
-          <M>{'1 - 0.139 \\times 19/17 \\approx 0.845'}</M> になります。
+          <M>{'1 - R^2 = 0.139'}</M>、<M>{'19 \\div 17 \\approx 1.118'}</M>、<M>{'1 - 0.139 \\times 1.118 \\approx 1 - 0.155 = 0.845'}</M> になります。
+          Excel の出力では「<strong>補正 R2</strong>」、R では「Adjusted R-squared」という名前で出てきます（<Link to="/lessons/bivariate-r-squared-residual">決定係数の復習</Link>）。
         </p>
         <Intuition title="変数選択の目安に使う">
           <p>

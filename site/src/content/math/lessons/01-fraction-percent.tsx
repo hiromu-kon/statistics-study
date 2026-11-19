@@ -1,4 +1,5 @@
-import { DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { CommonDenominatorTape, FractionAreaModel, FractionTape, PercentTape } from '../figures/FractionFigures'
@@ -8,8 +9,8 @@ export const meta: LessonMeta = {
   chapter: 'math',
   order: 1,
   title: '分数・小数・割合',
-  summary: '分数の計算、小数や百分率との言いかえ、「全体のうちどれだけか」を表す割合を、テープ図と面積図で復習します。',
-  minutes: 25,
+  summary: '分数の計算、小数や百分率との言いかえ、四捨五入と ≒、「全体のうちどれだけか」を表す割合と増加率を、テープ図と面積図で復習します。',
+  minutes: 30,
   keywords: ['分数の計算', '割合', '百分率'],
 }
 
@@ -26,7 +27,7 @@ export default function Lesson() {
       <Section title="分数は「全体を何等分したうちのいくつ分」">
         <p>
           分数 <M>{'\\frac{3}{4}'}</M> の下の数（<strong>分母</strong>）は「全体を何等分するか」、上の数（<strong>分子</strong>）は「そのうちいくつ分か」です。
-          テープで見るとすぐわかります。
+          テープで見てみましょう。
         </p>
         <Figure caption="分母と分子を動かしてみよう。塗った長さが、分数・小数・%のどれで表しても同じ量になる">
           <FractionTape interactive />
@@ -72,6 +73,10 @@ export default function Lesson() {
           わり算は「<strong>割る数をひっくり返してかける</strong>」です。<M>{'\\frac{3}{4} \\div \\frac{1}{2}'}</M> は
           「<M>{'\\frac{3}{4}'}</M> の中に <M>{'\\frac{1}{2}'}</M> がいくつ入るか」という意味で、答えは <M>{'\\frac{3}{4} \\times \\frac{2}{1} = \\frac{3}{2} = 1.5'}</M>（1.5個分）です。
         </p>
+        <p>
+          なぜひっくり返すのかは、整数で考えるとわかります。「1 の中に <M>{'\\frac{1}{2}'}</M> は2つ入る」ので、<M>{'\\div \\frac{1}{2}'}</M> は「2倍する」と同じです。
+          つまり <M>{'\\div \\frac{1}{2}'}</M> と <M>{'\\times \\frac{2}{1}'}</M> は同じ計算になります。
+        </p>
         <MathBlock caption="わり算：割る数の上下を入れかえてかける">{'\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}'}</MathBlock>
       </Section>
 
@@ -93,8 +98,33 @@ export default function Lesson() {
         />
         <p>
           小数 → 分数は、0.1 が <M>{'\\frac{1}{10}'}</M>、0.01 が <M>{'\\frac{1}{100}'}</M> であることを使います。
-          例：<M>{'0.35 = \\frac{35}{100} = \\frac{7}{20}'}</M>。
+          例：<M>{'0.35 = \\frac{35}{100} = \\frac{7}{20}'}</M>（分母と分子を5で割って約分）。
         </p>
+      </Section>
+
+      <Section title="四捨五入と「≒」">
+        <p>
+          <M>{'\\frac{1}{3} = 0.333\\ldots'}</M> のように割り切れない数は、どこかで切って<strong>四捨五入</strong>します。
+          四捨五入は「切る位置のすぐ右の数字が 0〜4 なら切り捨て、5〜9 なら切り上げ」です。
+        </p>
+        <Example title="四捨五入の例">
+          <ul>
+            <li>0.3333… を小数第2位までにする → 第3位の「3」を見て切り捨て → 0.33</li>
+            <li>2.5826… を小数第2位までにする → 第3位の「2」を見て切り捨て → 2.58</li>
+            <li>0.6667… を小数第2位までにする → 第3位の「6」を見て切り上げ → 0.67</li>
+          </ul>
+        </Example>
+        <p>
+          四捨五入した値は、もとの値と「ほぼ等しい」だけで、ぴったり同じではありません。そこで = の代わりに
+          <strong>≒</strong> や <M>{'\\approx'}</M>（どちらも「ニアリーイコール」「ほぼ等しい」と読む）を使います。
+          例：<M>{'\\frac{1}{3} \\approx 0.33'}</M>。日本の教科書では ≒、外国の本や数式では <M>{'\\approx'}</M> が多く、意味は同じです。このサイトでも両方出てきます。
+        </p>
+        <MathNote title="四捨五入は最後に1回だけ">
+          <p>
+            途中の計算で四捨五入をくり返すと、答えが少しずつずれていきます。電卓では途中の値をなるべくそのまま使い、
+            <strong>最後の答えだけを四捨五入</strong>しましょう。2級の選択肢は近い値が並ぶことがあるので、このずれで迷うことがあります。
+          </p>
+        </MathNote>
       </Section>
 
       <Section title="割合と百分率">
@@ -102,11 +132,22 @@ export default function Lesson() {
           <strong>割合</strong>は「もとにする量を1としたとき、比べる量がどれくらいか」です。割合を100倍したものが<strong>百分率（%）</strong>です。
         </p>
         <p>
-          割合を <M>{'p'}</M>、比べる量を <M>{'A'}</M>、もとにする量を <M>{'B'}</M> と書くと、次の2つの式になります（2つ目は1つ目の両辺に B をかけたもの）。
+          割合を <M>{'p'}</M>、比べる量を <M>{'A'}</M>、もとにする量を <M>{'B'}</M> と書くと、次の2つの式になります。
+          2つ目は、1つ目の式の左右（<strong>両辺</strong>）に B をかけたものです（式の変形は次のレッスン「文字式と方程式」で練習します）。
         </p>
         <MathBlock caption="割合 p = 比べる量 A ÷ もとにする量 B">{'p = \\frac{A}{B}'}</MathBlock>
         <MathBlock caption="比べる量 A = もとにする量 B × 割合 p（「B の 30%」は B × 0.3）">{'A = B \\times p'}</MathBlock>
-        <Figure caption="全体の人数と割合を動かしてみよう。「200人の30%」は 200 × 0.3 = 60人">
+        <MathNote title="% を小数に直す：100 で割る">
+          <p>計算するときは、% をいったん小数に直してからかけます。「% の数字 ÷ 100」です。</p>
+          <ul>
+            <li>30% = 0.3　　5% = 0.05　　0.5% = 0.005　　120% = 1.2</li>
+            <li>5% を 0.5 としてしまう間違いが多いので注意（0.5 は 50%）。</li>
+          </ul>
+          <p>
+            電卓の % キーは、機種によって動き方が違うことがあります。迷ったら % キーを使わず、「× 0.05」のように小数でかけるのが確実です。
+          </p>
+        </MathNote>
+        <Figure caption="全体の人数と割合を動かしてみよう。オレンジの長さが「比べる量」。「200人の30%」は 200 × 0.3 = 60人">
           <PercentTape />
         </Figure>
         <Example title="3つの向きの問題">
@@ -120,7 +161,18 @@ export default function Lesson() {
           <p>
             ある学校の生徒のうち40%が運動部で、運動部のうち25%がサッカー部です。サッカー部は全体の何%でしょう。
             「割合の割合」はかけ算です：<M>{'0.4 \\times 0.25 = 0.1'}</M> → <strong>10%</strong>。
-            これは確率の「かけ算のルール」とまったく同じ形です。
+            これは確率の「かけ算のルール」（<Link to="/lessons/probability-conditional">条件付き確率と独立</Link>で出てくる乗法定理）とまったく同じ形です。
+          </p>
+        </Example>
+        <Example title="何%増えたか（増加率）">
+          <p>
+            お客さんが 80人 から 100人 に増えました。増えた分は 20人。「何%増えたか」は、<strong>前の値（80人）をもとにする量</strong>にして割ります。
+          </p>
+          <MathBlock caption="増加率 = 増えた分 ÷ 前の値">{'\\frac{100 - 80}{80} = \\frac{20}{80} = 0.25'}</MathBlock>
+          <p>
+            答えは <strong>25%増</strong>。逆に 100人 から 80人 に減ったときは <M>{'\\frac{80 - 100}{100} = -0.2'}</M> で <strong>20%減</strong>（マイナスは減ったという意味）。
+            同じ「20人の差」でも、もとにする量が違うので%が変わります。時系列の章の
+            <Link to="/lessons/collection-growth-rate">成長率</Link>は、この計算そのものです。
           </p>
         </Example>
       </Section>
@@ -169,16 +221,17 @@ export default function Lesson() {
         <ExamTip title="統計でどう使うか">
           <ul>
             <li>
-              <strong>相対度数</strong>（1変数データ）：度数 ÷ 合計。「40人中12人」なら <M>{'12 \\div 40 = 0.3'}</M>。
+              <strong>相対度数</strong>（<Link to="/lessons/descriptive-histogram">度数分布表とヒストグラム</Link>）：その階級の人数 ÷ 全体の人数。「40人中12人」なら <M>{'12 \\div 40 = 0.3'}</M>。
             </li>
             <li>
-              <strong>確率</strong>：「全部で6通りのうち2通り」なら <M>{'\\frac{2}{6} = \\frac{1}{3}'}</M>。確率のかけ算は分数のかけ算そのもの。
+              <strong>確率</strong>（<Link to="/lessons/probability-basics">事象と確率</Link>）：「全部で6通りのうち2通り」なら <M>{'\\frac{2}{6} = \\frac{1}{3}'}</M>。確率のかけ算は分数のかけ算そのもの。
             </li>
             <li>
-              <strong>標本比率</strong>（推定・検定）：「500人中200人が賛成」なら <M>{'\\hat{p} = 200 \\div 500 = 0.4'}</M>。
+              <strong>標本比率</strong>（<Link to="/lessons/estimation-ci-proportion-variance">母比率の区間推定</Link>など）：調べた人の中での割合。「500人中200人が賛成」なら <M>{'\\hat{p} = 200 \\div 500 = 0.4'}</M>。
+              <M>{'\\hat{p}'}</M> は「ピーハット」と読み、「データから計算した p」という意味の記号です。
             </li>
             <li>
-              <strong>成長率</strong>（時系列）：「前年より何%増えたか」を割合で計算する。増減を続けたときの変化はかけ算で考える。
+              <strong>成長率</strong>（<Link to="/lessons/collection-growth-rate">時系列</Link>）：「前年より何%増えたか」を割合で計算する。増減を続けたときの変化はかけ算で考える。
             </li>
           </ul>
         </ExamTip>

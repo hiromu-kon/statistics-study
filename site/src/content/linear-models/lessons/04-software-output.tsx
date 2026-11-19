@@ -1,9 +1,10 @@
-import { DataTable, Example, ExamTip, Figure, Intuition, Mark, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { DataTable, Example, ExamTip, Figure, Intuition, Mark, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { FitScatter } from '../figures/FitScatter'
 import { cafe } from '../figures/cafeData'
-import { CafeExcelOutput, CafeRSummary, OutputPuzzle } from '../figures/OutputTables'
+import { CafeExcelOutput, CafeRSummary, OutputPuzzle, RentExcelOutput } from '../figures/OutputTables'
 
 export const meta: LessonMeta = {
   id: 'linear-models-software-output',
@@ -98,23 +99,90 @@ export default function Lesson() {
       <Section title="Excel の出力を読む">
         <p>
           Excel の「分析ツール」の回帰分析では、同じ内容が日本語の表で出てきます。呼び方が違うだけで、数値は R と同じです。
+          受験記や解説記事では、2級の回帰の問題は <strong>Excel 形式の出力</strong>を見て答える形が多いと言われているので、こちらの読み方に特に慣れておきましょう。
+          出力は「回帰統計」「分散分析表」「係数」の3つの表に分かれています。
         </p>
         <CafeExcelOutput />
         <DataTable
           head={['Excel', 'R', '意味']}
           rows={[
-            ['重決定 R2', 'Multiple R-squared', '決定係数'],
+            ['重相関 R', '（出力されない）', 'R² のルート。単回帰では相関係数の絶対値'],
+            ['重決定 R2', 'Multiple R-squared', '決定係数 R²'],
             ['補正 R2', 'Adjusted R-squared', '自由度調整済み決定係数'],
             ['標準誤差（回帰統計の表）', 'Residual standard error', '残差の標準誤差 s（係数の標準誤差とは別物）'],
+            ['観測数', '（自由度から逆算）', 'データの数 n'],
+            ['変動（分散分析表）', 'Sum Sq', '平方和（回帰・残差・合計）'],
+            ['分散（分散分析表）', 'Mean Sq', '平均平方 ＝ 変動 ÷ 自由度'],
             ['観測された分散比', 'F-statistic', 'F 値'],
             ['有意 F', 'F-statistic の p-value', 'F 検定の p 値'],
-            ['重相関 R', '（出力されない）', 'R² のルート。単回帰では相関係数の絶対値'],
+            ['係数', 'Estimate', '係数の推定値'],
+            ['標準誤差（係数の表）', 'Std. Error', '係数の標準誤差'],
+            ['t', 't value', 't 値 ＝ 係数 ÷ 標準誤差'],
+            ['P-値', 'Pr(>|t|)', '係数が 0 かどうかの両側検定の p 値'],
+            ['下限 95%・上限 95%', '（confint() で出す）', '係数の 95% 信頼区間'],
           ]}
+          caption="Excel と R の項目名の対応"
         />
+        <Example title="Excel の出力を上から順に読む">
+          <Steps>
+            <li>
+              <strong>観測数</strong> 12 ＝ n。分散分析表の自由度は、回帰 ＝ 説明変数の数 p ＝ 1、残差 ＝ <M>{'n - p - 1 = 10'}</M>、合計 ＝ <M>{'n - 1 = 11'}</M>。
+            </li>
+            <li>
+              <strong>重決定 R2</strong> ＝ 回帰の変動 ÷ 合計の変動 ＝ <M>{'5181.108 \\div 6131.667 \\approx 0.845'}</M>。<strong>重相関 R</strong> ＝ <M>{'\\sqrt{0.845} \\approx 0.919'}</M>。
+            </li>
+            <li>
+              分散分析表の<strong>分散</strong> ＝ 変動 ÷ 自由度。残差なら <M>{'950.558 \\div 10 \\approx 95.056'}</M>。そのルート <M>{'\\sqrt{95.056} \\approx 9.750'}</M> が回帰統計の<strong>標準誤差</strong>。
+            </li>
+            <li>
+              <strong>観測された分散比</strong> ＝ 回帰の分散 ÷ 残差の分散 ＝ <M>{'5181.108 \\div 95.056 \\approx 54.51'}</M>。その p 値が<strong>有意 F</strong>（2.36E-05 ＝ 0.0000236）。
+            </li>
+            <li>
+              係数の表の気温の行：<strong>t</strong> ＝ <M>{'4.736 \\div 0.641 \\approx 7.38'}</M>、<strong>P-値</strong> 2.36E-05 なので 1% でも有意。
+              <strong>下限 95%</strong> ＝ <M>{'4.736 - t_{0.025}(10) \\times 0.641 = 4.736 - 2.228 \\times 0.641 \\approx 3.31'}</M>、上限も同様に約 6.17。
+            </li>
+          </Steps>
+        </Example>
+        <Note title="Excel の表示についての補足">
+          <ul>
+            <li>
+              「E-05」は <M>{'\\times 10^{-5}'}</M> のこと（R の「e-05」と同じ）。
+            </li>
+            <li>
+              実際の Excel の出力では、係数の表の右に同じ値の「下限 95.0%」「上限 95.0%」の列も並びます（信頼度を 95% 以外に指定したとき、その信頼度の区間が出る列）。
+            </li>
+            <li>Excel の表は小数点以下の桁が多く表示されます。ここでは読みやすいように丸めています。</li>
+          </ul>
+        </Note>
         <p>
           Excel の分散分析表を見ると、<Mark color="c1">変動</Mark>の列が「回帰 ＋ 残差 ＝ 合計」（5181.108 ＋ 950.558 ＝ 6131.667）になっていて、
           ここから <Mark color="c3">R²</Mark> や <Mark color="c2">F</Mark> が計算されています。
         </p>
+      </Section>
+
+      <Section title="重回帰の Excel 出力を読む">
+        <p>
+          <Link to="/lessons/linear-models-multiple-regression">重回帰分析</Link>の家賃の例（20件、家賃を広さと徒歩で説明）を Excel で回帰分析すると、次のようになります。
+          表の形は単回帰と同じで、係数の表の行が説明変数の数だけ増えます。
+        </p>
+        <RentExcelOutput />
+        <Steps>
+          <li>
+            説明変数は2つ（p = 2）なので、分散分析表の自由度は回帰 2、残差 <M>{'20 - 2 - 1 = 17'}</M>。係数の t 検定もこの 17 を使う。
+          </li>
+          <li>
+            <strong>補正 R2</strong>：<M>{'1 - (1 - 0.861) \\times 19 \\div 17 \\approx 0.845'}</M>。重決定 R2 より小さい。
+          </li>
+          <li>
+            <strong>有意 F</strong> 5.11E-08：「広さの係数も徒歩の係数も 0」という H0 は棄却される（少なくとも一方は役に立つ）。
+          </li>
+          <li>
+            徒歩の行：P-値 0.0345 なので 5% で有意、1% では有意でない。下限 95% と上限 95% がどちらもマイナス（0 をまたがない）ことも、5% で有意と同じ意味。
+          </li>
+          <li>
+            係数の読み方：「広さが同じなら、徒歩が1分長いと家賃は平均 0.165 万円安い」。重回帰の係数は「ほかの説明変数を固定したとき」の効果。
+          </li>
+        </Steps>
       </Section>
 
       <Section title="数値どうしの関係">
@@ -136,7 +204,8 @@ export default function Lesson() {
       <Section title="分散分析の出力">
         <p>
           前のレッスンの肥料の実験を R で分散分析すると（<code>anova(lm(height ~ fertilizer))</code>）、次の表が出ます。
-          列の並びが「自由度 → 平方和」の順になっている点に注意しましょう。
+          列の並びが「自由度 → 平方和」の順になっている点に注意しましょう（Excel の「分散分析：一元配置」は「変動 → 自由度」の順。
+          <Link to="/lessons/linear-models-anova">前のレッスン</Link>に Excel 形式の表があります）。
         </p>
         <DataTable
           head={['', 'Df', 'Sum Sq', 'Mean Sq', 'F value', 'Pr(>F)']}
@@ -156,11 +225,13 @@ export default function Lesson() {
           <ul>
             <li>
               「残差の標準誤差」と「係数の標準誤差」を混同する → 前者は点が直線からどれくらいずれるか（9.75 杯）、後者は推定した係数がどれくらい揺れるか（0.6415）。
+              Excel ではどちらも「標準誤差」という名前なので、<strong>回帰統計の表</strong>にあるか<strong>係数の表</strong>にあるかで区別します。
             </li>
             <li>p 値が「2.36e-05」なので大きい数だと思う → 0.0000236 というとても小さい値です。</li>
             <li>
               t 値を判定するときの自由度を n − 1 にする → 出力の「on 10 degrees of freedom」（n − p − 1）がそのまま使える自由度です。
             </li>
+            <li>「重相関 R」を決定係数だと思う → 決定係数は「重決定 R2」。重相関 R はそのルートです。</li>
             <li>
               重回帰で F 検定が有意なら、どの係数も有意 → F 検定は「少なくとも1つの係数が 0 でない」を調べるだけ。個々の係数は t 検定で見ます。
             </li>

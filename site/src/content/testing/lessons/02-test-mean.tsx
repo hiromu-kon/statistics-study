@@ -1,4 +1,5 @@
-import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { BatteryDots, CiTestLink, PairedPlot, TResultPlot, TvsZ } from '../figures/MeanFigures'
@@ -30,8 +31,10 @@ export default function Lesson() {
 
       <Section title="検定統計量の作り方">
         <p>
-          前の章で学んだように、標本平均 <M>{'\\bar{x}'}</M> は平均 <M>{'\\mu'}</M>、標準偏差 <M>{'\\sigma/\\sqrt{n}'}</M> の正規分布にしたがいます
-          （母集団が正規分布、または n が大きいとき）。この <M>{'\\sigma/\\sqrt{n}'}</M> を<strong>標準誤差</strong>といいます。
+          <Link to="/lessons/sampling-sample-mean">標本平均の分布</Link>で学んだように、標本平均 <M>{'\\bar{x}'}</M>（エックス・バー）は、
+          平均 <M>{'\\mu'}</M>（ミュー、母平均）、標準偏差 <M>{'\\sigma/\\sqrt{n}'}</M>（σ はシグマ、母標準偏差）の正規分布にしたがいます
+          （母集団が正規分布、または n が大きいとき）。この <M>{'\\sigma/\\sqrt{n}'}</M> を<strong>標準誤差</strong>（ひょうじゅんごさ）といい、
+          「標本平均がふつうどれくらいぶれるか」を表します。<M>{'\\mu_0'}</M>（ミュー・ゼロ）は H0 で「母平均はこの値」とおく基準の値です。
         </p>
         <MathBlock caption="「差」を「ふつうのぶれ」で割る。分母が σ（既知）なら z、s（標本から計算）なら t">
           {'\\frac{\\bar{x} - \\mu_0}{\\sigma / \\sqrt{n}} \\qquad \\frac{\\bar{x} - \\mu_0}{s / \\sqrt{n}}'}
@@ -44,10 +47,24 @@ export default function Lesson() {
           </Card>
           <Card title="母分散がわからない → t 検定">
             <p>
-              σ の代わりに標本標準偏差 s（n − 1 で割る）を使う。<M>{'t = \\frac{\\bar{x}-\\mu_0}{s/\\sqrt{n}}'}</M> は H0 のもとで<strong>自由度 n − 1 の t 分布</strong>にしたがう。
+              σ の代わりに標本標準偏差 s（偏差の2乗の合計を n − 1 で割った<Link to="/lessons/estimation-point">不偏分散</Link>のルート）を使う。
+              <M>{'t = \\frac{\\bar{x}-\\mu_0}{s/\\sqrt{n}}'}</M> は H0 のもとで<strong>自由度 n − 1 の t 分布</strong>にしたがう。
             </p>
           </Card>
         </Compare>
+        <MathNote title="自由度と、分布表の記号の読み方">
+          <ul>
+            <li>
+              <strong>自由度</strong>（じゆうど）は、t 分布の形を決める数です（<Link to="/lessons/sampling-chi2-t-f">t 分布のレッスン</Link>）。
+              1標本の t 検定では n − 1 を使います。
+            </li>
+            <li>
+              <M>{'t_{0.025}(9)'}</M> は「自由度 9 の t 分布で、右側の面積がちょうど 0.025 になる点」（上側 2.5% 点）で、2.262 です。
+              両側 5% の検定では左右に 0.025 ずつ置くので、この値が境目になります。
+            </li>
+            <li>右片側 5% の検定なら、右側だけに 0.05 を置くので <M>{'t_{0.05}(9) = 1.833'}</M> と比べます。</li>
+          </ul>
+        </MathNote>
       </Section>
 
       <Section title="例1：σ がわかっているとき（z 検定）">
@@ -99,8 +116,21 @@ export default function Lesson() {
           }
           statistic={
             <>
-              <M>{'\\bar{x} = 19.31'}</M>、<M>{'s \\approx 0.615'}</M>、標準誤差 <M>{'s/\\sqrt{10} \\approx 0.195'}</M>。
-              <M>{'t = \\frac{19.31 - 20}{0.195} \\approx -3.55'}</M>
+              <Steps>
+                <li>
+                  平均：<M>{'\\bar{x} = 193.1 \\div 10 = 19.31'}</M>
+                </li>
+                <li>
+                  偏差（データ − 19.31）の2乗の合計は 3.409。n − 1 = 9 で割って <M>{'s^2 = 3.409 \\div 9 \\approx 0.3788'}</M>、
+                  <M>{'s = \\sqrt{0.3788} \\approx 0.615'}</M>
+                </li>
+                <li>
+                  標準誤差：<M>{'s/\\sqrt{10} = 0.615 \\div 3.162 \\approx 0.195'}</M>
+                </li>
+                <li>
+                  <M>{'t = \\frac{19.31 - 20}{0.195} = \\frac{-0.69}{0.195} \\approx -3.55'}</M>
+                </li>
+              </Steps>
             </>
           }
           compare={
@@ -114,6 +144,18 @@ export default function Lesson() {
         <Figure caption="t = −3.55 は左側の棄却域（赤）の中にある">
           <TResultPlot t={-3.545} df={9} />
         </Figure>
+        <Note title="統計ソフトの出力で見ると">
+          <p>同じデータを統計ソフトで1標本の t 検定にかけると、次のような項目が出ます（表示の形はソフトによって違います）。</p>
+          <DataTable
+            head={['項目', '値', '読み方']}
+            rows={[
+              ['t', '−3.545', '検定統計量 t の値'],
+              ['自由度 df', '9', 'n − 1'],
+              ['p 値（両側）', '0.0063', '0.01 より小さいので 1% でも棄却'],
+              ['95% 信頼区間', '18.87 〜 19.75', '基準の 20 が入っていない ＝ 両側 5% で棄却と同じ意味'],
+            ]}
+          />
+        </Note>
       </Section>
 
       <Section title="なぜ t 分布を使うの？">
@@ -153,8 +195,20 @@ export default function Lesson() {
           }
           statistic={
             <>
-              差の平均 <M>{'\\bar{d} = 3.0'}</M>、差の標準偏差 <M>{'s_d \\approx 2.280'}</M>。
-              <M>{'t = \\frac{\\bar{d}}{s_d/\\sqrt{n}} = \\frac{3.0}{2.280/\\sqrt{6}} \\approx 3.22'}</M>
+              <Steps>
+                <li>
+                  差の平均：<M>{'\\bar{d} = (3 + 5 - 1 + 4 + 2 + 5) \\div 6 = 18 \\div 6 = 3.0'}</M>
+                </li>
+                <li>
+                  差の偏差（d − 3）は 0, 2, −4, 1, −1, 2。2乗の合計は <M>{'0 + 4 + 16 + 1 + 1 + 4 = 26'}</M>
+                </li>
+                <li>
+                  差の標準偏差：<M>{'s_d = \\sqrt{26 \\div 5} = \\sqrt{5.2} \\approx 2.280'}</M>（n − 1 = 5 で割る）
+                </li>
+                <li>
+                  <M>{'t = \\frac{\\bar{d}}{s_d/\\sqrt{n}} = \\frac{3.0}{2.280 \\div 2.449} = \\frac{3.0}{0.931} \\approx 3.22'}</M>
+                </li>
+              </Steps>
             </>
           }
           compare={
@@ -169,7 +223,7 @@ export default function Lesson() {
 
       <Section title="区間推定との関係">
         <p>
-          95% 信頼区間は「データと矛盾しない μ の値の範囲」でした。だから、両側 5% の t 検定で
+          <Link to="/lessons/estimation-ci-mean">母平均の区間推定</Link>で学んだ 95% 信頼区間は、ざっくり言えば「データと矛盾しない μ の値の範囲」でした。だから、両側 5% の t 検定で
           <strong>棄却される μ0 は、ちょうど 95% 信頼区間の外にある値</strong>です。
         </p>
         <MathBlock caption="同じこと（両側 5%）を2通りに言っている">
@@ -190,6 +244,7 @@ export default function Lesson() {
             </li>
             <li>前後比較を「2つの独立なグループ」として扱う → 同じ人の前後なら差をとって1標本の t 検定にする。</li>
             <li>σ が問題文で与えられているのに t 分布を使う（またはその逆）→ 「母標準偏差は〇〇とわかっている」と書かれていれば z。</li>
+            <li>片側検定なのに両側の境目 <M>{'t_{0.025}'}</M> と比べる → 右片側 5% なら <M>{'t_{0.05}(n-1)'}</M>。</li>
           </ul>
         </Pitfall>
       </Section>
@@ -201,6 +256,7 @@ export default function Lesson() {
             <li>前後比較のデータで、「対応のある t 検定」を選ばせる・計算させる問題。</li>
             <li>信頼区間の結果から、ある μ0 が両側検定で棄却されるかを答える問題。</li>
             <li>統計ソフトの t 検定の出力（t 値・自由度・p 値）を読む問題。</li>
+            <li>「この場面で使う検定統計量の式はどれか」を選ぶ問題。分母が σ か s か、√n で割っているか、自由度は n − 1 か、を確かめる。</li>
           </ul>
         </ExamTip>
       </Section>

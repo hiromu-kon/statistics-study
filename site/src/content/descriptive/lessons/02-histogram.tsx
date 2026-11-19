@@ -1,4 +1,5 @@
-import { DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { BarVsHistogram } from '../figures/DataTypeFigures'
@@ -41,7 +42,10 @@ export default function Lesson() {
         />
         <ul>
           <li>
-            <strong>階級</strong>：区切った区間のこと。「10以上20未満」のように、境目の値がどちらに入るかを決めておく。
+            <strong>階級</strong>：区切った区間のこと。「10以上20未満」のように、境目の値がどちらに入るかを決めておく（「以上」はその数を含む、「未満」はその数を含まない。ちょうど20分の人は次の「20以上30未満」に入る）。
+          </li>
+          <li>
+            <strong>階級の幅</strong>：区間の長さ。この表ではどれも10分。
           </li>
           <li>
             <strong>階級値</strong>：階級の真ん中の値。<M>{'(10+20) \\div 2 = 15'}</M>
@@ -53,12 +57,16 @@ export default function Lesson() {
             <strong>相対度数</strong>：度数が全体の何割か。人数の違うグループどうしを比べるときに便利。
           </li>
           <li>
-            <strong>累積度数</strong>：いちばん下の階級からその階級までの度数を足したもの。「◯分未満は何人か」がすぐわかる。
+            <strong>累積度数</strong>：いちばん上の行（値が小さい階級）からその階級までの度数を足したもの。「◯分未満は何人か」がすぐわかる。
+            たとえば「20以上30未満」の行の累積度数は <M>{'4 + 10 + 12 = 26'}</M> で、「30分未満は26人」という意味。
+          </li>
+          <li>
+            <strong>累積相対度数</strong>：累積度数を全体の個数で割ったもの。<M>{'26 \\div 40 = 0.65'}</M> なら「30分未満が全体の65%」。
           </li>
         </ul>
         <MathBlock caption="相対度数：その階級の度数を、全体の個数 n で割る">{'\\frac{f}{n} \\qquad \\left(\\frac{12}{40} = 0.30\\right)'}</MathBlock>
         <p>
-          式の <M>{'f'}</M> はその階級の度数です。相対度数を全部足すと必ず 1（100%）になります。
+          式の <M>{'f'}</M> はその階級の度数（frequency の頭文字）、<M>{'n'}</M> はデータの個数です。相対度数を全部足すと必ず 1（100%）になります。
         </p>
       </Section>
 
@@ -68,6 +76,12 @@ export default function Lesson() {
           <BarVsHistogram />
         </Figure>
         <p>20〜30分の人がいちばん多く、時間が長い側に少しずつ減っていく形だと読み取れます。</p>
+        <Note title="階級の幅がそろっていないとき">
+          <p>
+            ヒストグラムで度数を表すのは、本来は柱の<strong>面積</strong>です。階級の幅がどれも同じなら、面積は高さに比例するので「高さ＝度数」と読んでかまいません。
+            もし1つだけ幅が2倍の階級があれば、その柱の高さは「度数 ÷ 2」にして描きます（そうしないと、その階級だけ多く見えてしまう）。
+          </p>
+        </Note>
       </Section>
 
       <Section title="階級の幅で見え方が変わる">
@@ -98,11 +112,28 @@ export default function Lesson() {
           <CumulativePlot />
         </Figure>
         <Example title="グラフから読み取る">
-          <p>
-            30分のところの高さは 0.65。つまり30分未満が65%で、<strong>30分以上は35%</strong>です。
-            高さ 0.5 になるのは25分のあたりなので、通学時間の中央値はだいたい25分だとわかります。
-          </p>
+          <ul>
+            <li>
+              30分のところの高さは 0.65。つまり30分未満が65%で、<strong>30分以上は</strong> <M>{'1 - 0.65 = 0.35'}</M>、つまり<strong>35%</strong>です。
+            </li>
+            <li>
+              高さ 0.5（半分）になる横軸の値が、<Link to="/lessons/descriptive-center">中央値</Link>（小さい順に並べた真ん中の値）の目安です。
+              20分で 0.35、30分で 0.65 なので、0.5 はそのちょうど真ん中。中央値はだいたい <strong>25分</strong>です。
+            </li>
+            <li>
+              同じように、高さ 0.25 と 0.75 になる値は、<Link to="/lessons/descriptive-quartile-boxplot">四分位数</Link>（下から25%・75%の位置の値）の目安になります。
+              0.25 は 10分（0.10）と20分（0.35）の間で、0.10 から 0.15 上がったところ。10分で 0.25 上がるので
+              <M>{'10 + 10 \\times \\frac{0.15}{0.25} = 16'}</M>分くらいです。
+            </li>
+          </ul>
         </Example>
+        <Intuition title="ヒストグラムとの対応：線の傾き＝棒の高さ">
+          <p>
+            累積相対度数グラフの線が<strong>急に上がる区間</strong>は、そこにデータがたくさんある区間です。つまりヒストグラムの<strong>棒が高い</strong>階級に対応します。
+            このグラフでいちばん急なのは 20〜30分（0.35 → 0.65 と 0.30 上がる）で、ヒストグラムでいちばん高い棒と一致します。
+            線が水平に近い区間は、データがほとんどない区間です。
+          </p>
+        </Intuition>
       </Section>
 
       <Section title="分布の形の呼び方">
@@ -123,9 +154,12 @@ export default function Lesson() {
             <strong>一様</strong>：どの階級もほぼ同じ高さ。サイコロの目の出かたなど。
           </li>
           <li>
-            <strong>単峰・多峰</strong>：山が1つなら単峰、2つ以上なら多峰（2つなら二峰）。多峰のときは、性質の違うグループが混ざっていることが多い。
+            <strong>単峰・多峰</strong>：山（峰＝みね）が1つなら単峰、2つ以上なら多峰（2つなら二峰）。多峰のときは、性質の違うグループが混ざっていることが多い。
           </li>
         </ul>
+        <p>
+          「裾（すそ）」は、着物のすそのように、山からなだらかに低くなってのびている部分のことです。形は<strong>裾がどちらにのびているか</strong>で呼びます。
+        </p>
       </Section>
 
       <Section title="よくある勘違い">
@@ -133,6 +167,10 @@ export default function Lesson() {
           <ul>
             <li>
               「右に裾が長い」は山が右にある → 逆です。<strong>裾（なだらかにのびた部分）</strong>が右にあるので、山は左に寄っています。
+            </li>
+            <li>
+              「右に歪んだ」「左に偏った」などの言い方にまどわされる → 資料によっては、右に裾が長い分布を「右に歪んだ」とも「（山が）左に偏った」とも書きます。
+              左右が逆に聞こえるので、言葉ではなく<strong>裾がどちらにのびているか</strong>を図で確かめましょう。
             </li>
             <li>相対度数の合計はデータの数で変わる → 必ず 1 です。</li>
             <li>累積相対度数グラフの点を階級の真ん中（階級値）に打つ → 「◯分未満」を表すので、階級の<strong>右端</strong>に打ちます。</li>
@@ -146,7 +184,7 @@ export default function Lesson() {
           <ul>
             <li>度数分布表の空欄（相対度数・累積度数）を埋める、または「◯以上の割合」を求める問題。</li>
             <li>ヒストグラムを見て、分布の形の説明として正しいものを選ぶ問題。</li>
-            <li>累積相対度数グラフから中央値や四分位数のおよその値を読み取り、対応するヒストグラムや箱ひげ図を選ぶ問題。</li>
+            <li>累積相対度数グラフから中央値や四分位数のおよその値を読み取り、対応するヒストグラムや箱ひげ図を選ぶ問題。線の傾きが急な区間＝度数の多い階級、と対応させる。</li>
           </ul>
         </ExamTip>
       </Section>

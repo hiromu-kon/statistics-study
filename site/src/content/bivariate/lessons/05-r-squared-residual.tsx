@@ -1,4 +1,5 @@
-import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { funnelData, goodLinearData, growthData, iceData } from '../figures/data'
@@ -27,12 +28,26 @@ export default function Lesson() {
 
       <Section title="変動の分解：ずれを2つに分ける">
         <p>
-          前のレッスンのアイスのデータ（回帰直線 <M>{'\\hat{y} = -30 + 5x'}</M>）を使います。
+          <Link to="/lessons/bivariate-simple-regression">前のレッスン</Link>のアイスのデータ（5日間の最高気温 x と売上 y、平均 <M>{'\\bar{y} = 100'}</M> 個、回帰直線 <M>{'\\hat{y} = -30 + 5x'}</M>）を使います。
           各日の売上が平均 100 個からどれだけずれているかを、「直線で説明できる分」と「残差」の2つに分けてみます。
         </p>
         <MathBlock caption="平均からのずれ ＝ 直線で説明できるずれ ＋ 残差">{'y_i - \\bar{y} = (\\hat{y}_i - \\bar{y}) + (y_i - \\hat{y}_i)'}</MathBlock>
         <p>たとえば 30℃ の日は、122 − 100 = 22 個のずれのうち、直線で 120 − 100 = 20 個が説明でき、残りの 2 個が残差です。</p>
-        <p>それぞれを2乗して全部の日で足すと、ふしぎなことに足し算がそのまま成り立ちます（最小二乗法で直線を決めたときに成り立つ性質です）。</p>
+        <p>
+          それぞれを2乗して全部の日で足すと、ふしぎなことに足し算がそのまま成り立ちます（最小二乗法で直線を決めたときに成り立つ性質です。適当に引いた直線では成り立ちません）。
+          3つの合計には次の名前がついています。
+        </p>
+        <ul>
+          <li>
+            <strong>全変動</strong> <M>{'\\sum (y_i - \\bar{y})^2'}</M>：y そのもののばらつき（平均からのずれの2乗の合計）
+          </li>
+          <li>
+            <strong>回帰変動</strong> <M>{'\\sum (\\hat{y}_i - \\bar{y})^2'}</M>：そのうち、直線（x）で説明できたばらつき
+          </li>
+          <li>
+            <strong>残差変動</strong> <M>{'\\sum (y_i - \\hat{y}_i)^2'}</M>：直線では説明できなかった残り（残差の2乗和）
+          </li>
+        </ul>
         <MathBlock caption="全変動 ＝ 回帰変動 ＋ 残差変動">
           {'\\sum (y_i - \\bar{y})^2 = \\sum (\\hat{y}_i - \\bar{y})^2 + \\sum (y_i - \\hat{y}_i)^2'}
         </MathBlock>
@@ -48,7 +63,7 @@ export default function Lesson() {
           ]}
           caption="アイスのデータの変動の分解：1056 = 1000 + 56"
         />
-        <Figure caption="青は直線で説明できるずれ、赤は残差。スライダーで残差だけを大きくすると、回帰変動は変わらず残差変動だけが増え、決定係数が下がる">
+        <Figure caption="青は直線で説明できるずれ（平均の線から直線まで）、赤は残差（直線から点まで）。スライダーで残差だけを大きくすると、回帰変動は変わらず残差変動だけが増え、決定係数が下がる">
           <VariationPlot xs={iceData.xs} ys={iceData.ys} xLabel="最高気温（℃）" yLabel="売上（個）" />
         </Figure>
       </Section>
@@ -68,7 +83,8 @@ export default function Lesson() {
 
       <Section title="分散分析表（回帰）">
         <p>
-          変動の分解は、<strong>分散分析表</strong>という形でまとめられます。統計ソフトの回帰の出力にもよく出てきます。
+          変動の分解は、<strong>分散分析表</strong>という形でまとめられます。統計ソフト（Excel など）の回帰の出力にもよく出てきます。
+          表の中の<strong>平方和</strong>は「2乗の合計」のことで、上で計算した変動と同じものです。
         </p>
         <DataTable
           head={['要因', '平方和', '自由度', '平均平方（平方和 ÷ 自由度）', 'F 値']}
@@ -84,10 +100,11 @@ export default function Lesson() {
             <strong>平方和</strong>：上で計算した回帰変動・残差変動・全変動です。
           </li>
           <li>
-            <strong>自由度</strong>：回帰は説明変数の数（単回帰なら 1）、残差は n − 2、全体は n − 1。回帰と残差を足すと全体になります。
+            <strong>自由度</strong>：平方和を「何個ぶんのばらつき」として平均するかを表す数です。回帰は説明変数の数（単回帰なら 1）、残差は n − 2（理由は下の「回帰の標準誤差」で説明します）、全体は n − 1。回帰と残差を足すと全体になります（1 + 3 = 4）。
           </li>
           <li>
-            <strong>F 値</strong>：回帰の平均平方 ÷ 残差の平均平方。「この直線に意味があるか」の検定に使います（「線形モデル」の章で扱います）。
+            <strong>F 値</strong>：回帰の平均平方 ÷ 残差の平均平方。「直線で説明できたばらつき」が「説明できなかったばらつき」の何倍かを表し、「この直線に意味があるか」の検定に使います
+            （<Link to="/lessons/linear-models-regression-inference">「回帰係数の推定と検定」のレッスン</Link>で扱います）。
           </li>
         </ul>
       </Section>
@@ -110,8 +127,16 @@ export default function Lesson() {
         <Intuition title="なぜ n − 2 で割るの？">
           <p>
             分散で n − 1 で割ったのは、平均という1つの値をデータから決めたからでした。回帰直線では傾き b と切片 a の<strong>2つ</strong>をデータから決めているので、n − 2 で割ります。
+            極端な例として、点が2つしかなければ、直線はその2点をぴったり通るので残差は必ず 0 になり、ずれの大きさについて何もわかりません（n − 2 = 0）。
           </p>
         </Intuition>
+        <Note title="「標準誤差」という言葉は2つの意味で出てくる">
+          <p>
+            ここで計算した<strong>回帰の標準誤差</strong>は「1つひとつの予測がどれくらいずれるか」の目安です。統計ソフトの出力には、これとは別に、傾きや切片の横に
+            「標準誤差」という列が出てきます。そちらは「傾き b や切片 a の推定値が、データの取り方しだいでどれくらいぶれるか」の目安で、
+            <Link to="/lessons/linear-models-regression-inference">「回帰係数の推定と検定」のレッスン</Link>で扱います。
+          </p>
+        </Note>
       </Section>
 
       <Section title="残差プロット：残差に模様がないかを見る">
@@ -142,6 +167,20 @@ export default function Lesson() {
           ② のデータは、あるサービスの会員数を毎月記録したものです（架空のデータ）。毎月だいたい同じ<strong>倍率</strong>で増えているので、カーブを描いて急に増えていきます。
           このように「かけ算で増える」データは、y の<strong>対数</strong>をとると直線に近づきます。
         </p>
+        <MathNote title="対数 log₁₀ の読み方">
+          <p>
+            <M>{'\\log_{10} A'}</M>（ログ・テン・エー）は「10 を何乗すると A になるか」を表す数です（<Link to="/lessons/math-function-graph-area">「関数・グラフ・面積」のレッスン</Link>）。
+          </p>
+          <ul>
+            <li>
+              <M>{'10^2 = 100'}</M> なので <M>{'\\log_{10} 100 = 2'}</M>、<M>{'10^3 = 1000'}</M> なので <M>{'\\log_{10} 1000 = 3'}</M>。
+            </li>
+            <li>100 → 1000 → 10000 と10倍ずつ増えると、対数は 2 → 3 → 4 と 1 ずつ増えます。「掛け算で増える」が「足し算で増える」に変わります。</li>
+            <li>
+              逆に、対数の値から元の値に戻すには 10 の累乗にします：<M>{'\\log_{10} \\hat{y} = 2.336'}</M> なら <M>{'\\hat{y} = 10^{2.336}'}</M>。
+            </li>
+          </ul>
+        </MathNote>
         <Figure caption="ボタンで縦軸を log₁₀（会員数）に切りかえると、点がほぼ一直線に並び、残差プロットの U 字の模様も消える">
           <LogTransformPlot />
         </Figure>
@@ -187,6 +226,9 @@ export default function Lesson() {
             <li>分散分析表（回帰）の空欄（自由度・平均平方・F 値）を埋める問題。</li>
             <li>残差プロットを見て、モデルの問題点（曲線の関係・散らばりの変化）を指摘する選択肢を選ぶ問題。</li>
             <li>対数変換したデータの回帰式から、「x が1増えると y は何倍になるか」を読み取る問題。</li>
+            <li>
+              回帰は最頻出の分野で、統計ソフトの出力（分散分析表や係数の表）を読む形が多い、と受験記などで言われています。表の各列が何を表すか（平方和・自由度・平均平方・F 値）を言えるようにしておきます。
+            </li>
           </ul>
         </ExamTip>
       </Section>

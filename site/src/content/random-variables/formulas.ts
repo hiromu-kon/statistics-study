@@ -99,4 +99,18 @@ export const formulas: Formula[] = [
     tex: 'V(aX + bY) = a^2\\,V(X) + b^2\\,V(Y)',
     note: 'X と Y が独立のとき。係数は2乗され、マイナスの係数でも足し算になる。',
   },
+  {
+    id: 'rv-linear-combination-cov',
+    lesson: 'random-variables-sum-covariance',
+    title: '1次結合の分散（独立でないとき）',
+    tex: 'V(aX + bY) = a^2\\,V(X) + b^2\\,V(Y) + 2ab\\,\\mathrm{Cov}(X, Y)',
+    note: '共分散の項の係数は $2ab$（2乗しない）。独立なら最後の項は0。',
+  },
+  {
+    id: 'rv-correlation-linear',
+    lesson: 'random-variables-sum-covariance',
+    title: '1次変換と共分散・相関係数',
+    tex: '\\mathrm{Cov}(aX + b,\\ cY + d) = ac\\,\\mathrm{Cov}(X, Y), \\quad \\rho_{aX+b,\\,cY+d} = \\pm\\,\\rho_{XY}',
+    note: '相関係数は、$a$ と $c$ が同じ符号なら変わらず、違う符号なら符号だけ反対になる。単位を変えても相関の強さは同じ。',
+  },
 ]

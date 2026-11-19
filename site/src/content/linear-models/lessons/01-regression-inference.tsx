@@ -73,11 +73,11 @@ export default function Lesson() {
         <p>2級でよく使う前提は次の4つです。</p>
         <Steps>
           <li>誤差の平均は 0（直線の上にも下にも同じようにずれる）</li>
-          <li>誤差の散らばり（分散 <M>{'\\sigma^2'}</M>）は、x の値によらず同じ</li>
+          <li>誤差の散らばり（分散 <M>{'\\sigma^2'}</M>。σ は「シグマ」）は、x の値によらず同じ</li>
           <li>誤差どうしは互いに独立（ある店のずれが、別の店のずれに影響しない）</li>
           <li>誤差は正規分布にしたがう</li>
         </Steps>
-        <MathBlock caption="誤差項は平均0・分散 σ² の正規分布にしたがい、互いに独立">{'\\varepsilon_i \\sim N(0, \\sigma^2)'}</MathBlock>
+        <MathBlock caption="誤差項は平均0・分散 σ² の正規分布にしたがい、互いに独立（「〜」は「この分布にしたがう」という意味）">{'\\varepsilon_i \\sim N(0, \\sigma^2)'}</MathBlock>
         <Figure caption="本当の直線（青）のまわりに、どの x でも同じ形の正規分布の誤差（オレンジの山）がある。σ を大きくすると点がばらつく">
           <RegressionModelPlot />
         </Figure>
@@ -101,8 +101,9 @@ export default function Lesson() {
         </p>
         <MathBlock caption="傾きの標準誤差：s は残差の散らばり、分母は x の散らばり">{'\\mathrm{SE}(\\hat\\beta_1) = \\frac{s}{\\sqrt{\\sum_{i=1}^{n}(x_i - \\bar{x})^2}}, \\qquad s = \\sqrt{\\frac{\\sum_{i=1}^{n} e_i^2}{n-2}}'}</MathBlock>
         <p>
-          <M>{'e_i = y_i - \\hat{y}_i'}</M> は<strong>残差</strong>（実際の値 − 直線の値）、<M>s</M> は<strong>残差の標準誤差</strong>で、誤差の標準偏差 <M>{'\\sigma'}</M>{' '}
-          の推定値です。式から次のことが読み取れます。
+          Σ は「全部足す」という記号です（<Link to="/lessons/math-sigma">Σ記号のレッスン</Link>）。<M>{'e_i = y_i - \\hat{y}_i'}</M> は<strong>残差</strong>（実際の値 − 直線の値）、
+          <M>s</M> は<strong>残差の標準誤差</strong>で、誤差の標準偏差 <M>{'\\sigma'}</M> の推定値です。名前が似ていますが、<M>s</M> は「点が直線からどれくらいずれるか」、
+          <M>{'\\mathrm{SE}(\\hat\\beta_1)'}</M> は「傾きの推定値がどれくらい揺れるか」で、別のものです。式から次のことが読み取れます。
         </p>
         <ul>
           <li>点が直線のまわりにばらつく（<M>s</M> が大きい）ほど、標準誤差は大きい</li>
@@ -131,6 +132,18 @@ export default function Lesson() {
         </p>
         <MathBlock caption="t 値 = 推定値 ÷ 標準誤差（H0 のもとで自由度 n − 2 の t 分布）">{'t = \\frac{\\hat\\beta_1 - 0}{\\mathrm{SE}(\\hat\\beta_1)}'}</MathBlock>
         <Example title="広告費の例で検定する">
+          <p>まず標準誤差を手で計算してみます（試験では出力表を読む形で問われることが多いと言われるので、流れがわかれば十分です）。</p>
+          <Steps>
+            <li>
+              x の平均は <M>{'45 \\div 10 = 4.5'}</M>。x の偏差の2乗の合計は <M>{'\\sum (x_i - 4.5)^2 = 46.5'}</M>
+            </li>
+            <li>
+              残差の2乗の合計は約 98.76。残差の自由度 <M>{'n - 2 = 8'}</M> で割ってルート：<M>{'s = \\sqrt{98.76 \\div 8} = \\sqrt{12.35} \\approx 3.514'}</M>
+            </li>
+            <li>
+              <M>{'\\mathrm{SE}(\\hat\\beta_1) = 3.514 \\div \\sqrt{46.5} = 3.514 \\div 6.819 \\approx 0.515'}</M>
+            </li>
+          </Steps>
           <p>統計ソフトで計算すると、次の表が出てきます（表の読み方は4つ目のレッスンでくわしく扱います）。</p>
           <DataTable
             head={['', <Mark key="e" color="c1">推定値</Mark>, <Mark key="s" color="c2">標準誤差</Mark>, <Mark key="t" color="c3">t 値</Mark>, <Mark key="p" color="c4">p 値</Mark>]}
@@ -174,6 +187,9 @@ export default function Lesson() {
             <M>{'2.323 \\pm 2.306 \\times 0.515 = 2.323 \\pm 1.188'}</M> なので、およそ <strong>1.13 〜 3.51</strong>。
             区間に 0 が入っていないことと、「5% で <M>{'H_0: \\beta_1 = 0'}</M> が棄却される」ことは同じ意味です。
           </p>
+          <p>
+            Excel の回帰分析の出力では、係数の表の「<strong>下限 95%</strong>」「<strong>上限 95%</strong>」の列がこの区間です。この例なら 1.134 と 3.511 が並びます。
+          </p>
         </Example>
       </Section>
 
@@ -205,7 +221,10 @@ export default function Lesson() {
             <li>
               「有意 ＝ 原因と結果の関係がある」→ 回帰は関係の強さを測るだけ。広告費の多い店はもともと立地が良い、といった別の理由（交絡）かもしれません。
             </li>
-            <li>t 値の分母を「残差の標準誤差 s」にしてしまう → 分母は<strong>その係数の標準誤差</strong>（出力の Std. Error の列）。</li>
+            <li>
+              t 値の分母を「残差の標準誤差 s」にしてしまう → 分母は<strong>その係数の標準誤差</strong>（R の出力の Std. Error の列、Excel の係数の表の「標準誤差」の列）。
+              Excel の「回帰統計」の表にある「標準誤差」は残差の標準誤差 s のほうなので注意。
+            </li>
           </ul>
         </Pitfall>
       </Section>
@@ -220,6 +239,10 @@ export default function Lesson() {
               <Link to="/tables">分布表のページ</Link>）。
             </li>
             <li>回帰式に値を代入して予測値を求める問題と、外挿の危うさを問う問題。</li>
+            <li>
+              回帰分析は2級で最も出題が多い分野の一つで、Excel の回帰分析の出力を見て答える形が多い、という分析記事があります（公式の発表ではありません）。
+              出力の読み方は<Link to="/lessons/linear-models-software-output">「統計ソフトの出力を読む」</Link>で練習します。
+            </li>
           </ul>
         </ExamTip>
       </Section>

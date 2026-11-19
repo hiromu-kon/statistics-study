@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Controls, Slider } from '../../../components/blocks'
 import { M } from '../../../components/Math'
+import { Label, Plot, Points, Segment } from '../../../components/charts/Plot'
 import { round } from '../../../lib/stats'
 
 type Piece = { label: string; units: number; kind: 'x' | 'num' | 'gone' }
@@ -207,6 +208,44 @@ export function ZScoreLines() {
         <Slider label="点数 x" value={x} min={20} max={100} step={1} onChange={setX} />
         <Slider label="平均 μ" value={mu} min={40} max={70} step={1} onChange={setMu} />
         <Slider label="標準偏差 σ" value={sigma} min={5} max={20} step={1} onChange={setSigma} />
+      </Controls>
+    </div>
+  )
+}
+
+/**
+ * 不等式 −k ≤ (x − μ)/σ ≤ k を x について解いた範囲を、数直線の上に塗って見せる。
+ * 上の段が z、下の段が x で、同じ横位置が対応する。
+ */
+export function InequalityLine({ mu = 50, sigma = 5 }: { mu?: number; sigma?: number }) {
+  const [k, setK] = useState(2)
+  const lo = mu - k * sigma
+  const hi = mu + k * sigma
+  const ticks = [-3, -2, -1, 0, 1, 2, 3].map((t) => mu + t * sigma)
+  return (
+    <div>
+      <Plot x={[mu - 3.6 * sigma, mu + 3.6 * sigma]} y={[0, 2]} height={150} hideY grid={false} xTicks={ticks} xLabel="点数 x">
+        <Segment x1={mu - 3.6 * sigma} y1={1.3} x2={mu + 3.6 * sigma} y2={1.3} color="muted" />
+        {[-3, -2, -1, 0, 1, 2, 3].map((t) => (
+          <Label key={t} x={mu + t * sigma} y={1.3} dy={-10} color="muted">{`z=${t}`}</Label>
+        ))}
+        <Segment x1={lo} y1={0.45} x2={hi} y2={0.45} color="c1" width={10} />
+        <Points
+          data={[
+            { x: lo, y: 0.45, color: 'c1' },
+            { x: hi, y: 0.45, color: 'c1' },
+          ]}
+          r={7}
+          opacity={1}
+        />
+        <Segment x1={lo} y1={0.45} x2={lo} y2={1.3} color="c2" dashed />
+        <Segment x1={hi} y1={0.45} x2={hi} y2={1.3} color="c2" dashed />
+      </Plot>
+      <p className="figure-readout">
+        <M>{`-${k} \\le \\frac{x - ${mu}}{${sigma}} \\le ${k} \\quad\\to\\quad${round(lo, 2)} \\le x \\le ${round(hi, 2)}`}</M>
+      </p>
+      <Controls>
+        <Slider label="k" value={k} min={0.5} max={3} step={0.5} onChange={setK} format={(v) => v.toFixed(1)} />
       </Controls>
     </div>
   )

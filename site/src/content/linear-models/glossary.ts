@@ -176,4 +176,25 @@ export const glossary: GlossaryTerm[] = [
     meaning: '回帰出力の Pr(>|t|) は、$H_0: \\beta_j = 0$ の両側検定の p 値。2.36e-05 は $2.36 \\times 10^{-5}$ を表す。',
     easy: '「本当は関係ないのに、これくらいの t 値がたまたま出る確率」。小さいほど関係がありそう。',
   },
+  {
+    term: '重相関R・重決定R2・補正R2（Excel の表記）',
+    reading: 'じゅうそうかんあーる・じゅうけっていあーるに・ほせいあーるに',
+    lesson: 'linear-models-software-output',
+    meaning: 'Excel の回帰分析の「回帰統計」に出る項目。重相関 R は実際の y と予測値の相関係数（決定係数のルート）、重決定 R2 は決定係数 $R^2$、補正 R2 は自由度調整済み決定係数。',
+    easy: '決定係数は「重決定 R2」。「重相関 R」はそのルートなので、取り違えない。',
+  },
+  {
+    term: '平均平方',
+    reading: 'へいきんへいほう',
+    lesson: 'linear-models-anova',
+    meaning: '平方和（変動）を自由度で割ったもの（Mean Square、MS）。分散分析では群間の平均平方 ÷ 群内の平均平方が F 比。Excel の分散分析表では「分散」の列。',
+    easy: '「1自由度あたりの変動」。変動をそのまま比べず、これにそろえてから比べる。',
+  },
+  {
+    term: 'VIF（分散拡大係数）',
+    reading: 'ぶいあいえふ',
+    lesson: 'linear-models-multiple-regression',
+    meaning: '$\\mathrm{VIF}_j = 1/(1 - R_j^2)$。$R_j^2$ は $x_j$ をほかの説明変数で回帰したときの決定係数。係数の分散が何倍にふくらむかを表し、10（または 5）を超えると多重共線性を疑う目安とされる。',
+    easy: '説明変数どうしが似ているせいで、係数の揺れが何倍になっているか。',
+  },
 ]

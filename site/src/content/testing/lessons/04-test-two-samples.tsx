@@ -1,4 +1,5 @@
-import { DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { DataTable, Example, ExamTip, Figure, Intuition, Note, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { TResultPlot } from '../figures/MeanFigures'
@@ -37,7 +38,9 @@ export default function Lesson() {
 
       <Section title="平均の差の検定：3つのパターン">
         <p>
-          H0 はどれも <M>{'\\mu_1 = \\mu_2'}</M>（差がない）。違うのは、<strong>分母の「差のぶれ」をどう見積もるか</strong>です。
+          グループ1・2の母平均を <M>{'\\mu_1, \\mu_2'}</M>、標本の大きさを <M>{'n_1, n_2'}</M>、標本平均を <M>{'\\bar{x}_1, \\bar{x}_2'}</M> と書きます。
+          H0 はどれも <M>{'\\mu_1 = \\mu_2'}</M>（差がない）。違うのは、<strong>分母の「差のぶれ」をどう見積もるか</strong>です
+          （区間推定でも同じ3パターンが出てきました：<Link to="/lessons/estimation-ci-two-samples">2つの母集団の区間推定</Link>）。
         </p>
         <DataTable
           head={['母分散について', '検定統計量', 'H0 のもとでの分布']}
@@ -68,12 +71,30 @@ export default function Lesson() {
             <M>{'\\bar{x}_2'}</M> の分散は <M>{'\\sigma_2^2/n_2'}</M> なので、差の分散はその和。引き算でも分散は<strong>足す</strong>のがポイントです。
           </p>
         </Intuition>
+        <Example title="母分散がわかっているとき（z 検定）">
+          <p>
+            2つの工場で作る電池の重さ（g）。長年の記録から標準偏差は工場1が 5、工場2が 6 とわかっています。工場1から25個、工場2から36個を量ると、平均の差は
+            <M>{'\\bar{x}_1 - \\bar{x}_2 = 3'}</M> でした（有意水準 5%、両側）。
+          </p>
+          <Steps>
+            <li>
+              差のぶれ：<M>{'\\sqrt{5^2/25 + 6^2/36} = \\sqrt{1 + 1} = \\sqrt{2} \\approx 1.414'}</M>
+            </li>
+            <li>
+              <M>{'z = 3 \\div 1.414 \\approx 2.12'}</M>
+            </li>
+            <li>
+              <M>{'2.12 > 1.96'}</M> なので H0 を棄却。「2つの工場の平均の重さには差があるといえる」（p 値は約 0.034）。
+            </li>
+          </Steps>
+        </Example>
       </Section>
 
       <Section title="プールした分散">
         <p>
           2つの母分散が等しいなら、2つの標本の不偏分散 <M>{'s_1^2, s_2^2'}</M> は同じものを推定しています。そこで2つを<strong>まとめて（プールして）</strong>
-          1つの推定値にします。データが多い方を重く見る「重みつき平均」です。
+          1つの推定値にします。プール（pool）は「ためる・共同で使う」という意味です。データが多い方を重く見る「重みつき平均」で、記号は
+          <M>{'s_p^2'}</M>（エス・ピーの2乗。p は pooled の頭文字で、p 値の p ではありません）と書きます。
         </p>
         <MathBlock caption="プールした分散。分子は「両グループの偏差の2乗の合計」、分母は自由度の合計">
           {'s_p^2 = \\frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}'}
@@ -90,7 +111,11 @@ export default function Lesson() {
             ]}
           />
         </Example>
-        <p>まず「等分散と考えてよいか」を F 検定で確かめ（下で説明）、問題なければプールした t 検定を使います。</p>
+        <p>
+          ここでは、まず「等分散と考えてよいか」を F 検定で確かめ（下で説明）、問題なければプールした t 検定を使う、という教科書でよく見る手順で進めます。
+          なお、「等分散かどうかわからないなら、最初からウェルチの t 検定を使えばよい」という考え方もあります。試験では、問題文の「母分散は等しいと仮定する」
+          「等しいとは限らない」という言葉で使い分けます。
+        </p>
         <TestSteps
           hypothesis={
             <>
@@ -101,7 +126,9 @@ export default function Lesson() {
             <>
               <M>{'s_p^2 = \\frac{7 \\times 36 + 9 \\times 30}{8 + 10 - 2} = \\frac{522}{16} = 32.625'}</M>。
               <br />
-              <M>{'t = \\frac{72.0 - 66.0}{\\sqrt{32.625 \\times (1/8 + 1/10)}} = \\frac{6.0}{\\sqrt{7.341}} \\approx \\frac{6.0}{2.709} \\approx 2.21'}</M>
+              分母の中身：<M>{'1/8 + 1/10 = 0.125 + 0.1 = 0.225'}</M>、<M>{'32.625 \\times 0.225 \\approx 7.341'}</M>、<M>{'\\sqrt{7.341} \\approx 2.709'}</M>。
+              <br />
+              <M>{'t = \\frac{72.0 - 66.0}{\\sqrt{32.625 \\times (1/8 + 1/10)}} = \\frac{6.0}{2.709} \\approx 2.21'}</M>
             </>
           }
           compare={
@@ -117,11 +144,23 @@ export default function Lesson() {
         <Note title="ウェルチの t 検定">
           <p>
             等分散と考えにくいときは、プールせずに分母を <M>{'\\sqrt{s_1^2/n_1 + s_2^2/n_2}'}</M> にします（ウェルチの t 検定）。
-            この例なら <M>{'\\sqrt{36/8 + 30/10} = \\sqrt{7.5} \\approx 2.739'}</M>、<M>{'t \\approx 2.19'}</M>。自由度は次の近似式で求め、整数でないこともあります（この例で約 14.4）。
+            この例なら <M>{'\\sqrt{36/8 + 30/10} = \\sqrt{4.5 + 3.0} = \\sqrt{7.5} \\approx 2.739'}</M>、<M>{'t = 6.0 \\div 2.739 \\approx 2.19'}</M>。
+            自由度は次の近似式で求め、整数でないこともあります。
           </p>
-          <MathBlock caption="ウェルチの近似自由度（ウェルチ・サタースウェイトの式）">
+          <MathBlock caption="ウェルチの近似自由度（ウェルチ・サタースウェイトの式）。ν は「ニュー」と読む">
             {'\\nu \\approx \\frac{\\left(s_1^2/n_1 + s_2^2/n_2\\right)^2}{\\dfrac{(s_1^2/n_1)^2}{n_1-1} + \\dfrac{(s_2^2/n_2)^2}{n_2-1}}'}
           </MathBlock>
+          <Steps>
+            <li>
+              分子：<M>{'(4.5 + 3.0)^2 = 7.5^2 = 56.25'}</M>
+            </li>
+            <li>
+              分母：<M>{'4.5^2 \\div 7 + 3.0^2 \\div 9 \\approx 2.893 + 1.000 = 3.893'}</M>
+            </li>
+            <li>
+              <M>{'\\nu \\approx 56.25 \\div 3.893 \\approx 14.4'}</M>。分布表で読むときは近い整数の自由度の値で考えます。問題文に自由度や分布表の値が書かれていれば、それを使います。
+            </li>
+          </Steps>
         </Note>
       </Section>
 
@@ -131,6 +170,10 @@ export default function Lesson() {
           不偏分散の比は F 分布にしたがいます。
         </p>
         <MathBlock caption="分散の比。自由度は（分子の n − 1, 分母の n − 1）の順">{'F = \\frac{s_1^2}{s_2^2} \\sim F(n_1 - 1,\\ n_2 - 1)'}</MathBlock>
+        <p>
+          「〜」は「この分布にしたがう」という意味です（<Link to="/lessons/sampling-chi2-t-f">F 分布のレッスン</Link>）。F 分布には自由度が2つあり、
+          <M>{'F_{0.025}(7, 9)'}</M> は「分子の自由度 7、分母の自由度 9 の F 分布で、右側の面積が 0.025 になる点」です。H0 が正しければ2つの分散はだいたい同じなので、F は 1 の近くになります。
+        </p>
         <TestSteps
           hypothesis={
             <>
@@ -159,6 +202,12 @@ export default function Lesson() {
             左側の境目が必要なときは <M>{'F_{1-\\alpha/2}(m, n) = 1 / F_{\\alpha/2}(n, m)'}</M>（自由度の順番を入れかえて逆数）で求めます。
           </p>
         </Intuition>
+        <Note title="片側の F 検定">
+          <p>
+            「新しい機械のほうがばらつきが<strong>小さい</strong>か」のように向きが決まっているときは片側検定です。H1: <M>{'\\sigma_{old}^2 > \\sigma_{new}^2'}</M> なら、
+            大きいと考えている側（古い機械）を分子にして <M>{'F = s_{old}^2 / s_{new}^2'}</M> とし、上側 5% 点 <M>{'F_{0.05}'}</M> と比べます（両側のときの 2.5% 点ではない）。
+          </p>
+        </Note>
       </Section>
 
       <Section title="母比率の差の検定">
@@ -181,7 +230,9 @@ export default function Lesson() {
             <>
               <M>{'\\hat{p} = \\frac{120 + 90}{400 + 400} = 0.2625'}</M>。
               <br />
-              <M>{'z = \\frac{0.300 - 0.225}{\\sqrt{0.2625 \\times 0.7375 \\times (1/400 + 1/400)}} \\approx \\frac{0.075}{0.0311} \\approx 2.41'}</M>
+              分母の中身：<M>{'0.2625 \\times 0.7375 \\approx 0.1936'}</M>、<M>{'1/400 + 1/400 = 0.005'}</M>、<M>{'\\sqrt{0.1936 \\times 0.005} = \\sqrt{0.000968} \\approx 0.0311'}</M>。
+              <br />
+              <M>{'z = \\frac{0.300 - 0.225}{0.0311} = \\frac{0.075}{0.0311} \\approx 2.41'}</M>
             </>
           }
           compare={
@@ -219,6 +270,9 @@ export default function Lesson() {
             <li>状況（分散既知か、等分散か）を読んで、どの検定統計量を使うかを選ぶ問題。</li>
             <li>分散の比 F を計算し、F 分布表の値と比べて等分散かを判断する問題。</li>
             <li>2つの比率の差の検定で、プールした比率を使って z を計算する問題。</li>
+            <li>
+              F 検定を重要とする受験記があります（飛ばして苦労したという声も）。片側か両側か、自由度の順番（分子が先）、どの % 点と比べるかを確実にしておきましょう。
+            </li>
           </ul>
         </ExamTip>
       </Section>

@@ -1,4 +1,5 @@
-import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { DiceGrid } from '../../probability/figures/DiceGrid'
@@ -90,6 +91,10 @@ export default function Lesson() {
           すべてのマスで「同時確率 = 周辺確率のかけ算」が成り立つとき、<M>{'X'}</M> と <M>{'Y'}</M> は<strong>独立</strong>です。
         </p>
         <MathBlock caption="すべての x, y の組について成り立つこと">{'P(X = x,\\ Y = y) = P(X = x)\\,P(Y = y)'}</MathBlock>
+        <p className="small">
+          左辺の <M>{'P(X = x,\\ Y = y)'}</M> の「,（カンマ）」は「かつ」の意味です。「X が x で、しかも Y が y になる確率」＝同時分布表の1マスの値です。
+          前の章の事象の独立 <M>{'P(A \\cap B) = P(A)P(B)'}</M> を、表のすべてのマスで確かめる、ということです。
+        </p>
         <Compare>
           <Card title="サイコロ2個：独立">
             <p>
@@ -124,26 +129,46 @@ export default function Lesson() {
       <Section title="共分散と相関係数">
         <p>
           分散を考えるには、<strong>2つが一緒に動く度合い</strong>が必要です。それを表すのが<strong>共分散</strong>です。
-          記述統計の共分散と同じく、「X のずれ × Y のずれ」の平均（期待値）です。
+          記述統計の共分散（<Link to="/lessons/bivariate-scatter-correlation">「散布図・共分散・相関係数」</Link>）と同じく、「X のずれ × Y のずれ」の平均（期待値）です。
+          Cov は covariance（共分散）の略で、<M>{'\\mu_X'}</M>、<M>{'\\mu_Y'}</M> はそれぞれ X の期待値、Y の期待値です。
         </p>
         <MathBlock caption="共分散：X のずれと Y のずれのかけ算を、確率で重みづけして足す">{'\\mathrm{Cov}(X, Y) = E\\left[(X - \\mu_X)(Y - \\mu_Y)\\right]'}</MathBlock>
         <MathBlock caption="計算を楽にする式：かけ算の期待値から、期待値どうしのかけ算を引く">{'\\mathrm{Cov}(X, Y) = E(XY) - E(X)\\,E(Y)'}</MathBlock>
+        <p>
+          2つめの式の <M>{'E(XY)'}</M> は「X と Y のかけ算の期待値」です。同時分布表の<strong>マスごとに「x × y × そのマスの確率」を計算して全部足します</strong>。
+        </p>
         <MathBlock caption="相関係数：共分散を、それぞれの標準偏差で割って −1 〜 1 にそろえたもの">{'\\rho = \\frac{\\mathrm{Cov}(X, Y)}{\\sigma_X\\,\\sigma_Y}'}</MathBlock>
+        <p>
+          <M>{'\\rho'}</M> は「ロー」と読みます。共分散は単位や値の大きさで変わってしまうので、標準偏差で割って、いつでも −1 以上 1 以下の目盛りで読めるようにしたものです。
+        </p>
         <Figure caption="同時分布表を、円の面積 = 確率で描いた図。点線が期待値 0.5。青（右上・左下）が大きいので共分散はプラス">
           <BubblePlot joint={rain} x={[-0.5, 1.5]} y={[-0.5, 1.5]} xTicks={[0, 1]} yTicks={[0, 1]} xLabel="X（今日）" yLabel="Y（明日）" ariaLabel="2日の天気の同時分布" />
         </Figure>
+        <p>図の見方：点線（期待値）で4つに区切ると、青の円（右上・左下）は「2つとも期待値より大きい／小さい」場所で、共分散を増やします。赤は減らします。</p>
+        <DataTable
+          head={['マス（x, y）', '確率', 'x × y', 'x × y × 確率']}
+          rows={[
+            ['(0, 0)', '0.4', '0', '0'],
+            ['(0, 1)', '0.1', '0', '0'],
+            ['(1, 0)', '0.1', '0', '0'],
+            ['(1, 1)', '0.4', '1', '0.4'],
+            [<strong key="s">合計</strong>, '1', '', <strong key="e">0.4 = E(XY)</strong>],
+          ]}
+          caption="E(XY) の計算。最後の列を全部足したものが E(XY)"
+        />
         <Steps>
           <li>
-            <M>{'XY'}</M> は「両方とも雨」のときだけ1、それ以外は0なので、<M>{'E(XY) = 1 \\times 0.4 = 0.4'}</M>。
+            表のとおり、<M>{'XY'}</M> は「両方とも雨」のときだけ1、それ以外は0なので、<M>{'E(XY) = 1 \\times 0.4 = 0.4'}</M>。
           </li>
           <li>
             <M>{'\\mathrm{Cov}(X, Y) = 0.4 - 0.5 \\times 0.5 = 0.15'}</M>。プラスなので「一緒に動く」傾向がある。
           </li>
           <li>
-            <M>{'V(X) = E(X^2) - \\{E(X)\\}^2 = 0.5 - 0.25 = 0.25'}</M>（Y も同じ）なので、標準偏差はどちらも 0.5。
+            X は 0 か 1 なので <M>{'X^2 = X'}</M>、つまり <M>{'E(X^2) = 0^2 \\times 0.5 + 1^2 \\times 0.5 = 0.5'}</M>。
+            <M>{'V(X) = E(X^2) - \\{E(X)\\}^2 = 0.5 - 0.5^2 = 0.25'}</M>（Y も同じ）なので、標準偏差はどちらも <M>{'\\sqrt{0.25} = 0.5'}</M>。
           </li>
           <li>
-            相関係数 <M>{'\\rho = 0.15 / (0.5 \\times 0.5) = 0.6'}</M>。
+            相関係数 <M>{'\\rho = \\frac{0.15}{0.5 \\times 0.5} = \\frac{0.15}{0.25} = 0.6'}</M>。
           </li>
         </Steps>
       </Section>
@@ -153,7 +178,8 @@ export default function Lesson() {
         <MathBlock caption="差の分散：共分散の2倍を引く。V(X) と V(Y) は足すことに注意">{'V(X - Y) = V(X) + V(Y) - 2\\,\\mathrm{Cov}(X, Y)'}</MathBlock>
         <p>
           2日の天気なら <M>{'V(X + Y) = 0.25 + 0.25 + 2 \\times 0.15 = 0.8'}</M>。
-          分布から直接計算しても <M>{'E\\{(X+Y)^2\\} - 1^2 = (1 \\times 0.2 + 4 \\times 0.4) - 1 = 0.8'}</M> で一致します。
+          分布から直接計算しても、<M>{'X + Y'}</M> は 0, 1, 2 を 0.4, 0.2, 0.4 でとるので
+          <M>{'E\\{(X+Y)^2\\} = 0^2 \\times 0.4 + 1^2 \\times 0.2 + 2^2 \\times 0.4 = 1.8'}</M>、<M>{'V(X + Y) = 1.8 - 1^2 = 0.8'}</M> で一致します。
         </p>
         <p>
           X と Y が<strong>独立</strong>なら共分散は0なので、
@@ -179,6 +205,17 @@ export default function Lesson() {
             標準偏差は <M>{'\\sqrt{0.25} = 0.5'}</M> mm。<M>{'0.4 - 0.3 = 0.1'}</M> mm ではありません。
           </p>
         </Example>
+        <p>
+          係数がついた <M>{'aX + bY'}</M> でも同じ考え方です。前のレッスンの「a は2乗で効く」と、共分散の項を組み合わせます。
+        </p>
+        <MathBlock caption="係数つきの和の分散。共分散の項は a と b を2乗せず、そのままかける">{'V(aX + bY) = a^2\\,V(X) + b^2\\,V(Y) + 2ab\\,\\mathrm{Cov}(X, Y)'}</MathBlock>
+        <Example title="V(2X − Y) を求める">
+          <p>
+            <M>{'V(X) = 4'}</M>、<M>{'V(Y) = 9'}</M>、<M>{'\\mathrm{Cov}(X, Y) = 1'}</M> とします。<M>{'a = 2'}</M>、<M>{'b = -1'}</M> なので
+          </p>
+          <MathBlock>{'V(2X - Y) = 2^2 \\times 4 + (-1)^2 \\times 9 + 2 \\times 2 \\times (-1) \\times 1 = 16 + 9 - 4 = 21'}</MathBlock>
+          <p>独立（共分散0）なら、最後の項が消えて <M>{'16 + 9 = 25'}</M> です。</p>
+        </Example>
       </Section>
 
       <Section title="独立なら共分散0。でも逆は成り立たない">
@@ -197,6 +234,23 @@ export default function Lesson() {
         </Figure>
       </Section>
 
+      <Section title="1次変換しても、相関係数は（符号以外）変わらない">
+        <p>
+          X と Y をそれぞれ1次変換して <M>{'U = aX + b'}</M>、<M>{'W = cY + d'}</M> とします。たとえば X を円からドルに、Y を℃から℉に直すような場合です。
+        </p>
+        <MathBlock caption="共分散：足した b, d は消え、かけた a, c はそのままかかる">{'\\mathrm{Cov}(aX + b,\\ cY + d) = ac\\,\\mathrm{Cov}(X, Y)'}</MathBlock>
+        <p>
+          標準偏差はそれぞれ <M>{'|a|'}</M> 倍、<M>{'|c|'}</M> 倍になるので、相関係数では <M>{'ac'}</M> と <M>{'|a||c|'}</M> が約分されます。
+        </p>
+        <MathBlock caption="相関係数：a と c が同じ符号ならそのまま、違う符号なら符号だけ反対になる">{'\\rho_{UW} = \\frac{ac\\,\\mathrm{Cov}(X, Y)}{|a|\\sigma_X\\,|c|\\sigma_Y} = \\pm\\,\\rho_{XY}'}</MathBlock>
+        <MathNote title="具体例で">
+          <p>
+            X と Y の相関係数が 0.6 のとき、<M>{'U = 2X + 3'}</M>、<M>{'W = -Y + 1'}</M> の相関係数は、<M>{'a = 2'}</M> と <M>{'c = -1'}</M> の符号が違うので <M>{'-0.6'}</M>。
+            <M>{'U = 100X'}</M>、<M>{'W = 1.8Y + 32'}</M> なら、どちらもプラスなので 0.6 のままです。<strong>単位を変えても相関の強さは変わりません</strong>。
+          </p>
+        </MathNote>
+      </Section>
+
       <Section title="よくある勘違い">
         <Pitfall>
           <ul>
@@ -210,6 +264,9 @@ export default function Lesson() {
               <M>{'E(X + Y) = E(X) + E(Y)'}</M> は独立のときだけ、と思う → 期待値はいつでも足せます。独立が必要なのは分散のほう（正確には共分散が0であること）。
             </li>
             <li>「共分散が0なら独立」と思う → 上の Y = X² のように、逆は成り立ちません。</li>
+            <li>
+              <M>{'V(aX + bY)'}</M> の共分散の項まで係数を2乗してしまう → 正しくは <M>{'2ab\\,\\mathrm{Cov}(X, Y)'}</M>。2乗するのは <M>{'V(X)'}</M>、<M>{'V(Y)'}</M> の前の係数だけです。
+            </li>
             <li>
               <M>{'V(2X)'}</M> と <M>{'V(X_1 + X_2)'}</M> を混同する → 同じ X を2倍すると <M>{'4V(X)'}</M>、独立な2つを足すと <M>{'2V(X)'}</M>。
             </li>
@@ -225,7 +282,10 @@ export default function Lesson() {
               「独立な X, Y について <M>{'V(2X - 3Y)'}</M> を求めよ」のような問題。<M>{'4V(X) + 9V(Y)'}</M> のように係数を2乗して<strong>足す</strong>。
             </li>
             <li>「共分散が0 ⇒ 独立」が正しいかを問う選択肢。</li>
-            <li>この考え方は、標本平均の分散 <M>{'\\sigma^2 / n'}</M>（「標本分布」の章）を導くときの土台になります。</li>
+            <li>「X を10倍、Y を −1 倍すると相関係数はどうなるか」のような、1次変換と相関係数の問題（符号だけが変わりうる）。</li>
+            <li>
+              この考え方は、標本平均の分散 <M>{'\\sigma^2 / n'}</M>（<Link to="/lessons/sampling-sample-mean">「母集団・標本と標本平均の分布」</Link>）を導くときの土台になります。
+            </li>
           </ul>
         </ExamTip>
       </Section>

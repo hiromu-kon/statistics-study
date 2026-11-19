@@ -51,6 +51,13 @@ export const glossary: GlossaryTerm[] = [
     easy: '母集団が小さくて「選んだ人を戻さない」とき、ばらつきが少し小さくなる分の調整。',
   },
   {
+    term: '復元抽出・非復元抽出',
+    reading: 'ふくげんちゅうしゅつ・ひふくげんちゅうしゅつ',
+    lesson: 'estimation-point',
+    meaning: '選んだものを母集団に戻してから次を選ぶのが復元抽出、戻さないのが非復元抽出。非復元抽出で母集団が小さいと、標本平均の分散に有限母集団修正がかかる。',
+    easy: 'くじを引いたあと、くじを箱に戻すか（復元）、戻さないか（非復元）。',
+  },
+  {
     term: '区間推定',
     reading: 'くかんすいてい',
     lesson: 'estimation-ci-mean',
@@ -105,5 +112,12 @@ export const glossary: GlossaryTerm[] = [
     lesson: 'estimation-ci-two-samples',
     meaning: '2つの母分散が等しいと仮定できないときの、母平均の差の区間推定・検定の方法。自由度は近似式で求める。',
     easy: '2つのグループのばらつきがちがいそうなときに使う、t 分布の使い方の工夫。',
+  },
+  {
+    term: '対応のあるデータ',
+    reading: 'たいおうのあるでーた',
+    lesson: 'estimation-ci-two-samples',
+    meaning: '同じ人の前後のように、2 つの値がペアになっているデータ。差をとって 1 標本として区間推定・検定をする。',
+    easy: '「同じ人の前と後」のように組になったデータ。組ごとの差を見る。',
   },
 ]

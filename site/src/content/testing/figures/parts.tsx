@@ -4,8 +4,8 @@ import { Area, Curve, Plot, colorVar, usePlot, type Color } from '../../../compo
 
 /**
  * 色つきの文字。
- * 共通の <Label> は color を fill 属性で渡しているが、CSS の .plot-annot { fill: var(--ink) } に上書きされて
- * 色が出ないため、この章では style で fill を指定する版を使う。
+ * 共通の <Label> に色が付かなかった時期に作った部品。今は Label でも同じ表示になるが、
+ * この章の図はこの部品で位置を調整しているので置き換えていない。
  */
 export function ColorText({
   x,
@@ -30,7 +30,7 @@ export function ColorText({
   )
 }
 
-/** 縦線（ラベルなし）。VLine のラベルも色が出ないので、文字は ColorText で別に置く */
+/** 縦線（ラベルなし）。文字は ColorText で別に置く */
 export function Mark({ x, color = 'c5', dashed = true, width = 2 }: { x: number; color?: Color; dashed?: boolean; width?: number }) {
   const s = usePlot()
   return (

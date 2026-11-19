@@ -1,4 +1,5 @@
-import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section, Steps } from '../../../components/blocks'
+import { Link } from 'react-router-dom'
+import { Card, Compare, DataTable, Example, ExamTip, Figure, Intuition, MathNote, Pitfall, Point, Section, Steps } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
 import { DistBars } from '../figures/DistBars'
@@ -48,8 +49,13 @@ export default function Lesson() {
       <Section title="定義・式：期待値">
         <MathBlock caption="期待値：とりうる値に、その確率をかけて全部足す">{'E(X) = \\sum_{i} x_i\\,P(X = x_i) = x_1 p_1 + x_2 p_2 + \\cdots + x_k p_k'}</MathBlock>
         <p>
-          <M>{'E'}</M> は expectation（期待）の頭文字です。期待値は <M>{'\\mu'}</M>（ミュー）という記号で表すことも多いです。
-          サイコロの目なら <M>{'(1 + 2 + 3 + 4 + 5 + 6) \\times \\frac{1}{6} = 3.5'}</M> です。
+          <M>{'E(X)'}</M> は「X の期待値」と読みます。<M>{'E'}</M> は expectation（期待）の頭文字です。期待値は <M>{'\\mu'}</M>（ミュー）という記号で表すことも多いです。
+          <M>{'x_1, x_2, \\ldots'}</M> は「1番目の値、2番目の値…」、<M>{'p_1, p_2, \\ldots'}</M> はそれぞれの確率です。
+          <M>{'\\sum'}</M>（シグマ）は「全部足す」という記号です（<Link to="/lessons/math-sigma">「Σ記号と添字」</Link>）。
+        </p>
+        <p>
+          サイコロの目なら、どの目も確率 <M>{'\\frac{1}{6}'}</M> なので
+          <M>{'1 \\times \\frac{1}{6} + 2 \\times \\frac{1}{6} + \\cdots + 6 \\times \\frac{1}{6} = (1 + 2 + 3 + 4 + 5 + 6) \\times \\frac{1}{6} = \\frac{21}{6} = 3.5'}</M> です。
         </p>
         <Figure caption="サイコロの確率分布。棒を重りだと思うと、ちょうど 3.5 の位置の支点で釣り合う">
           <DistBars dist={die} x={[0.3, 6.7]} yMax={0.2} xTicks={[1, 2, 3, 4, 5, 6]} xLabel="出る目 x" label={() => '1/6'} showMean ariaLabel="サイコロの確率分布と、期待値3.5の支点" />
@@ -67,7 +73,7 @@ export default function Lesson() {
 
       <Section title="データの平均との対応">
         <p>
-          期待値の式は、記述統計で習った「度数分布表からの平均」とまったく同じ形です。<strong>相対度数（割合）が確率に置きかわった</strong>だけです。
+          期待値の式は、記述統計で習った「度数分布表からの平均」（<Link to="/lessons/descriptive-center">「代表値（平均値・中央値・最頻値）」</Link>）とまったく同じ形です。<strong>相対度数（割合）が確率に置きかわった</strong>だけです。
         </p>
         <DataTable
           head={['', 'データ（記述統計）', '確率変数']}
@@ -100,7 +106,7 @@ export default function Lesson() {
               width={340}
               height={200}
             />
-            <p className="small">期待値の近くに集まっている。分散 0.25</p>
+            <p className="small">期待値の近くに集まっている。ずれは ±0.5 なので、分散 <M>{'0.5^2 = 0.25'}</M></p>
           </Card>
           <Card title="1 か 6 が 1/2 ずつ">
             <DistBars
@@ -117,27 +123,45 @@ export default function Lesson() {
               width={340}
               height={200}
             />
-            <p className="small">期待値から遠い値ばかり。分散 6.25</p>
+            <p className="small">期待値から遠い値ばかり。ずれは ±2.5 なので、分散 <M>{'2.5^2 = 6.25'}</M></p>
           </Card>
         </Compare>
         <MathBlock caption="分散：期待値 μ からのずれを2乗し、確率で重みづけして足す">{'V(X) = E\\left[(X - \\mu)^2\\right] = \\sum_i (x_i - \\mu)^2\\,p_i'}</MathBlock>
+        <p>
+          <M>{'V(X)'}</M> は「X の分散」と読みます（V は variance＝分散の頭文字）。ずれを2乗するのは、プラスのずれとマイナスのずれが打ち消しあわないようにするためです。
+        </p>
+        <p>
+          次の式に出てくる <M>{'E(X^2)'}</M> は「<strong>値を2乗してから</strong>、確率をかけて足したもの」です。
+          <M>{'\\{E(X)\\}^2'}</M> は「期待値を出してから2乗したもの」で、順番が違います。
+        </p>
         <MathBlock caption="計算を楽にする式：2乗の期待値から、期待値の2乗を引く">{'V(X) = E(X^2) - \\{E(X)\\}^2'}</MathBlock>
         <MathBlock caption="標準偏差：分散の正のルート。X と同じ単位にもどる">{'\\sigma = \\sqrt{V(X)}'}</MathBlock>
+        <MathNote title="なぜ2つの式が同じになるのか（読み飛ばしてよい）">
+          <p>
+            <M>{'(x - \\mu)^2 = x^2 - 2\\mu x + \\mu^2'}</M> と展開してから（<Link to="/lessons/math-algebra">「文字式と方程式」</Link>）、確率をかけて足します。
+          </p>
+          <MathBlock>{'\\sum (x_i - \\mu)^2 p_i = \\sum x_i^2 p_i - 2\\mu \\sum x_i p_i + \\mu^2 \\sum p_i = E(X^2) - 2\\mu \\cdot \\mu + \\mu^2 \\cdot 1 = E(X^2) - \\mu^2'}</MathBlock>
+          <p>
+            途中で <M>{'\\sum x_i p_i = \\mu'}</M>（期待値の定義）と <M>{'\\sum p_i = 1'}</M>（確率の合計）を使っています。
+          </p>
+        </MathNote>
         <Example title="サイコロの分散を2通りで計算する">
           <Steps>
             <li>
               定義どおり：ずれは −2.5, −1.5, −0.5, 0.5, 1.5, 2.5。2乗は 6.25, 2.25, 0.25, 0.25, 2.25, 6.25 で合計 17.5。
-              それぞれ確率 1/6 なので <M>{'V(X) = 17.5 / 6 = 35/12 \\approx 2.92'}</M>。
+              それぞれ確率 1/6 なので <M>{'V(X) = 17.5 \\times \\frac{1}{6} = \\frac{17.5}{6} = \\frac{35}{12} \\approx 2.92'}</M>（分子と分母を2倍して小数を消した）。
             </li>
             <li>
-              楽な式：<M>{'E(X^2) = (1 + 4 + 9 + 16 + 25 + 36)/6 = 91/6'}</M>。
-              <M>{'V(X) = 91/6 - 3.5^2 = 91/6 - 49/4 = 35/12'}</M>。同じになります。
+              楽な式：まず目を2乗して確率をかけて足す。<M>{'E(X^2) = (1 + 4 + 9 + 16 + 25 + 36) \\times \\frac{1}{6} = \\frac{91}{6}'}</M>。
+              期待値の2乗は <M>{'3.5^2 = 12.25 = \\frac{49}{4}'}</M>。分母を12にそろえて
+              <M>{'V(X) = \\frac{91}{6} - \\frac{49}{4} = \\frac{182}{12} - \\frac{147}{12} = \\frac{35}{12}'}</M>。同じになります。
             </li>
             <li>
               標準偏差：<M>{'\\sqrt{35/12} \\approx 1.71'}</M>。「出る目は、平均 3.5 からだいたい 1.7 くらいずれる」と読めます。
             </li>
           </Steps>
         </Example>
+        <p>下の図では、スライダーを右へ動かしたとき、緑の矢印（期待値 ± 標準偏差）が長くなるところを見てください。</p>
         <Figure caption="期待値は 3 のまま、両はしの確率だけを増やすと、分散（散らばり）が大きくなる">
           <SpreadSlider />
         </Figure>

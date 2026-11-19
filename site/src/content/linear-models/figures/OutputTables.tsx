@@ -93,6 +93,44 @@ export function CafeExcelOutput() {
   )
 }
 
+/** Excel の「回帰分析」ツール風の出力（家賃の重回帰。rentData.ts のデータを numpy で計算した値） */
+export function RentExcelOutput() {
+  return (
+    <>
+      <DataTable
+        caption="回帰統計"
+        head={['項目', '値']}
+        rows={[
+          ['重相関 R', '0.928'],
+          ['重決定 R2', <Mark key="r2" color="c3">0.861</Mark>],
+          ['補正 R2', <Mark key="adj" color="c4">0.845</Mark>],
+          ['標準誤差', '0.650'],
+          ['観測数', '20'],
+        ]}
+      />
+      <DataTable
+        caption="分散分析表"
+        head={['', '自由度', '変動', '分散', '観測された分散比', '有意 F']}
+        rows={[
+          ['回帰', <Mark key="d1" color="c1">2</Mark>, '44.5365', '22.2682', <Mark key="f" color="c2">52.776</Mark>, '5.11E-08'],
+          ['残差', <Mark key="d2" color="c1">17</Mark>, '7.1730', '0.4219', '', ''],
+          ['合計', '19', '51.7095', '', '', ''],
+        ]}
+      />
+      <DataTable
+        caption="係数"
+        head={['', '係数', '標準誤差', 't', 'P-値', '下限 95%', '上限 95%']}
+        rows={[
+          ['切片', '0.541', '0.573', '0.945', '0.3580', '−0.668', '1.750'],
+          ['広さ', '0.224', '0.035', '6.346', '7.31E-06', '0.149', '0.298'],
+          ['徒歩', '−0.165', '0.072', '−2.298', '0.0345', '−0.316', '−0.013'],
+        ]}
+        highlight={[2]}
+      />
+    </>
+  )
+}
+
 type Cell = 'est' | 'se' | 't' | 'p' | 'r2' | 'adj' | 'f' | 's'
 
 const PUZZLE: Record<Cell, { label: string; how: ReactNode }> = {

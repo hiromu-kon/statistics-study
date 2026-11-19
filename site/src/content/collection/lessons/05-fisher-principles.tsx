@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
 import type { LessonMeta } from '../../../types'
 import { TextTable } from '../figures/TextTable'
@@ -31,7 +32,7 @@ export default function Lesson() {
         </p>
         <p>
           新しい処理を受けるグループを<strong>処理群</strong>（実験群）、比べるための基準になる、新しい処理を受けないグループを<strong>対照群</strong>（コントロール群）といいます。
-          効果は「処理群と対照群の差」で測ります。
+          効果は「処理群と対照群の差」で測ります。処理を割り当てる1つひとつの単位（畑なら1区画、薬の実験なら1人）を<strong>実験単位</strong>といいます。
         </p>
       </Section>
 
@@ -40,7 +41,7 @@ export default function Lesson() {
           新しい肥料A が、今までの肥料B より収量（とれる量）を増やすかを、16区画の畑で調べます。この畑は<strong>左ほど土が肥えていて</strong>、
           肥料に関係なく左の区画ほどよくとれます。本当の効果は「A は B より +2」とします。①から④へ順に切り替えてみてください。
         </p>
-        <Figure caption="区画の緑の濃さが土の肥え具合。青枠が肥料A、オレンジ枠が肥料B。下の表は、同じ配置で実験を2000回やり直したシミュレーションの結果">
+        <Figure caption="区画の緑の濃さが土の肥え具合。青枠が肥料A、オレンジ枠が肥料B。下の表は、同じ配置で実験を2000回やり直したシミュレーションの結果で、見るところは「推定値の平均が本当の効果 +2 に近いか（偏り）」と「ばらつきが小さいか（精度）」の2つ">
           <FieldExperiment />
         </Figure>
         <TextTable
@@ -59,8 +60,9 @@ export default function Lesson() {
           </ul>
         </Intuition>
         <p>
-          ④のように、ブロックを作り、各ブロックの中で処理をくじで割り当てる計画を<strong>乱塊法</strong>（乱塊法実験）といいます。
-          どれだけ差があれば「効果あり」と言えるかを調べる分散分析は、「線形モデル」の章で扱います。
+          ③のように、全体の中でくじを引いて処理を割り当てる計画を<strong>完全無作為化法</strong>、
+          ④のように、ブロックを作り、各ブロックの中で処理をくじで割り当てる計画を<strong>乱塊法</strong>（らんかいほう）といいます。
+          どれだけ差があれば「効果あり」と言えるかを調べる分散分析は、<Link to="/lessons/linear-models-anova">「実験計画と一元配置分散分析」のレッスン</Link>で扱います。
         </p>
       </Section>
 
@@ -99,6 +101,10 @@ export default function Lesson() {
             <li>実験の手順の説明を読み、反復・無作為化・局所管理のどれにあたるかを選ぶ問題。</li>
             <li>うまくいかない実験の例を読み、どの原則が守られていないかを選ぶ問題。</li>
             <li>処理群・対照群、プラセボ、二重盲検の意味を問う問題。</li>
+            <li>
+              見分け方：「くじで決めた」→ 無作為化、「似たもの同士をまとめて、その中で比べた」→ 局所管理、「同じ処理を複数の単位に行った」→ 反復。
+              1つの説明文に2つの工夫が入っていることもあるので、「どの<strong>目的</strong>のための工夫か」を問われている部分を読みます。
+            </li>
           </ul>
         </ExamTip>
       </Section>

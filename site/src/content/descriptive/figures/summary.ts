@@ -21,7 +21,7 @@ function medianOfSorted(s: number[]): number {
 
 /**
  * 四分位数。中央値で前半・後半に分け、それぞれの中央値を Q1・Q3 とする。
- * データ数が奇数のときは、真ん中の値をどちらの半分にも入れない（高校の数学Iで習う方法）。
+ * データ数が奇数のときは、真ん中の値をどちらの半分にも入れない（統計WEB の箱ひげ図の解説と同じ方法）。
  * Excel の QUARTILE.INC や numpy の既定値は別の流儀なので、値が少しずれることがある。
  */
 export function quartiles(xs: number[]): { q1: number; median: number; q3: number } {

@@ -16,6 +16,13 @@ export const glossary: GlossaryTerm[] = [
     easy: '全体の代わりに実際に調べた「一部の人」。',
   },
   {
+    term: '標本の大きさ',
+    reading: 'ひょうほんのおおきさ',
+    lesson: 'sampling-sample-mean',
+    meaning: '1 つの標本に含まれる個数 n（サンプルサイズ）。「標本の数」（標本を何回とったか）とは別。',
+    easy: '何人を選んで調べたか。5 人を 1 回選んだら、標本は 1 つで大きさは 5。',
+  },
+  {
     term: '母数',
     reading: 'ぼすう',
     lesson: 'sampling-sample-mean',

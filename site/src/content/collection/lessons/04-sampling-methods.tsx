@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Card, Compare, Example, ExamTip, Figure, Intuition, Pitfall, Point, Section } from '../../../components/blocks'
 import { M, MathBlock } from '../../../components/Math'
 import type { LessonMeta } from '../../../types'
@@ -32,6 +33,7 @@ export default function Lesson() {
         </p>
         <p>
           「駅前で声をかけやすそうな人に聞く」「先生がクラスから真面目そうな生徒を選ぶ」のは無作為ではありません。選ぶ人のくせが結果にまざってしまいます。
+          このように調べる人の判断で選ぶ方法は<strong>有意抽出</strong>（作為抽出）と呼ばれ、無作為抽出と区別されます。
         </p>
       </Section>
 
@@ -40,7 +42,7 @@ export default function Lesson() {
           下の100人の母集団は、3つのグループ（<strong>層</strong>：たとえば年代）に分かれています。抽出法を切り替えて、誰が選ばれるかを見てください。
           どの方法も、最後は<strong>くじ</strong>で選んでいます（ちがうのは、くじの引き方）。
         </p>
-        <Figure caption="選ばれた人は大きな丸。層化抽出では各層から必ず選ばれ、クラスター抽出では1つのかたまりにまとまる">
+        <Figure caption="選ばれた人は大きな丸。見るところは「選ばれた丸がどこに散らばっているか」。層化抽出では各層から必ず選ばれ、クラスター抽出では1つのかたまりにまとまり、多段抽出ではいくつかのかたまりの中に散らばる">
           <SamplingGrid />
         </Figure>
         <TextTable
@@ -64,6 +66,15 @@ export default function Lesson() {
           <p>
             2000人の名簿から50人を選ぶなら、抽出間隔は <M>{'2000 \\div 50 = 40'}</M>。最初の番号をくじで1〜40から決め（たとえば7番）、あとは 7, 47, 87, 127, … と40番おきに選びます。
           </p>
+        </Example>
+        <Example title="場面から抽出法を見分ける手順">
+          <ol>
+            <li>グループ（層・集落）に分けているか？ → 分けていなければ、<strong>単純無作為抽出</strong>か<strong>系統抽出法</strong>（一定の間隔なら系統）。</li>
+            <li>グループに分けたなら、<strong>すべてのグループ</strong>から選んでいるか？ → すべてのグループから何人かずつなら<strong>層化抽出法</strong>。</li>
+            <li>
+              グループを<strong>くじで選んでいる</strong>なら、選んだグループの中を全員調べるか？ → 全員なら<strong>クラスター抽出法</strong>、中からさらにくじで選ぶなら<strong>多段抽出法</strong>。
+            </li>
+          </ol>
         </Example>
         <Intuition title="層化抽出とクラスター抽出は、考え方が逆">
           <p>
@@ -107,8 +118,8 @@ export default function Lesson() {
           <TargetDemo />
         </Figure>
         <p>
-          標本誤差のばらつきの目安（標準誤差）は、標本の大きさ <M>{'n'}</M> の平方根に反比例します（<M>{'1/\\sqrt{n}'}</M> 倍）。
-          標本を4倍にすると、ばらつきは半分になります（くわしくは「標本分布」の章）。
+          標本誤差のばらつきの目安（<strong>標準誤差</strong>：推定値が調査ごとにどれくらいばらつくかを表す標準偏差）は、標本の大きさ <M>{'n'}</M> の平方根に反比例します（<M>{'1/\\sqrt{n}'}</M> 倍）。
+          標本を4倍にすると、<M>{'1/\\sqrt{4} = 1/2'}</M> で、ばらつきは半分になります（くわしくは<Link to="/lessons/sampling-sample-mean">「母集団・標本と標本平均の分布」のレッスン</Link>）。
         </p>
       </Section>
 
@@ -129,6 +140,9 @@ export default function Lesson() {
             標本が大きくても、<strong>選び方が偏っていれば結果も偏る</strong>ことを示す例です。
           </p>
         </Example>
+        <p>
+          無回答・回答のまちがい・集計のミスなど、「くじで選んだこと」以外の原因で生まれる誤差をまとめて<strong>非標本誤差</strong>といいます。非標本誤差は全数調査でも起こります。
+        </p>
       </Section>
 
       <Section title="よくある勘違い">
