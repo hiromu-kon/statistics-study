@@ -32,9 +32,9 @@ npm run dev
 
 ## 学習方針
 
-1. まずは無料教材で全体像をつかむ
+1. 学習サイトのレッスンを章の順に読み、確認問題を解く
 2. わからないことは `questions/unresolved.md` に残す
-3. 理解できた内容は `notes/` に整理する
+3. 理解できた内容や自分なりの言い換えは、学習サイトの該当レッスンに反映する
 4. 問題演習を始めたら、間違いを `mistakes/` に残す
 5. 難しい表現は `glossary/easy-explanations.md` で自分の言葉に直す
 6. 月ごとに `learning-log/` を見直して、次の学習計画を調整する
@@ -56,22 +56,6 @@ statistics-learning-log/
     2026/
       2026-07.md
 
-  notes/                    # 旧形式のHTMLノート（学習サイト以前）
-    README.md               # ディレクトリの案内
-    00_math-basics/         # 中学数学・高校数学の復習
-    01_descriptive-statistics/
-    02_probability/
-    03_random-variables/
-    04_distributions/
-    05_estimation/
-    06_hypothesis-testing/
-    07_regression/
-    08_multivariate-analysis/
-    09_bayesian-statistics/
-    10_time-series/
-    11_experimental-design/
-    12_machine-learning-basics/
-
   questions/                # 未解決・解決済みの疑問
     unresolved.md
     resolved.md
@@ -86,12 +70,6 @@ statistics-learning-log/
     grade2/
     grade1/
 
-  exercises/                # 旧形式の自作問題HTMLページ（学習サイト以前）
-    README.md               # ディレクトリの案内
-    pre2/
-    grade2/
-    grade1/
-
   notebooks/                # Python/Rなどでのシミュレーション
     simulations/
     exercises/
@@ -99,9 +77,6 @@ statistics-learning-log/
   glossary/                 # 用語集・難しい表現の言い換え
     terms.md
     easy-explanations.md
-
-  assets/                   # HTMLページ用の共通CSS
-    learning-page.css
 
   templates/                # 記録用テンプレート
 
@@ -113,8 +88,6 @@ statistics-learning-log/
 学習サイトの「試験と学習の進め方」ページの順に進めます。最初は「数学の準備」の章から始め、分数・割合・文字式・2乗とルートを思い出してから統計に入ります。
 
 毎回の学習では、まず `learning-log/` に雑に記録します。未解決の疑問は `questions/unresolved.md` に、問題演習のミスは `mistakes/` に残します。
-
-`notes/` と `exercises/` の HTML ページは、学習サイトを作る前に YouTube 教材をもとに書いた旧形式のノートです。
 
 ## AIとの使い方
 
