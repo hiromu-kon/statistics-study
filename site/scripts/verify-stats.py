@@ -8,6 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import math
+
 from scipy import stats as st
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,6 +26,14 @@ reference = {
     "fQ": [st.f.ppf(p, a, b) for p, a, b in [(0.95, 2, 10), (0.975, 5, 8), (0.99, 1, 20), (0.95, 10, 3)]],
     "binom": [st.binom.pmf(3, 10, 0.3)],
     "pois": [st.poisson.pmf(4, 2.5)],
+    "gammaPdf": [st.gamma.pdf(x, k, scale=t) for x, k, t in [(1.5, 2, 1), (3, 0.5, 2), (0.7, 3.5, 0.5)]],
+    "gammaCdf": [st.gamma.cdf(x, k, scale=t) for x, k, t in [(1.5, 2, 1), (3, 0.5, 2), (4, 3.5, 0.5)]],
+    "betaPdf": [st.beta.pdf(x, a, b) for x, a, b in [(0.3, 2, 5), (0.8, 0.5, 0.5), (0.5, 3, 3)]],
+    "betaCdf": [st.beta.cdf(x, a, b) for x, a, b in [(0.3, 2, 5), (0.8, 0.5, 0.5), (0.5, 3, 3)]],
+    "cauchyPdf": [st.cauchy.pdf(x, a, g) for x, a, g in [(0, 0, 1), (2, 1, 0.5)]],
+    "logNormalPdf": [st.lognorm.pdf(x, sg, scale=math.exp(m)) for x, m, sg in [(1, 0, 1), (2.5, 0.5, 0.8)]],
+    "binomialCdf": [st.binom.cdf(3, 10, 0.3), st.binom.cdf(7, 20, 0.5)],
+    "poissonCdf": [st.poisson.cdf(4, 2.5), st.poisson.cdf(0, 1.2)],
 }
 
 worst = 0.0

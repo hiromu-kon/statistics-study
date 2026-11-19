@@ -175,6 +175,9 @@ export function normalPdf(x: number, mu = 0, sigma = 1): number {
 }
 
 export function normalCdf(x: number, mu = 0, sigma = 1): number {
+  // 「ここから右すべて」を表すのに ±Infinity を渡すことがあるため、端は先に返す
+  if (x === Infinity) return 1
+  if (x === -Infinity) return 0
   const z = (x - mu) / sigma
   // Φ(z) = P(1/2, z²/2) を使う（z<0 は対称性）
   const p = 0.5 * gammaP(0.5, (z * z) / 2)
@@ -254,6 +257,50 @@ export function geometricPmf(k: number, p: number): number {
 
 export function exponentialPdf(x: number, lambda: number): number {
   return x < 0 ? 0 : lambda * Math.exp(-lambda * x)
+}
+
+// ---------- 準1級で使う連続分布 ----------
+// ガンマ分布はパラメータの書き方が本によって違う（尺度 θ か率 λ=1/θ か）。ここでは形状 k と尺度 θ で書く。
+
+export function gammaPdf(x: number, k: number, theta = 1): number {
+  if (x <= 0) return k < 1 ? Infinity : k === 1 ? 1 / theta : 0
+  return Math.exp((k - 1) * Math.log(x) - x / theta - logGamma(k) - k * Math.log(theta))
+}
+
+export function gammaCdf(x: number, k: number, theta = 1): number {
+  return gammaP(k, x / theta)
+}
+
+export function betaPdf(x: number, a: number, b: number): number {
+  if (x <= 0 || x >= 1) return 0
+  return Math.exp((a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x) + logGamma(a + b) - logGamma(a) - logGamma(b))
+}
+
+export function betaCdf(x: number, a: number, b: number): number {
+  return betaI(a, b, x)
+}
+
+/** コーシー分布（位置 x0、尺度 γ）。平均も分散も存在しない */
+export function cauchyPdf(x: number, x0 = 0, gamma = 1): number {
+  return 1 / (Math.PI * gamma * (1 + ((x - x0) / gamma) ** 2))
+}
+
+/** 対数正規分布。log X が N(μ, σ²) に従う */
+export function logNormalPdf(x: number, mu = 0, sigma = 1): number {
+  if (x <= 0) return 0
+  return normalPdf(Math.log(x), mu, sigma) / x
+}
+
+export function binomialCdf(k: number, n: number, p: number): number {
+  let total = 0
+  for (let i = 0; i <= Math.floor(k); i++) total += binomialPmf(i, n, p)
+  return Math.min(1, total)
+}
+
+export function poissonCdf(k: number, lambda: number): number {
+  let total = 0
+  for (let i = 0; i <= Math.floor(k); i++) total += poissonPmf(i, lambda)
+  return Math.min(1, total)
 }
 
 // ---------- 乱数（シード付き） ----------
