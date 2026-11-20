@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "statistics-study",
+  "compatibility_date": "2026-11-20",
+  // サーバー側の処理はなく、ビルドした静的ファイルを配るだけ。
+  // HashRouter なので、どの URL でも index.html を返す設定（not_found_handling）はいらない。
+  "assets": {
+    "directory": "./dist"
+  }
+}
