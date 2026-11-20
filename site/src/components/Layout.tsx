@@ -13,7 +13,8 @@ const TOOLS = [
   { to: '/formulas', label: '公式集', icon: 'Σ' },
   { to: '/glossary', label: '用語集', icon: 'あ' },
   { to: '/tables', label: '分布表・計算機', icon: '▦' },
-  { to: '/log', label: '学習ログ', icon: '✎' },
+  // 学習ログは公開用のビルドに入れないので、手元の開発サーバーでだけ出す（App.tsx を参照）
+  ...(import.meta.env.DEV ? [{ to: '/log', label: '学習ログ', icon: '✎' }] : []),
 ]
 
 function ChapterNav({ chapterId, open, onToggle }: { chapterId: string; open: boolean; onToggle: () => void }) {

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { useCurrentCourse } from './lib/course'
@@ -8,7 +9,6 @@ import { FormulasPage } from './pages/FormulasPage'
 import { GlossaryPage } from './pages/GlossaryPage'
 import { HomePage } from './pages/HomePage'
 import { LessonPage } from './pages/LessonPage'
-import { LogPage } from './pages/LogPage'
 import { MockExamPage } from './pages/MockExamPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PracticePage } from './pages/PracticePage'
@@ -21,6 +21,11 @@ function ToCurrentCourse({ page }: { page?: 'exam' | 'mock' }) {
   const course = useCurrentCourse()
   return <Navigate to={`/courses/${course.id}${page ? `/${page}` : ''}`} replace />
 }
+
+// 学習ログはリポジトリ直下の個人的なメモなので、公開用のビルドには入れない。
+// 静的に import すると、ページを表示しなくても Markdown の本文がバンドルに入ってしまう。
+// import.meta.env.DEV はビルド時に false に置き換わり、この import ごと消える。
+const LogPage = import.meta.env.DEV ? lazy(() => import('./pages/LogPage').then((m) => ({ default: m.LogPage }))) : null
 
 // HashRouter にしているのは、GitHub Pages やファイルを直接開く場合でも
 // サーバー側の設定なしでページを再読み込みできるようにするため。
@@ -42,7 +47,16 @@ export default function App() {
           <Route path="formulas" element={<FormulasPage />} />
           <Route path="glossary" element={<GlossaryPage />} />
           <Route path="tables" element={<TablesPage />} />
-          <Route path="log" element={<LogPage />} />
+          {LogPage && (
+            <Route
+              path="log"
+              element={
+                <Suspense>
+                  <LogPage />
+                </Suspense>
+              }
+            />
+          )}
           <Route path="data" element={<DataPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
